@@ -1,0 +1,15 @@
+{
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-waifuassetmanagement-prod-44919-authRole",
+      "UnauthRoleArn": "arn:aws:iam::627099639403:role/amplify-waifuassetmanagement-prod-44919-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::627099639403:role/amplify-waifuassetmanagement-prod-44919-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-waifuassetmanagement-prod-44919-deployment",
+      "UnauthRoleName": "amplify-waifuassetmanagement-prod-44919-unauthRole",
+      "StackName": "amplify-waifuassetmanagement-prod-44919",
+      "StackId": "arn:aws:cloudformation:us-west-2:627099639403:stack/amplify-waifuassetmanagement-prod-44919/bbbdca50-201d-11eb-9532-022108f33b95",
+      "AmplifyAppId": "d2iv4s6udl6dd3"
+    }
+  }
+}
