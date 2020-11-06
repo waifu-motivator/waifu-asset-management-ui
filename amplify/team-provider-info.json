@@ -13,7 +13,9 @@
     },
     "categories": {
       "auth": {
-        "waifuassetmanagementb63907b2": {}
+        "waifuassetmanagementb63907b2": {
+          "hostedUIProviderCreds": "[]"
+        }
       }
     }
   }

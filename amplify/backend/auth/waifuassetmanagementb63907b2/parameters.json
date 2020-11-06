@@ -45,8 +45,13 @@
             "Arn"
         ]
     },
-    "useDefault": "default",
+    "useDefault": "defaultSocial",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
-    "dependsOn": []
+    "dependsOn": [],
+    "hostedUI": true,
+    "hostedUIDomainName": "waifu-management",
+    "authProvidersUserPool": [],
+    "hostedUIProviderMeta": "[]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://waifu-management.assets.unthrottled.io/oauth/callback/\",\"http://localhost:3000/oauth/callback/\"],\"LogoutURLs\":[\"https://waifu-management.assets.unthrottled.io/oauth/logout/\",\"http://localhost:3000/oauth/logout/\"]}"
 }
