@@ -1,4 +1,4 @@
-import awsExports from "./aws-exports";
+import awsExports from "../aws-exports";
 
 const isLocalhost = Boolean(
   window.location.hostname === "localhost" ||
