@@ -5,12 +5,42 @@ import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import {Amplify} from "aws-amplify";
 import {AWSConfig} from "./config/AwsConfig";
+import {createMuiTheme, ThemeProvider} from '@material-ui/core';
+import {orange, red} from "@material-ui/core/colors";
 
 Amplify.configure(AWSConfig);
 
+const theme = createMuiTheme({
+  palette: {
+    type: "dark",
+    primary: {
+      main: '#1b191a',
+      contrastText: "#bbbbbb"
+    },
+    background: {
+      paper: "#161415",
+      default: "#191718"
+    },
+    text: {
+      primary: "#bbb",
+      secondary: "#86a4ab",
+      disabled: "#6f6f6f",
+    },
+    divider: "#211e1e",
+    action: {
+      hover: "#251719",
+      focus: "#251719",
+      selected: "#251719"
+    }
+  },
+});
+
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

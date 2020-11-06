@@ -1,18 +1,3 @@
 .App {
 }
 
-.App-header {
-  padding: 1rem;
-  background-color: var(--secondary-color);
-  font-size: calc(10px + 2vmin);
-  color: white;
-  display: flex;
-  flex-direction: row;
-}
-
-.plugin-chan {
-  margin: auto 1rem auto 0;
-  background-color: var(--highlight-color);
-  padding: 0.5rem;
-  border-radius: 50%;
-}
