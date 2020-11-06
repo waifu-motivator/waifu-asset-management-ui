@@ -4,32 +4,28 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import LayersIcon from '@material-ui/icons/Layers';
-import AssignmentIcon from '@material-ui/icons/Assignment';
 import {CloudUpload, Gif, RecordVoiceOver, ShortText} from "@material-ui/icons";
 
 export const mainListItems = (
   <div>
     <ListItem button>
       <ListItemIcon>
-        <DashboardIcon />
+        <DashboardIcon/>
       </ListItemIcon>
-      <ListItemText primary="Dashboard" />
+      <ListItemText primary="Dashboard"/>
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <CloudUpload />
+        <CloudUpload/>
       </ListItemIcon>
-      <ListItemText primary="Upload" />
+      <ListItemText primary="Upload"/>
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <PeopleIcon />
+        <PeopleIcon/>
       </ListItemIcon>
-      <ListItemText primary="Groups" />
+      <ListItemText primary="Groups"/>
     </ListItem>
   </div>
 );
@@ -39,21 +35,21 @@ export const secondaryListItems = (
     <ListSubheader inset>Asset Categories</ListSubheader>
     <ListItem button>
       <ListItemIcon>
-        <Gif />
+        <Gif/>
       </ListItemIcon>
-      <ListItemText primary="Visual" />
+      <ListItemText primary="Visual"/>
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <RecordVoiceOver />
+        <RecordVoiceOver/>
       </ListItemIcon>
-      <ListItemText primary="Audio" />
+      <ListItemText primary="Audio"/>
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <ShortText />
+        <ShortText/>
       </ListItemIcon>
-      <ListItemText primary="Text" />
+      <ListItemText primary="Text"/>
     </ListItem>
   </div>
 );

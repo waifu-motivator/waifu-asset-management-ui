@@ -28,6 +28,14 @@ export const AWSConfig = {
     domain: 'waifu-management.auth.unthrottled.io',
     redirectSignIn: isLocalhost ? localRedirectSignIn : productionRedirectSignIn,
     redirectSignOut: isLocalhost ? localRedirectSignOut : productionRedirectSignOut,
-
+  },
+  Storage: {
+    AWSS3: {
+      bucket: 'waifu-motivation-assets',
+      region: 'us-east-1',
+    },
+    customPrefix :{
+      public: ''
+    }
   }
 }

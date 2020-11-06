@@ -1,6 +1,6 @@
 import './App.css';
 import {withAuthenticator} from "@aws-amplify/ui-react";
-import React from 'react';
+import React, {useEffect} from 'react';
 import Header, {drawerWidth} from "./header/Header";
 import {Router} from 'react-router-dom';
 import {createMemoryHistory} from 'history'
@@ -19,6 +19,7 @@ import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {mainListItems, secondaryListItems} from './ListItems';
+import {Storage} from "aws-amplify";
 
 const history = createMemoryHistory();
 
@@ -98,6 +99,12 @@ const App = () => {
     setOpen(false);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  useEffect(()=> {
+    Storage.list("visuals")
+      .then(result => console.log(result))
+  }, []);
+
   return (
     <Router history={history}>
       <div className={classes.root}>

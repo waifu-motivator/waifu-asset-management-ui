@@ -6,7 +6,6 @@ import reportWebVitals from './reportWebVitals';
 import {Amplify} from "aws-amplify";
 import {AWSConfig} from "./config/AwsConfig";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core';
-import {orange, red} from "@material-ui/core/colors";
 
 Amplify.configure(AWSConfig);
 
@@ -39,7 +38,7 @@ const theme = createMuiTheme({
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <App/>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
