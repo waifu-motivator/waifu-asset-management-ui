@@ -10,6 +10,11 @@
       "StackName": "amplify-waifuassetmanagement-prod-44919",
       "StackId": "arn:aws:cloudformation:us-west-2:627099639403:stack/amplify-waifuassetmanagement-prod-44919/bbbdca50-201d-11eb-9532-022108f33b95",
       "AmplifyAppId": "d2iv4s6udl6dd3"
+    },
+    "categories": {
+      "auth": {
+        "waifuassetmanagementb63907b2": {}
+      }
     }
   }
 }
