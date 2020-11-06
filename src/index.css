@@ -1,5 +1,20 @@
+:root {
+  --base-background-color: #1b1718;
+  --header-color: #1b191a;
+  --border-color: #211e1e;
+  --button-color: #232121;
+  --icon-color: #818181;
+  --text-editor-background: #161415;
+  --foreground-color: #bbbbbb;
+  --secondary-color: #151314;
+  --code-block-color: #211D1E;
+  --highlight-color: #251719;
+}
+
 body {
   margin: 0;
+  background-color: #191718;
+  color: var(--foreground-color);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -10,4 +25,9 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+html {
+  height: 100%;
+  width: 100%;
 }
