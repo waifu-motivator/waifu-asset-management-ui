@@ -31,7 +31,7 @@ export const AWSConfig = {
   },
   Storage: {
     AWSS3: {
-      bucket: 'waifu-motivation-assets',
+      bucket: `waifu-motivation-assets${isLocalhost ? '-nonprod' : ''}`,
       region: 'us-east-1',
     },
     customPrefix :{

@@ -101,7 +101,7 @@ const App = () => {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   useEffect(()=> {
-    Storage.list("visuals")
+    Storage.list("visuals/")
       .then(result => console.log(result))
   }, []);
 
