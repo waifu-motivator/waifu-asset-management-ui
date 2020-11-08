@@ -9,6 +9,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended" // Uses the recommended rules from the @typescript-eslint/eslint-plugin
   ],
   rules: {
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "@typescript-eslint/ban-ts-comment": "off"
   }
 };
