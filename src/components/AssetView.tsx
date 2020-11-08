@@ -6,6 +6,7 @@ import {buildS3ObjectLink} from "../util/AWSTools";
 import {Chip, Input, InputLabel, MenuItem, Paper, Select, TextField, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {Autocomplete} from "@material-ui/lab";
+import ReactAudioPlayer from "react-audio-player";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -148,6 +149,18 @@ const AssetView: FC = () => {
         <Typography variant={'h5'} paragraph style={{marginTop: '2rem'}}>
           Related Assets
         </Typography>
+        <div>
+          <InputLabel style={{marginBottom: '0.5rem'}}>Audio</InputLabel>
+          <ReactAudioPlayer src={"https://waifu-motivation-assets-nonprod.s3.amazonaws.com/audible/celebration/waoow.mp3"} controls/>
+        </div>
+        <div>
+          <TextField name='objectKey'
+                     label="Notification Title"
+                     placeholder={'You\'re the best!'}
+                     variant={"outlined"}
+                     inputProps={{readOnly: true}}
+          />
+        </div>
       </div>
     </div>
   );
