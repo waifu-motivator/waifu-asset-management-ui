@@ -11,6 +11,7 @@ import {createBrowserHistory} from 'history';
 
 export const history = createBrowserHistory();
 
+// eslint-disable-next-line
 const fetchMiddleware = (sagaMiddleware: any) => {
   const commonMiddleware = [thunk, sagaMiddleware, routerMiddleware(history)];
   if (process.env.NODE_ENV === 'development') {
@@ -24,7 +25,7 @@ const fetchMiddleware = (sagaMiddleware: any) => {
   return applyMiddleware(...commonMiddleware);
 };
 
-
+// eslint-disable-next-line
 export const fetchApplicationConfiguration = () => {
   const persistConfig = {
     key: 'root',

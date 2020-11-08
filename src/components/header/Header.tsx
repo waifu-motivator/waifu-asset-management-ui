@@ -1,5 +1,4 @@
 import React, {FC, MouseEventHandler} from 'react';
-import Auth from "@aws-amplify/auth";
 import clsx from "clsx";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -10,8 +9,9 @@ import {makeStyles} from "@material-ui/core/styles";
 import {Avatar} from "@material-ui/core";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {selectUserState} from "../../reducers";
+import {requestLogoff} from "../../events/SecurityEvents";
 
 interface Props {
   onOpen: MouseEventHandler;
@@ -68,9 +68,10 @@ const Header: FC<Props> = ({
     setAnchorEl(null);
   };
 
+  const dispatch = useDispatch();
   const logout = () => {
     handleClose();
-    Auth.signOut();
+    dispatch(requestLogoff())
   }
 
   return (
@@ -101,8 +102,6 @@ const Header: FC<Props> = ({
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
                 <MenuItem onClick={logout}>Logout</MenuItem>
               </Menu>
             </>
