@@ -28,7 +28,6 @@ export const MainLocations: RouteDefinition[] = [
 ]
 
 export const SecondaryLocations: RouteDefinition[] = [
-  {name: 'Visual', icon: Gif, route: '/asset/type/visual', routeComponent: Dashboard, extraRouteProps: {}},
   {name: 'Audio', icon: RecordVoiceOver, route: '/asset/type/audio', routeComponent: Dashboard, extraRouteProps: {}},
   {name: 'Text ', icon: ShortText, route: '/asset/type/text', routeComponent: Dashboard, extraRouteProps: {}},
 ]

@@ -12,7 +12,9 @@ function* userProfileFetchSaga() {
   try {
     const allVisualAssets: S3ListObject[] = yield call(() =>
       Storage.list("visuals/")
-        .then((result: S3ListObject[]) => result.filter(ob => !ob.key.endsWith("checksum.txt")))
+        .then((result: S3ListObject[]) => result.filter(ob =>
+          !(ob.key.endsWith("checksum.txt") || ob.key.endsWith(".json"))
+        ))
     );
 
     yield put(createReceivedVisualS3List(allVisualAssets));
