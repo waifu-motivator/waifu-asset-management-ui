@@ -18,4 +18,7 @@ const rootReducer = (history: History<any>): Reducer<any, any> =>
 export const selectUserState = (globalState: GlobalState): UserState =>
   globalState.user;
 
+export const selectRouterState = (globalState: GlobalState): RouterState =>
+  globalState.router;
+
 export default rootReducer;

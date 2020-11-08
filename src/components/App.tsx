@@ -21,6 +21,9 @@ import {Storage} from "aws-amplify";
 import {S3ListObject} from "../types/AssetTypes";
 import {useDispatch} from "react-redux";
 import {createApplicationInitializedEvent} from "../events/ApplicationLifecycleEvents";
+import {Route, Switch } from 'react-router-dom';
+import Dashboard from "./Dashboard";
+import Upload from "./Upload";
 
 function Copyright() {
   return (
@@ -92,7 +95,7 @@ const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(createApplicationInitializedEvent());
-  }, [dispatch]);
+  }, []);
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -133,25 +136,10 @@ const App = () => {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer}/>
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper}>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-              </Paper>
-            </Grid>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-              </Paper>
-            </Grid>
-          </Grid>
-          <Box pt={4}>
-            <Copyright/>
-          </Box>
-        </Container>
+        <Switch>
+          <Route path={"/upload"} component={Upload} />
+          <Route path={"/"} exact component={Dashboard} />
+        </Switch>
       </main>
     </div>
   );
