@@ -15,6 +15,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {createApplicationInitializedEvent} from "../events/ApplicationLifecycleEvents";
 import {Route, Switch} from 'react-router-dom';
 import {selectRouterState} from "../reducers";
+import AssetView from "./AssetView";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -108,6 +109,7 @@ const App = () => {
       <main className={classes.content}>
         <div className={classes.appBarSpacer}/>
         <Switch>
+          <Route path={'/assets/view/:etag'} component={AssetView} />
           {
             routes
           }

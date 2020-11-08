@@ -17,7 +17,10 @@ function* userProfileFetchSaga() {
         ))
     );
 
-    yield put(createReceivedVisualS3List(allVisualAssets));
+    yield put(createReceivedVisualS3List(allVisualAssets.map(s3Asset => ({
+      ...s3Asset,
+      eTag: s3Asset.eTag.replaceAll('"', '')
+    }))));
   } catch (e) {
     console.warn("Unable to get user profile information", e)
   }

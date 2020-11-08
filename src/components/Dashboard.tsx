@@ -1,10 +1,11 @@
 import React, {FC, useState} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
-import {Box, Container, Grid, Link, Paper, Typography} from "@material-ui/core";
+import {Box, Container, Grid, Link as MUILink, Paper, Typography} from "@material-ui/core";
 import {useSelector} from "react-redux";
 import {selectVisualAssetState} from "../reducers";
-import {AWSConfig} from "../config/AwsConfig";
 import InfiniteScroll from "./util/InfiniteScroll";
+import {Link} from 'react-router-dom';
+import {buildS3ObjectLink} from "../util/AWSTools";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -17,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(4),
   },
   paper: {
+    "&:hover":{
+      backgroundColor: `var(--code-block-color)`,
+    },
     padding: theme.spacing(2),
     display: 'flex',
     overflow: 'auto',
@@ -31,18 +35,17 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
+      <MUILink color="inherit" href="https://material-ui.com/">
         Your Website
-      </Link>{' '}
+      </MUILink>{' '}
       {new Date().getFullYear()}
       {'.'}
     </Typography>
   );
 }
 
-const s3Url = `https://${AWSConfig.Storage.AWSS3.bucket}.s3.amazonaws.com/`
-
 const waifuPerPage = 10;
+
 const Dashboard: FC = () => {
   const classes = useStyles();
 
@@ -73,13 +76,15 @@ const Dashboard: FC = () => {
           {
             viewedS3Items.map(s3Item => (
               <Grid item key={s3Item.key}>
-                <Paper className={classes.paper}>
-                  <img src={`${s3Url}${s3Item.key}`}
-                       style={{
-                         borderRadius: '0.5rem'
-                       }}
-                       alt={s3Item.key}/>
-                </Paper>
+                <Link style={{textDecoration: 'none', color: 'inherit'}} to={`/assets/view/${s3Item.eTag}`}>
+                  <Paper className={classes.paper}>
+                    <img src={buildS3ObjectLink(s3Item)}
+                         style={{
+                           borderRadius: '0.5rem'
+                         }}
+                         alt={s3Item.key}/>
+                  </Paper>
+                </Link>
               </Grid>
             ))
           }
