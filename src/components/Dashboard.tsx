@@ -6,6 +6,7 @@ import {selectVisualAssetState} from "../reducers";
 import InfiniteScroll from "./util/InfiniteScroll";
 import {Link} from 'react-router-dom';
 import {buildS3ObjectLink} from "../util/AWSTools";
+import WaifuDisplay from "./WaifuDisplay";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -16,15 +17,6 @@ const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
-  },
-  paper: {
-    "&:hover":{
-      backgroundColor: `var(--code-block-color)`,
-    },
-    padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
   },
   fixedHeight: {
     height: 240,
@@ -77,13 +69,7 @@ const Dashboard: FC = () => {
             viewedS3Items.map(s3Item => (
               <Grid item key={s3Item.key}>
                 <Link style={{textDecoration: 'none', color: 'inherit'}} to={`/assets/view/${s3Item.eTag}`}>
-                  <Paper className={classes.paper}>
-                    <img src={buildS3ObjectLink(s3Item)}
-                         style={{
-                           borderRadius: '0.5rem'
-                         }}
-                         alt={s3Item.key}/>
-                  </Paper>
+                  <WaifuDisplay href={buildS3ObjectLink(s3Item)} />
                 </Link>
               </Grid>
             ))

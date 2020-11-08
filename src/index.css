@@ -9,6 +9,13 @@
   --secondary-color: #151314;
   --code-block-color: #211D1E;
   --highlight-color: #251719;
+  --accent-color: #4c9697;
+  --info-foreground: #86a4ab;
+--diff-modified: #1A233D;
+--diff-inserted: #142D14;
+--diff-conflict: #422121;
+--diff-deleted: #242424;
+
 }
 
 body {
