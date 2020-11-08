@@ -14,6 +14,11 @@ import {ConnectedRouter} from "connected-react-router";
 Amplify.configure(AWSConfig);
 
 const theme = createMuiTheme({
+  props: {
+    MuiButtonBase: {
+      disableRipple: true,
+    }
+  },
   palette: {
     type: "dark",
     primary: {

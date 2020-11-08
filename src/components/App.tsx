@@ -1,43 +1,22 @@
 import './App.css';
 import {withAuthenticator} from "@aws-amplify/ui-react";
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import Header, {drawerWidth} from "./header/Header";
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
-import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import {mainListItems, secondaryListItems} from './ListItems';
+import {mainListItems, MainLocations, secondaryListItems, SecondaryLocations} from './ListItems';
 import {Storage} from "aws-amplify";
 import {S3ListObject} from "../types/AssetTypes";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {createApplicationInitializedEvent} from "../events/ApplicationLifecycleEvents";
-import {Route, Switch } from 'react-router-dom';
-import Dashboard from "./Dashboard";
-import Upload from "./Upload";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
+import {Route, Switch} from 'react-router-dom';
+import {selectRouterState} from "../reducers";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -105,13 +84,26 @@ const App = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   useEffect(() => {
     Storage.list("visuals/")
       .then((result: S3ListObject[]) => result.filter(ob => !ob.key.endsWith("checksum.txt")))
       .then(result => console.log(result))
   }, []);
+
+  const {location: {pathname}} = useSelector(selectRouterState)
+
+  const routes = useMemo(() =>
+      [
+        ...MainLocations,
+        ...SecondaryLocations
+      ].map(routeDef =>
+        (<Route key={routeDef.route}
+                path={routeDef.route}
+                component={routeDef.routeComponent}
+                {...routeDef.extraRouteProps} />)
+      )
+    , []);
 
   return (
     <div className={classes.root}>
@@ -130,15 +122,16 @@ const App = () => {
           </IconButton>
         </div>
         <Divider/>
-        <List>{mainListItems}</List>
+        <List>{mainListItems(pathname)}</List>
         <Divider/>
-        <List>{secondaryListItems}</List>
+        <List>{secondaryListItems(pathname)}</List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer}/>
         <Switch>
-          <Route path={"/upload"} component={Upload} />
-          <Route path={"/"} exact component={Dashboard} />
+          {
+            routes
+          }
         </Switch>
       </main>
     </div>
