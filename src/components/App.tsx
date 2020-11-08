@@ -11,8 +11,6 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {mainListItems, MainLocations, secondaryListItems, SecondaryLocations} from './ListItems';
-import {Storage} from "aws-amplify";
-import {S3ListObject} from "../types/AssetTypes";
 import {useDispatch, useSelector} from "react-redux";
 import {createApplicationInitializedEvent} from "../events/ApplicationLifecycleEvents";
 import {Route, Switch} from 'react-router-dom';
@@ -84,12 +82,6 @@ const App = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-  useEffect(() => {
-    Storage.list("visuals/")
-      .then((result: S3ListObject[]) => result.filter(ob => !ob.key.endsWith("checksum.txt")))
-      .then(result => console.log(result))
-  }, []);
 
   const {location: {pathname}} = useSelector(selectRouterState)
 

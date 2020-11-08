@@ -5,7 +5,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleIcon from '@material-ui/icons/People';
-import {CloudUpload, Gif, RecordVoiceOver, ShortText} from "@material-ui/icons";
+import {CloudUpload, Favorite, Gif, RecordVoiceOver, ShortText} from "@material-ui/icons";
 import {SvgIconTypeMap} from "@material-ui/core";
 import {OverridableComponent} from "@material-ui/core/OverridableComponent";
 import Dashboard from "./Dashboard";
@@ -23,7 +23,8 @@ interface RouteDefinition {
 export const MainLocations: RouteDefinition[] = [
   {name: 'Dashboard', icon: DashboardIcon, route: '/', routeComponent: Dashboard, extraRouteProps: {exact: true}},
   {name: 'Upload', icon: CloudUpload, route: '/asset/upload', routeComponent: Upload, extraRouteProps: {}},
-  {name: 'Groups ', icon: PeopleIcon, route: '/asset/grouping', routeComponent: Dashboard, extraRouteProps: {}},
+  {name: 'Grouped Assets', icon: PeopleIcon, route: '/asset/grouping', routeComponent: Dashboard, extraRouteProps: {}},
+  {name: 'Waifu', icon: Favorite, route: '/waifu', routeComponent: Dashboard, extraRouteProps: {}},
 ]
 
 export const SecondaryLocations: RouteDefinition[] = [
@@ -35,7 +36,9 @@ export const SecondaryLocations: RouteDefinition[] = [
 const buildListItems = (routeDefinitions: RouteDefinition[], currentRoute: string) =>
   (
     routeDefinitions.map(routeDef => (
-      <Link key={routeDef.name} to={routeDef.route}>
+      <Link key={routeDef.name} style={{
+        textDecoration: 'none', color: 'inherit',
+      }} to={routeDef.route}>
         <ListItem button selected={currentRoute === routeDef.route}>
           <ListItemIcon>
             <routeDef.icon/>
