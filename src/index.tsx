@@ -6,6 +6,10 @@ import reportWebVitals from './reportWebVitals';
 import {Amplify} from "aws-amplify";
 import {AWSConfig} from "./config/AwsConfig";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core';
+import {fetchApplicationConfiguration, history} from "./config/Configuration";
+import {Provider} from "react-redux";
+import { PersistGate } from 'redux-persist/integration/react';
+import {ConnectedRouter} from "connected-react-router";
 
 Amplify.configure(AWSConfig);
 
@@ -35,11 +39,19 @@ const theme = createMuiTheme({
 });
 
 
+const {store, persistor} = fetchApplicationConfiguration();
+
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <App/>
-    </ThemeProvider>
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <ConnectedRouter history={history}>
+          <ThemeProvider theme={theme}>
+            <App/>
+          </ThemeProvider>
+        </ConnectedRouter>
+      </PersistGate>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -2,8 +2,6 @@ import './App.css';
 import {withAuthenticator} from "@aws-amplify/ui-react";
 import React, {useEffect} from 'react';
 import Header, {drawerWidth} from "./header/Header";
-import {Router} from 'react-router-dom';
-import {createMemoryHistory} from 'history'
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -20,8 +18,7 @@ import Link from '@material-ui/core/Link';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {mainListItems, secondaryListItems} from './ListItems';
 import {Storage} from "aws-amplify";
-
-const history = createMemoryHistory();
+import {S3ListObject} from "../types/AssetTypes";
 
 function Copyright() {
   return (
@@ -100,57 +97,56 @@ const App = () => {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  useEffect(()=> {
+  useEffect(() => {
     Storage.list("visuals/")
+      .then((result: S3ListObject[]) => result.filter(ob => !ob.key.endsWith("checksum.txt")))
       .then(result => console.log(result))
   }, []);
 
   return (
-    <Router history={history}>
-      <div className={classes.root}>
-        <CssBaseline/>
-        <Header onOpen={handleDrawerOpen} open={open}/>
-        <Drawer
-          variant="permanent"
-          classes={{
-            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-          }}
-          open={open}
-        >
-          <div className={classes.toolbarIcon}>
-            <IconButton onClick={handleDrawerClose}>
-              <ChevronLeftIcon/>
-            </IconButton>
-          </div>
-          <Divider/>
-          <List>{mainListItems}</List>
-          <Divider/>
-          <List>{secondaryListItems}</List>
-        </Drawer>
-        <main className={classes.content}>
-          <div className={classes.appBarSpacer}/>
-          <Container maxWidth="lg" className={classes.container}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper className={fixedHeightPaper}>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper className={fixedHeightPaper}>
-                </Paper>
-              </Grid>
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                </Paper>
-              </Grid>
+    <div className={classes.root}>
+      <CssBaseline/>
+      <Header onOpen={handleDrawerOpen} open={open}/>
+      <Drawer
+        variant="permanent"
+        classes={{
+          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+        }}
+        open={open}
+      >
+        <div className={classes.toolbarIcon}>
+          <IconButton onClick={handleDrawerClose}>
+            <ChevronLeftIcon/>
+          </IconButton>
+        </div>
+        <Divider/>
+        <List>{mainListItems}</List>
+        <Divider/>
+        <List>{secondaryListItems}</List>
+      </Drawer>
+      <main className={classes.content}>
+        <div className={classes.appBarSpacer}/>
+        <Container maxWidth="lg" className={classes.container}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={8} lg={9}>
+              <Paper className={fixedHeightPaper}>
+              </Paper>
             </Grid>
-            <Box pt={4}>
-              <Copyright/>
-            </Box>
-          </Container>
-        </main>
-      </div>
-    </Router>
+            <Grid item xs={12} md={4} lg={3}>
+              <Paper className={fixedHeightPaper}>
+              </Paper>
+            </Grid>
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+              </Paper>
+            </Grid>
+          </Grid>
+          <Box pt={4}>
+            <Copyright/>
+          </Box>
+        </Container>
+      </main>
+    </div>
   );
 };
 
