@@ -1,45 +1,24 @@
-import {
-  RECEIVED_USER,
-} from '../events/UserEvents';
 import {LOGGED_OFF} from '../events/SecurityEvents';
-import {User, UserOnBoarding} from '../types/UserTypes';
-
-export type UserMiscellaneous = {
-  hasItemsCached: boolean;
-  onboarding: UserOnBoarding;
-};
+import {RECEIVED_USER_PROFILE} from "../events/UserEvents";
+import {UserProfile} from "../types/User";
 
 export type UserState = {
-  information: User;
-  miscellaneous: UserMiscellaneous;
+  profile?: UserProfile;
 };
 export const INITIAL_USER_STATE: UserState = {
-  information: {
-    firstName: '',
-    lastName: '',
-    email: '',
-    fullName: '',
-    guid: '',
-    userName: '',
-  },
-  miscellaneous: {
-    hasItemsCached: false,
-    onboarding: {},
-  },
+
 };
 
+
+// eslint-disable-next-line
 const userReducer = (state: UserState = INITIAL_USER_STATE, action: any) => {
   switch (action.type) {
-    case RECEIVED_USER:
+    case RECEIVED_USER_PROFILE:
       return {
         ...state,
-        information: {
-          ...state.information,
-          ...action.payload.information,
-        },
-        miscellaneous: {
-          ...state.miscellaneous,
-          onboarding: action.payload.misc.onboarding || {},
+        profile: {
+          ...state.profile,
+          ...action.payload,
         },
       };
     case LOGGED_OFF:

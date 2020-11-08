@@ -1,9 +1,25 @@
-import {all} from 'redux-saga/effects';
+import {all, call, put, takeEvery, select} from 'redux-saga/effects';
+import {INITIALIZED_APPLICATION} from "../events/ApplicationLifecycleEvents";
+import Auth from "@aws-amplify/auth";
+import {createReceivedUserProfileEvent} from "../events/UserEvents";
+import {selectUserState} from "../reducers";
 
-function* startTimeSagas() {
-  console.log("Hello I have been born!")
+function* userProfileFetchSaga() {
+  const {profile} = yield select(selectUserState)
+  if(profile) return;
+
+  try {
+    const userProfile = yield call(() => Auth.currentUserInfo());
+    yield put(createReceivedUserProfileEvent(userProfile))
+  } catch (e) {
+    console.warn("Unable to get user profile information", e)
+  }
 }
 
-export default function*() {
-  yield all([startTimeSagas()]);
+function* userSagas() {
+  yield takeEvery(INITIALIZED_APPLICATION, userProfileFetchSaga)
+}
+
+export default function* (): Generator {
+  yield all([userSagas()]);
 }

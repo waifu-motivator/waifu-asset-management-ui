@@ -19,6 +19,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {mainListItems, secondaryListItems} from './ListItems';
 import {Storage} from "aws-amplify";
 import {S3ListObject} from "../types/AssetTypes";
+import {useDispatch} from "react-redux";
+import {createApplicationInitializedEvent} from "../events/ApplicationLifecycleEvents";
 
 function Copyright() {
   return (
@@ -87,6 +89,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const App = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(createApplicationInitializedEvent());
+  }, [dispatch]);
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => {

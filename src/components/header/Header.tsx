@@ -1,5 +1,4 @@
-import React, {FC, MouseEventHandler, useEffect, useState} from 'react';
-import {UserProfile} from "../../types/User";
+import React, {FC, MouseEventHandler} from 'react';
 import Auth from "@aws-amplify/auth";
 import clsx from "clsx";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -11,6 +10,8 @@ import {makeStyles} from "@material-ui/core/styles";
 import {Avatar} from "@material-ui/core";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import {useSelector} from "react-redux";
+import {selectUserState} from "../../reducers";
 
 interface Props {
   onOpen: MouseEventHandler;
@@ -54,12 +55,7 @@ const Header: FC<Props> = ({
                              onOpen,
                              open,
                            }) => {
-  const [userProfile, setUserProfile] = useState<UserProfile | undefined>();
-  useEffect(() => {
-    Auth.currentUserInfo().then(userinfo => {
-      setUserProfile(userinfo)
-    });
-  }, []);
+  const {profile} = useSelector(selectUserState);
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = React.useState<EventTarget & Element | null>(null);
@@ -93,10 +89,10 @@ const Header: FC<Props> = ({
           Waifu Asset Management
         </Typography>
         {
-          userProfile && (
+          profile && (
             <>
               <IconButton color="inherit" onClick={handleClick}>
-                <Avatar src={userProfile.attributes.picture}/>
+                <Avatar src={profile.attributes.picture}/>
               </IconButton>
               <Menu
                 id="simple-menu"
