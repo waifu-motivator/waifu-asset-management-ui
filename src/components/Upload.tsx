@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import WaifuDisplay from "./WaifuDisplay";
 import md5 from 'js-md5';
 import {useDispatch, useSelector} from "react-redux";
-import {droppedWaifu} from "../events/AssetEvents";
+import {droppedWaifu} from "../events/VisualAssetEvents";
 import {selectMotivationAssetState} from "../reducers";
 import {LocalMotivationAsset} from "../reducers/MotivationAssetReducer";
 

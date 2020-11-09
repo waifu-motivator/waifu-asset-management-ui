@@ -3,7 +3,7 @@ import {INITIALIZED_APPLICATION} from "../events/ApplicationLifecycleEvents";
 import {selectVisualAssetState} from "../reducers";
 import {Storage} from "aws-amplify";
 import {S3ListObject} from "../types/AssetTypes";
-import {createReceivedVisualAssetList, createReceivedVisualS3List} from "../events/AssetEvents";
+import {createReceivedVisualAssetList, createReceivedVisualS3List} from "../events/VisualAssetEvents";
 import {VisualAssetDefinition} from "../reducers/VisualAssetReducer";
 
 function* userProfileFetchSaga() {

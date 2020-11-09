@@ -5,18 +5,21 @@ import {connectRouter, RouterState} from 'connected-react-router';
 import {History} from 'history';
 import visualAssetReducer, {VisualAssetState} from "./VisualAssetReducer";
 import motivationAssetReducer, {MotivationAssetState} from "./MotivationAssetReducer";
+import audibleAssetReducer, {AudibleAssetDefinition} from "./AudibleAssetReducer";
 
 export interface GlobalState {
   user: UserState;
   router: RouterState;
   motivationAssets: MotivationAssetState;
   visualAssets: VisualAssetState;
+  audibleAssets: AudibleAssetDefinition;
 }
 
 const rootReducer = (history: History<any>): Reducer<any, any> =>
   combineReducers({
     user: userReducer,
     visualAssets: visualAssetReducer,
+    audibleAssets: audibleAssetReducer,
     motivationAssets: motivationAssetReducer,
     router: connectRouter(history),
   });

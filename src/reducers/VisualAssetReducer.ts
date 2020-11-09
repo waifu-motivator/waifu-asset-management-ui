@@ -1,6 +1,6 @@
 import {LOGGED_OFF} from '../events/SecurityEvents';
 import {S3ListObject} from "../types/AssetTypes";
-import {RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/AssetEvents";
+import {RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/VisualAssetEvents";
 
 
 export enum WaifuAssetCategory {

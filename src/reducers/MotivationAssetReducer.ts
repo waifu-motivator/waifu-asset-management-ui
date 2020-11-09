@@ -1,6 +1,6 @@
 import {LOGGED_OFF} from '../events/SecurityEvents';
 import {S3ListObject} from "../types/AssetTypes";
-import {DROPPED_WAIFU, RECEIVED_VISUAL_S3_LIST} from "../events/AssetEvents";
+import {DROPPED_WAIFU, RECEIVED_VISUAL_S3_LIST} from "../events/VisualAssetEvents";
 
 
 export interface LocalMotivationAsset {
