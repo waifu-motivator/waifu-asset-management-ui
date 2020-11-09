@@ -14,7 +14,9 @@ const useStyles = makeStyles((theme) => ({
   },
   waifuAssetDetails: {
     padding: theme.spacing(2),
-    maxWidth: 500,
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   chips: {
     display: 'flex',
@@ -44,7 +46,7 @@ const MotivationAssetView: FC<Props> = ({assetHref}) => {
   const classes = useStyles();
   return !assetHref ? (<span>Not-Found</span>) : (
     <div style={{display: 'flex'}}>
-      <div style={{display: 'flex', margin: '0 auto'}}>
+      <div style={{display: 'flex', margin: '0 auto', flexDirection:'row', flexWrap: 'wrap', width: '100%'}}>
         <div className={classes.waifuContainer}>
           <Paper className={classes.paper}>
             <img src={assetHref} alt={assetHref}/>
@@ -52,93 +54,98 @@ const MotivationAssetView: FC<Props> = ({assetHref}) => {
           <Typography variant={"subtitle1"} style={{marginTop: '1rem'}}>Image Dimensions: </Typography>
         </div>
         <div className={classes.waifuAssetDetails}>
-          <Typography variant={'h5'} paragraph>
-            Asset Details
-          </Typography>
-          <form style={{display: 'flex', flexDirection: 'column'}}>
-            <TextField name='objectKey'
-                       label="Object Key"
-                       placeholder={'visuals/best_girl.gif'}
-                       variant={"outlined"}
-                       inputProps={{readOnly: true}}
-            />
-            <TextField name='objectKey'
-                       placeholder={"Best Girl"}
-                       label="Image Alt"
-                       variant={"outlined"}
-                       style={{marginTop: '1rem'}}
+          <div style={{maxWidth: 500, marginRight: '2rem'}}>
+            <Typography variant={'h5'} paragraph>
+              Asset Details
+            </Typography>
+            <form style={{display: 'flex', flexDirection: 'column'}}>
+              <TextField name='objectKey'
+                         label="Object Key"
+                         placeholder={'visuals/best_girl.gif'}
+                         variant={"outlined"}
+                         inputProps={{readOnly: true}}
+              />
+              <TextField name='objectKey'
+                         placeholder={"Best Girl"}
+                         label="Image Alt"
+                         variant={"outlined"}
+                         style={{marginTop: '1rem'}}
 
-            />
-            <Autocomplete
-              multiple
-              id="tags-outlined"
-              options={top100Films}
-              getOptionLabel={(option) => option.title}
-              defaultValue={[]}
-              style={{marginTop: '1rem'}}
-              filterSelectedOptions
-              renderTags={(tagValue, getTagProps) =>
-                tagValue.map((option, index) => (
-                  <Chip
-                    key={option.title}
-                    label={option.title}
-                    color={'secondary'}
-                    {...getTagProps({index})}
+              />
+              <Autocomplete
+                multiple
+                id="tags-outlined"
+                options={top100Films}
+                getOptionLabel={(option) => option.title}
+                defaultValue={[]}
+                style={{marginTop: '1rem'}}
+                filterSelectedOptions
+                renderTags={(tagValue, getTagProps) =>
+                  tagValue.map((option, index) => (
+                    <Chip
+                      key={option.title}
+                      label={option.title}
+                      color={'secondary'}
+                      {...getTagProps({index})}
+                    />
+                  ))
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="Categories"
+                    placeholder="Category"
                   />
-                ))
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label="Categories"
-                  placeholder="Category"
-                />
-              )}
-            />
-            <Autocomplete
-              multiple
-              id="tags-outlined"
-              options={top100Films}
-              getOptionLabel={(option) => option.title}
-              defaultValue={[]}
-              style={{marginTop: '1rem'}}
-              filterSelectedOptions
-              renderTags={(tagValue, getTagProps) =>
-                tagValue.map((option, index) => (
-                  <Chip
-                    key={option.title}
-                    label={option.title}
-                    color={'secondary'}
-                    {...getTagProps({index})}
+                )}
+              />
+              <Autocomplete
+                multiple
+                id="tags-outlined"
+                options={top100Films}
+                getOptionLabel={(option) => option.title}
+                defaultValue={[]}
+                style={{marginTop: '1rem'}}
+                filterSelectedOptions
+                renderTags={(tagValue, getTagProps) =>
+                  tagValue.map((option, index) => (
+                    <Chip
+                      key={option.title}
+                      label={option.title}
+                      color={'secondary'}
+                      {...getTagProps({index})}
+                    />
+                  ))
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="Character(s)"
+                    placeholder="Waifu"
                   />
-                ))
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label="Character(s)"
-                  placeholder="Waifu"
-                />
-              )}
-            />
-          </form>
-          <Typography variant={'h5'} paragraph style={{marginTop: '2rem'}}>
-            Related Assets
-          </Typography>
-          <div>
-            <TextField name='objectKey'
-                       label="Notification Title"
-                       placeholder={'You\'re the best!'}
-                       variant={"outlined"}
-                       style={{width: '100%'}}
-            />
+                )}
+              />
+            </form>
           </div>
-          <div style={{marginTop: '1rem'}}>
-            <InputLabel style={{marginBottom: '0.5rem'}}>Audio</InputLabel>
-            <ReactAudioPlayer
-              src={"https://waifu-motivation-assets-nonprod.s3.amazonaws.com/audible/celebration/waoow.mp3"} controls/>
+          <div style={{maxWidth: 500}}>
+            <Typography variant={'h5'} paragraph>
+              Related Assets
+            </Typography>
+            <div>
+              <TextField name='objectKey'
+                         label="Notification Title"
+                         placeholder={'You\'re the best!'}
+                         variant={"outlined"}
+                         style={{width: '100%'}}
+              />
+            </div>
+            <div style={{marginTop: '1rem'}}>
+              <InputLabel style={{marginBottom: '0.5rem'}}>Audio</InputLabel>
+              <ReactAudioPlayer
+                src={"https://waifu-motivation-assets-nonprod.s3.amazonaws.com/audible/celebration/waoow.mp3"}
+                controls/>
+            </div>
           </div>
         </div>
       </div>
