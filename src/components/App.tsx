@@ -17,6 +17,7 @@ import {Route, Switch} from 'react-router-dom';
 import {selectRouterState} from "../reducers";
 import AssetView from "./AssetView";
 import AssetUploadView from "./AssetUploadView";
+import SyncChanges from './SyncChanges';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -107,6 +108,8 @@ const App = () => {
         <Divider/>
         <List>{secondaryListItems(pathname)}</List>
       </Drawer>
+      <SyncChanges />
+
       <main className={classes.content}>
         <div className={classes.appBarSpacer}/>
         <Switch>

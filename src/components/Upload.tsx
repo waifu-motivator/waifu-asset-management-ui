@@ -1,6 +1,6 @@
 import React, {FC, useCallback, useMemo} from 'react';
 import {useDropzone} from 'react-dropzone'
-import {Grid} from "@material-ui/core";
+import {Grid, TextField} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import WaifuDisplay from "./WaifuDisplay";
 import md5 from 'js-md5';
@@ -99,8 +99,12 @@ const Upload: FC = () => {
         <input {...getInputProps()} />
         <p>Drag/drop some waifu here, or click to select waifu</p>
       </div>
+      <TextField name='Asset Directory'
+                 placeholder={"surprised/"}
+                 label="Destination directory"
+                 variant={"outlined"}
+      />
       <aside>
-        <h4>Waifu to Upload</h4>
         <Grid container spacing={3}>
           {
             motivationAssetsToUpload.map(motivationAssetToUpload => (
