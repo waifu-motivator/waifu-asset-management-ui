@@ -8,6 +8,7 @@ const SyncChanges: FC = () => {
       position: "fixed",
       bottom: '2rem',
       right: '2rem',
+      zIndex: 9001,
     }} title={'Sync Changes'}>
       <CloudUpload/>
     </Fab>
