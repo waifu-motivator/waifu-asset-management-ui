@@ -4,12 +4,14 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import {CloudUpload, Favorite, GifTwoTone, RecordVoiceOver, ShortText} from "@material-ui/icons";
+import {CloudUpload, Favorite, GifTwoTone, RecordVoiceOver, ShortText, Assignment} from "@material-ui/icons";
 import {SvgIconTypeMap} from "@material-ui/core";
 import {OverridableComponent} from "@material-ui/core/OverridableComponent";
 import Dashboard from "./Dashboard";
 import {Link} from 'react-router-dom';
 import Upload from "./Upload";
+import CharacterDefinition from "./CharacterDefinition";
+import Todo from "./Todo";
 
 interface RouteDefinition {
   route: string;
@@ -22,13 +24,13 @@ interface RouteDefinition {
 export const MainLocations: RouteDefinition[] = [
   {name: 'Dashboard', icon: DashboardIcon, route: '/', routeComponent: Dashboard, extraRouteProps: {exact: true}},
   {name: 'Upload', icon: CloudUpload, route: '/asset/upload', routeComponent: Upload, extraRouteProps: {}},
-  {name: 'Waifu', icon: Favorite, route: '/waifu', routeComponent: Dashboard, extraRouteProps: {}},
+  {name: 'Categorization', icon: Assignment, route: '/character/definition', routeComponent: CharacterDefinition, extraRouteProps: {}},
 ]
 
 export const SecondaryLocations: RouteDefinition[] = [
-  {name: 'Visual', icon: GifTwoTone, route: '/asset/type/visual', routeComponent: Dashboard, extraRouteProps: {}},
-  {name: 'Audio', icon: RecordVoiceOver, route: '/asset/type/audio', routeComponent: Dashboard, extraRouteProps: {}},
-  {name: 'Text ', icon: ShortText, route: '/asset/type/text', routeComponent: Dashboard, extraRouteProps: {}},
+  {name: 'Visual', icon: GifTwoTone, route: '/asset/type/visual', routeComponent: Todo, extraRouteProps: {}},
+  {name: 'Audio', icon: RecordVoiceOver, route: '/asset/type/audio', routeComponent: Todo, extraRouteProps: {}},
+  {name: 'Text ', icon: ShortText, route: '/asset/type/text', routeComponent: Todo, extraRouteProps: {}},
 ]
 
 const buildListItems = (routeDefinitions: RouteDefinition[], currentRoute: string) =>
