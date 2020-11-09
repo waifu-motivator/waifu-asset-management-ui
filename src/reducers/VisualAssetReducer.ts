@@ -1,6 +1,6 @@
 import {LOGGED_OFF} from '../events/SecurityEvents';
 import {S3ListObject} from "../types/AssetTypes";
-import {RECEIVED_VISUAL_S3_LIST} from "../events/AssetEvents";
+import {RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/AssetEvents";
 
 
 export enum WaifuAssetCategory {
@@ -62,6 +62,11 @@ const visualAssetReducer = (state: VisualAssetState = INITIAL_VISUAL_ASSET_STATE
       return {
         ...state,
         s3List: action.payload,
+      };
+    case RECEIVED_VISUAL_ASSET_LIST:
+      return {
+        ...state,
+        assets: action.payload,
       };
     case LOGGED_OFF:
       return INITIAL_VISUAL_ASSET_STATE;
