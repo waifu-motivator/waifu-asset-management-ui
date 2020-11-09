@@ -1,8 +1,13 @@
-import React, {FC, useCallback, useMemo, useState} from 'react';
+import React, {FC, useCallback, useMemo} from 'react';
 import {useDropzone} from 'react-dropzone'
 import {Grid} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import WaifuDisplay from "./WaifuDisplay";
+import {WaifuAssetToUpload} from "../reducers/VisualAssetReducer";
+import md5 from 'js-md5';
+import {useDispatch, useSelector} from "react-redux";
+import {droppedWaifu} from "../events/AssetEvents";
+import {selectMotivationAssetState} from "../reducers";
 
 const baseStyle = {
   flex: 1,
@@ -42,42 +47,30 @@ const _arrayBufferToBase64 = (buffer: ArrayBuffer) => {
   return window.btoa(binary);
 };
 
-interface WaifuAsset {
-  btoa: string;
-  file: File;
-}
-
 const Upload: FC = () => {
-
-  const [waifuToUpload, setWaifuToUpload] = useState<WaifuAsset[]>([]);
-
+  const dispatch = useDispatch();
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.reduce((accum, next) => accum.then((others) =>
-      new Promise<WaifuAsset[]>(resolve => {
+      new Promise<WaifuAssetToUpload[]>(resolve => {
         const reader = new FileReader()
-
-        reader.onabort = () => console.log('file reading was aborted')
-        reader.onerror = () => console.log('file reading has failed')
         reader.onload = () => {
-          const binaryStr = _arrayBufferToBase64(reader.result as ArrayBuffer)
+          const result = reader.result as ArrayBuffer;
+          const binaryStr = _arrayBufferToBase64(result)
           resolve([
             ...others,
             {
               file: next,
+              id: md5(result),
               btoa: `data:image/${next.name.substr(next.name.lastIndexOf('.') + 1)};base64,${binaryStr}`,
             }
           ])
         }
         reader.readAsArrayBuffer(next)
-      })), Promise.resolve<WaifuAsset[]>([]))
-      .then(droppedFiles => {
-        setWaifuToUpload(prevState => [
-          ...prevState,
-          ...droppedFiles,
-        ])
-      })
-
-  }, [])
+      })), Promise.resolve<WaifuAssetToUpload[]>([]))
+      .then(readWaifu => {
+        dispatch(droppedWaifu(readWaifu));
+      });
+  }, [dispatch])
   const {
     getRootProps,
     getInputProps,
@@ -97,6 +90,8 @@ const Upload: FC = () => {
     isDragAccept
   ]);
 
+  const {motivationAssetsToUpload} = useSelector(selectMotivationAssetState);
+
   return (
     <section className="container">
       {/*// @ts-ignore*/}
@@ -107,12 +102,12 @@ const Upload: FC = () => {
       <aside>
         <h4>Waifu to Upload</h4>
         <Grid container spacing={3}>
-
           {
-            waifuToUpload.map(file => (
-              <Grid item key={file.file.name}>
-                <Link style={{textDecoration: 'none', color: 'inherit'}} to={`/assets/upload/${file.file.name}`}>
-                  <WaifuDisplay href={file.btoa}/>
+            motivationAssetsToUpload.map(motivationAssetToUpload => (
+              <Grid item key={motivationAssetToUpload.file.name}>
+                <Link style={{textDecoration: 'none', color: 'inherit'}}
+                      to={`/assets/upload/${motivationAssetToUpload.id}`}>
+                  <WaifuDisplay href={motivationAssetToUpload.btoa}/>
                 </Link>
               </Grid>
             ))
