@@ -3,11 +3,11 @@ import {useDropzone} from 'react-dropzone'
 import {Grid} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import WaifuDisplay from "./WaifuDisplay";
-import {WaifuAssetToUpload} from "../reducers/VisualAssetReducer";
 import md5 from 'js-md5';
 import {useDispatch, useSelector} from "react-redux";
 import {droppedWaifu} from "../events/AssetEvents";
 import {selectMotivationAssetState} from "../reducers";
+import {LocalMotivationAsset} from "../reducers/MotivationAssetReducer";
 
 const baseStyle = {
   flex: 1,
@@ -51,7 +51,7 @@ const Upload: FC = () => {
   const dispatch = useDispatch();
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.reduce((accum, next) => accum.then((others) =>
-      new Promise<WaifuAssetToUpload[]>(resolve => {
+      new Promise<LocalMotivationAsset[]>(resolve => {
         const reader = new FileReader()
         reader.onload = () => {
           const result = reader.result as ArrayBuffer;
@@ -60,13 +60,13 @@ const Upload: FC = () => {
             ...others,
             {
               file: next,
-              id: md5(result),
+              checkSum: md5(result),
               btoa: `data:image/${next.name.substr(next.name.lastIndexOf('.') + 1)};base64,${binaryStr}`,
             }
           ])
         }
         reader.readAsArrayBuffer(next)
-      })), Promise.resolve<WaifuAssetToUpload[]>([]))
+      })), Promise.resolve<LocalMotivationAsset[]>([]))
       .then(readWaifu => {
         dispatch(droppedWaifu(readWaifu));
       });
@@ -106,7 +106,7 @@ const Upload: FC = () => {
             motivationAssetsToUpload.map(motivationAssetToUpload => (
               <Grid item key={motivationAssetToUpload.file.name}>
                 <Link style={{textDecoration: 'none', color: 'inherit'}}
-                      to={`/assets/upload/${motivationAssetToUpload.id}`}>
+                      to={`/assets/upload/view/${motivationAssetToUpload.checkSum}`}>
                   <WaifuDisplay href={motivationAssetToUpload.btoa}/>
                 </Link>
               </Grid>

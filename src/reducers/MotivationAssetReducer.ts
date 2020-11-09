@@ -5,7 +5,7 @@ import {DROPPED_WAIFU, RECEIVED_VISUAL_S3_LIST} from "../events/AssetEvents";
 
 export interface LocalMotivationAsset {
   btoa: string;
-  id: string;
+  checkSum: string;
   file: File;
 }
 

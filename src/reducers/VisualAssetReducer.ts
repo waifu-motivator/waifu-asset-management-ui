@@ -44,13 +44,6 @@ export type VisualAssetDefinition = {
   characters: Waifu[];
 }
 
-export interface WaifuAssetToUpload {
-  btoa: string;
-  id: string;
-  file: File;
-}
-
-
 export type VisualAssetState = {
   assets: VisualAssetDefinition[];
   s3List: S3ListObject[];

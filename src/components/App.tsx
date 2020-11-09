@@ -16,6 +16,7 @@ import {createApplicationInitializedEvent} from "../events/ApplicationLifecycleE
 import {Route, Switch} from 'react-router-dom';
 import {selectRouterState} from "../reducers";
 import AssetView from "./AssetView";
+import AssetUploadView from "./AssetUploadView";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -109,6 +110,7 @@ const App = () => {
       <main className={classes.content}>
         <div className={classes.appBarSpacer}/>
         <Switch>
+          <Route path={'/assets/upload/view/:checkSum'} component={AssetUploadView} />
           <Route path={'/assets/view/:etag'} component={AssetView} />
           {
             routes
