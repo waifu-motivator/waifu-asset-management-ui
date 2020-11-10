@@ -70,6 +70,10 @@ const MotivationAssetView: FC<Props> = ({
       console.tron("this", values);
     }
   });
+
+  console.log((values.categories || []).map(cat => waifuAssetCategories.find(
+    waifuCat => waifuCat.value === cat
+  ) || waifuAssetCategories[0]))
   return !motivationAsset ? (<span>Not-Found</span>) : (
     <div style={{display: 'flex'}}>
       <div style={{display: 'flex', margin: '0 auto', flexDirection:'row', flexWrap: 'wrap', width: '100%'}}>
@@ -103,7 +107,7 @@ const MotivationAssetView: FC<Props> = ({
 
               />
               {
-                motivationAsset && (
+                values.categories && (
                   <>
                     <Autocomplete
                       multiple

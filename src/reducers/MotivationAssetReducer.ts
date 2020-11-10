@@ -4,6 +4,7 @@ import {StringDictionary} from "../types/SupportTypes";
 import {VisualAssetDefinition} from "./VisualAssetReducer";
 import {AudibleAssetDefinition} from "./AudibleAssetReducer";
 import {CREATED_MOTIVATION_ASSET, FOUND_CURRENT_ASSET} from "../events/MotivationAssetEvents";
+import { omit } from 'lodash';
 
 
 export interface LocalMotivationAsset {
@@ -57,6 +58,12 @@ const motivationAssetReducer = (state: MotivationAssetState = INITIAL_MOTIVATION
           [`visuals/${motivationAsset.visuals.path}`]: motivationAsset,
         }
       }
+    }
+    case '@@router/LOCATION_CHANGE': {
+      const navigatedToPath = action.payload.location.pathname;
+      return !navigatedToPath.startsWith('/assets/view') ?
+        omit(state, 'currentViewedAsset') :
+        state;
     }
     case LOGGED_OFF:
       return INITIAL_MOTIVATION_ASSET_STATE;

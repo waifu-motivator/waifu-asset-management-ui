@@ -113,7 +113,7 @@ const App = () => {
       <main className={classes.content}>
         <div className={classes.appBarSpacer}/>
         <Switch>
-          <Route path={'/assets/upload/view/:checkSum'} component={AssetUploadView} />
+          <Route path={'/assets/view/upload/:checkSum'} component={AssetUploadView} />
           <Route path={'/assets/view/:etag'} component={MotivationAssetEditView} />
           {
             routes

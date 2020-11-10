@@ -110,7 +110,7 @@ const Upload: FC = () => {
             motivationAssetsToUpload.map(motivationAssetToUpload => (
               <Grid item key={motivationAssetToUpload.file.name}>
                 <Link style={{textDecoration: 'none', color: 'inherit'}}
-                      to={`/assets/upload/view/${motivationAssetToUpload.checkSum}`}>
+                      to={`/assets/view/upload/${motivationAssetToUpload.checkSum}`}>
                   <WaifuDisplay href={motivationAssetToUpload.btoa}/>
                 </Link>
               </Grid>
