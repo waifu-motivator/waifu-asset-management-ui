@@ -13,8 +13,7 @@ const MotivationAssetEditView: FC = () => {
   }, [etag]);
 
   const {currentViewedAsset} = useSelector(selectMotivationAssetState);
-  return <MotivationAssetView motivationAsset={currentViewedAsset}
-  />
+  return <MotivationAssetView motivationAsset={currentViewedAsset} isEdit />
 };
 
 export default MotivationAssetEditView;

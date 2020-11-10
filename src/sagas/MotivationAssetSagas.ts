@@ -43,9 +43,9 @@ function* fetchAssetForEtag(s3Etag: string) {
   const {assets: visualAssetDefinitions}: VisualAssetState = yield select(selectVisualAssetState);
   if (!visualAssetDefinitions.length) {
     const {payload: freshVisualAssetDefinitions}: PayloadEvent<VisualAssetDefinition[]> = yield take(RECEIVED_VISUAL_ASSET_LIST);
-    yield call(motivationAssetAssembly, assetKey, freshVisualAssetDefinitions)
+    return yield call(motivationAssetAssembly, assetKey, freshVisualAssetDefinitions)
   } else {
-    yield call(motivationAssetAssembly, assetKey, visualAssetDefinitions);
+    return yield call(motivationAssetAssembly, assetKey, visualAssetDefinitions);
   }
 }
 

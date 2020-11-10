@@ -4,6 +4,8 @@ import {makeStyles} from "@material-ui/core/styles";
 import {Autocomplete} from "@material-ui/lab";
 import ReactAudioPlayer from "react-audio-player";
 import {LocalMotivationAsset, MotivationAsset} from "../reducers/MotivationAssetReducer";
+import {useFormik} from "formik";
+import {WaifuAssetCategory} from "../reducers/VisualAssetReducer";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -27,22 +29,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const top100Films = [
-  {title: 'The Shawshank Redemption', year: 1994},
-  {title: 'The Godfather', year: 1972},
-  {title: 'The Godfather: Part II', year: 1974},
-  {title: 'The Dark Knight', year: 2008},
-  {title: '12 Angry Men', year: 1957},
-  {title: "Schindler's List", year: 1993},
-  {title: 'Pulp Fiction', year: 1994},
+const waifuAssetCategories = [
+  { title: 'Acknowledgement', value: WaifuAssetCategory.ACKNOWLEDGEMENT },
+  { title: 'Frustration', value: WaifuAssetCategory.FRUSTRATION },
+  { title: 'Enraged', value: WaifuAssetCategory.ENRAGED },
+  { title: 'Celebration', value: WaifuAssetCategory.CELEBRATION },
+  { title: 'Happy', value: WaifuAssetCategory.HAPPY },
+  { title: 'Smug', value: WaifuAssetCategory.SMUG },
+  { title: 'Waiting', value: WaifuAssetCategory.WAITING },
+  { title: 'Motivation', value: WaifuAssetCategory.MOTIVATION },
+  { title: 'Welcoming', value: WaifuAssetCategory.WELCOMING },
+  { title: 'Departure', value: WaifuAssetCategory.DEPARTURE },
+  { title: 'Encouragement', value: WaifuAssetCategory.ENCOURAGEMENT },
+  { title: 'Tsundere', value: WaifuAssetCategory.TSUNDERE },
+  { title: 'Mocking', value: WaifuAssetCategory.MOCKING },
+  { title: 'Shocked', value: WaifuAssetCategory.SHOCKED },
+  { title: 'Disappointment', value: WaifuAssetCategory.DISAPPOINTMENT },
 ]
 
 interface Props {
   motivationAsset?: MotivationAsset;
+  isEdit?: boolean
 }
 
-const MotivationAssetView: FC<Props> = ({motivationAsset}) => {
+const MotivationAssetView: FC<Props> = ({
+                                          motivationAsset, isEdit
+}) => {
   const classes = useStyles();
+  const {
+    handleChange,
+    values
+  } = useFormik({
+    initialValues: {
+      objectKey: motivationAsset?.visuals?.path,
+      imageAlt: motivationAsset?.visuals?.imageAlt,
+      categories: motivationAsset?.visuals?.categories,
+    },
+    enableReinitialize: true,
+    onSubmit: values => {
+      console.tron("this", values);
+    }
+  });
   return !motivationAsset ? (<span>Not-Found</span>) : (
     <div style={{display: 'flex'}}>
       <div style={{display: 'flex', margin: '0 auto', flexDirection:'row', flexWrap: 'wrap', width: '100%'}}>
@@ -59,72 +86,84 @@ const MotivationAssetView: FC<Props> = ({motivationAsset}) => {
             </Typography>
             <form style={{display: 'flex', flexDirection: 'column'}}>
               <TextField name='objectKey'
-                         label="Object Key"
+                         label="Image Path"
+                         value={values.objectKey}
+                         onChange={handleChange}
                          placeholder={'visuals/best_girl.gif'}
                          variant={"outlined"}
-                         inputProps={{readOnly: true}}
+                         inputProps={{readOnly: isEdit}}
               />
-              <TextField name='objectKey'
+              <TextField name='imageAlt'
                          placeholder={"Best Girl"}
                          label="Image Alt"
+                         value={values.imageAlt}
+                         onChange={handleChange}
                          variant={"outlined"}
                          style={{marginTop: '1rem'}}
 
               />
-              <Autocomplete
-                multiple
-                id="tags-outlined"
-                options={top100Films}
-                getOptionLabel={(option) => option.title}
-                defaultValue={[]}
-                style={{marginTop: '1rem'}}
-                filterSelectedOptions
-                renderTags={(tagValue, getTagProps) =>
-                  tagValue.map((option, index) => (
-                    <Chip
-                      key={option.title}
-                      label={option.title}
-                      color={'secondary'}
-                      {...getTagProps({index})}
+              {
+                motivationAsset && (
+                  <>
+                    <Autocomplete
+                      multiple
+                      id="tags-outlined"
+                      options={waifuAssetCategories}
+                      getOptionLabel={(option) => option.title}
+                      defaultValue={(values.categories || []).map(cat => waifuAssetCategories.find(
+                        waifuCat => waifuCat.value === cat
+                      ) || waifuAssetCategories[0])}
+                      style={{marginTop: '1rem'}}
+                      filterSelectedOptions
+                      renderTags={(tagValue, getTagProps) =>
+                        tagValue.map((option, index) => (
+                          <Chip
+                            key={option.title}
+                            label={option.title}
+                            color={'secondary'}
+                            {...getTagProps({index})}
+                          />
+                        ))
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          label="Categories"
+                          placeholder="Category"
+                        />
+                      )}
                     />
-                  ))
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    label="Categories"
-                    placeholder="Category"
-                  />
-                )}
-              />
-              <Autocomplete
-                multiple
-                id="tags-outlined"
-                options={top100Films}
-                getOptionLabel={(option) => option.title}
-                defaultValue={[]}
-                style={{marginTop: '1rem'}}
-                filterSelectedOptions
-                renderTags={(tagValue, getTagProps) =>
-                  tagValue.map((option, index) => (
-                    <Chip
-                      key={option.title}
-                      label={option.title}
-                      color={'secondary'}
-                      {...getTagProps({index})}
+                    <Autocomplete
+                      multiple
+                      id="tags-outlined"
+                      options={waifuAssetCategories}
+                      getOptionLabel={(option) => option.title}
+                      defaultValue={[]}
+                      style={{marginTop: '1rem'}}
+                      filterSelectedOptions
+                      renderTags={(tagValue, getTagProps) =>
+                        tagValue.map((option, index) => (
+                          <Chip
+                            key={option.title}
+                            label={option.title}
+                            color={'secondary'}
+                            {...getTagProps({index})}
+                          />
+                        ))
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          label="Character(s)"
+                          placeholder="Waifu"
+                        />
+                      )}
                     />
-                  ))
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    label="Character(s)"
-                    placeholder="Waifu"
-                  />
-                )}
-              />
+                  </>
+                )
+              }
             </form>
           </div>
           <div style={{maxWidth: 500}}>
