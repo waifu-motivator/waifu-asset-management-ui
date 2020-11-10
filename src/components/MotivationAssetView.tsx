@@ -54,7 +54,7 @@ const MotivationAssetView: FC<Props> = ({assetHref}) => {
           <Typography variant={"subtitle1"} style={{marginTop: '1rem'}}>Image Dimensions: </Typography>
         </div>
         <div className={classes.waifuAssetDetails}>
-          <div style={{maxWidth: 500, marginRight: '2rem'}}>
+          <div style={{maxWidth: 500, marginRight: '2rem', minWidth: 300}}>
             <Typography variant={'h5'} paragraph>
               Asset Details
             </Typography>

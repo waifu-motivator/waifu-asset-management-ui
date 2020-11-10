@@ -1,6 +1,5 @@
 import {PayloadEvent} from './Event';
 import {S3ListObject} from "../types/AssetTypes";
-import {LocalMotivationAsset} from "../reducers/MotivationAssetReducer";
 import {AudibleAssetDefinition} from "../reducers/AudibleAssetReducer";
 
 export const RECEIVED_AUDIBLE_S3_LIST = 'RECEIVED_AUDIBLE_S3_LIST';
