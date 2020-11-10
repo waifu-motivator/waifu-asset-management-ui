@@ -69,7 +69,7 @@ const Dashboard: FC = () => {
             viewedS3Items.map(s3Item => (
               <Grid item key={s3Item.key}>
                 <Link style={{textDecoration: 'none', color: 'inherit'}} to={`/assets/view/${s3Item.eTag}`}>
-                  <WaifuDisplay href={buildS3ObjectLink(s3Item)} />
+                  <WaifuDisplay href={buildS3ObjectLink(s3Item.key)} />
                 </Link>
               </Grid>
             ))

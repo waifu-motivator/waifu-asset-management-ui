@@ -3,7 +3,7 @@ import {Chip, InputLabel, Paper, TextField, Typography} from "@material-ui/core"
 import {makeStyles} from "@material-ui/core/styles";
 import {Autocomplete} from "@material-ui/lab";
 import ReactAudioPlayer from "react-audio-player";
-import {LocalMotivationAsset} from "../reducers/MotivationAssetReducer";
+import {LocalMotivationAsset, MotivationAsset} from "../reducers/MotivationAssetReducer";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,18 +38,17 @@ const top100Films = [
 ]
 
 interface Props {
-  motivationAsset?: LocalMotivationAsset;
-  assetHref?: string
+  motivationAsset?: MotivationAsset;
 }
 
-const MotivationAssetView: FC<Props> = ({assetHref}) => {
+const MotivationAssetView: FC<Props> = ({motivationAsset}) => {
   const classes = useStyles();
-  return !assetHref ? (<span>Not-Found</span>) : (
+  return !motivationAsset ? (<span>Not-Found</span>) : (
     <div style={{display: 'flex'}}>
       <div style={{display: 'flex', margin: '0 auto', flexDirection:'row', flexWrap: 'wrap', width: '100%'}}>
         <div className={classes.waifuContainer}>
           <Paper className={classes.paper}>
-            <img src={assetHref} alt={assetHref}/>
+            <img src={motivationAsset.imageHref} alt={motivationAsset.visuals.imageAlt}/>
           </Paper>
           <Typography variant={"subtitle1"} style={{marginTop: '1rem'}}>Image Dimensions: </Typography>
         </div>

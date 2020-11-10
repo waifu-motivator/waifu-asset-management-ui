@@ -39,7 +39,7 @@ export type VisualAssetDefinition = {
   path: string;
   imageAlt: string;
   imageDimensions: ImageDimensions;
-  categories: WaifuAssetCategory;
+  categories: WaifuAssetCategory[];
   groupId?: string;
   characters: Waifu[];
 }

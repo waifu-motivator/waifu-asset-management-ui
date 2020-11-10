@@ -1,5 +1,4 @@
 import React, {FC} from 'react';
-import {buildS3ObjectLink} from "../util/AWSTools";
 import {Paper} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 
@@ -9,7 +8,7 @@ interface Props {
 
 const useStyles = makeStyles(theme => ({
   paper: {
-    "&:hover":{
+    "&:hover": {
       backgroundColor: `var(--code-block-color)`,
     },
     padding: theme.spacing(2),
@@ -20,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const WaifuDisplay: FC<Props> = ({
-  href
+                                   href
                                  }) => {
   const classes = useStyles();
   return (

@@ -15,7 +15,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {createApplicationInitializedEvent} from "../events/ApplicationLifecycleEvents";
 import {Route, Switch} from 'react-router-dom';
 import {selectRouterState} from "../reducers";
-import AssetView from "./AssetView";
+import MotivationAssetEditView from "./MotivationAssetEditView";
 import AssetUploadView from "./AssetUploadView";
 import SyncChanges from './SyncChanges';
 
@@ -114,7 +114,7 @@ const App = () => {
         <div className={classes.appBarSpacer}/>
         <Switch>
           <Route path={'/assets/upload/view/:checkSum'} component={AssetUploadView} />
-          <Route path={'/assets/view/:etag'} component={AssetView} />
+          <Route path={'/assets/view/:etag'} component={MotivationAssetEditView} />
           {
             routes
           }
