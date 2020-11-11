@@ -64,6 +64,7 @@ const MotivationAssetView: FC<Props> = ({
       objectKey: motivationAsset?.visuals?.path,
       imageAlt: motivationAsset?.visuals?.imageAlt,
       categories: motivationAsset?.visuals?.categories,
+      characters: motivationAsset?.visuals?.characters,
     },
     enableReinitialize: true,
     onSubmit: values => {
@@ -71,9 +72,6 @@ const MotivationAssetView: FC<Props> = ({
     }
   });
 
-  console.log((values.categories || []).map(cat => waifuAssetCategories.find(
-    waifuCat => waifuCat.value === cat
-  ) || waifuAssetCategories[0]))
   return !motivationAsset ? (<span>Not-Found</span>) : (
     <div style={{display: 'flex'}}>
       <div style={{display: 'flex', margin: '0 auto', flexDirection:'row', flexWrap: 'wrap', width: '100%'}}>
@@ -108,10 +106,9 @@ const MotivationAssetView: FC<Props> = ({
               />
               {
                 values.categories && (
-                  <>
                     <Autocomplete
                       multiple
-                      id="tags-outlined"
+                      id="categories"
                       options={waifuAssetCategories}
                       getOptionLabel={(option) => option.title}
                       defaultValue={(values.categories || []).map(cat => waifuAssetCategories.find(
@@ -138,34 +135,37 @@ const MotivationAssetView: FC<Props> = ({
                         />
                       )}
                     />
-                    <Autocomplete
-                      multiple
-                      id="tags-outlined"
-                      options={waifuAssetCategories}
-                      getOptionLabel={(option) => option.title}
-                      defaultValue={[]}
-                      style={{marginTop: '1rem'}}
-                      filterSelectedOptions
-                      renderTags={(tagValue, getTagProps) =>
-                        tagValue.map((option, index) => (
-                          <Chip
-                            key={option.title}
-                            label={option.title}
-                            color={'secondary'}
-                            {...getTagProps({index})}
-                          />
-                        ))
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="outlined"
-                          label="Character(s)"
-                          placeholder="Waifu"
+                )
+              }
+              {
+                motivationAsset?.visuals && (
+                  <Autocomplete
+                    multiple
+                    id="characters"
+                    options={waifuAssetCategories}
+                    getOptionLabel={(option) => option.title}
+                    defaultValue={[]}
+                    style={{marginTop: '1rem'}}
+                    filterSelectedOptions
+                    renderTags={(tagValue, getTagProps) =>
+                      tagValue.map((option, index) => (
+                        <Chip
+                          key={option.title}
+                          label={option.title}
+                          color={'secondary'}
+                          {...getTagProps({index})}
                         />
-                      )}
-                    />
-                  </>
+                      ))
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Character(s)"
+                        placeholder="Waifu"
+                      />
+                    )}
+                  />
                 )
               }
             </form>

@@ -21,27 +21,30 @@ export enum WaifuAssetCategory {
   DISAPPOINTMENT = 'DISAPPOINTMENT' // you don't want to disappoint your waifu now do you?
 }
 
-export interface Anime {
-  name: string;
-}
-
-export interface Waifu {
-  name: string;
-  anime: Anime;
-}
-
 export interface ImageDimensions {
   width: number;
   height: number;
 }
 
-export type VisualAssetDefinition = {
+export interface Anime {
+  id: string;
+  name: string;
+}
+
+export interface Waifu {
+  id: string;
+  name: string;
+  animeId: string;
+}
+
+export interface VisualAssetDefinition {
   path: string;
   imageAlt: string;
   imageDimensions: ImageDimensions;
   categories: WaifuAssetCategory[];
   groupId?: string;
-  characters: Waifu[];
+  characterIds?: string[]
+  characters?: string[];
 }
 
 export type VisualAssetState = {
