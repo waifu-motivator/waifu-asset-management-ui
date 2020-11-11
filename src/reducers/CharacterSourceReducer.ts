@@ -3,7 +3,7 @@ import {
   CREATED_ANIME,
   CREATED_WAIFU,
   RECEIVED_ANIME_LIST,
-  RECEIVED_WAIFU_LIST,
+  RECEIVED_WAIFU_LIST, UPDATED_ANIME,
   UPDATED_WAIFU
 } from "../events/CharacterSourceEvents";
 import {Anime, Waifu} from "./VisualAssetReducer";
@@ -35,6 +35,7 @@ const characterSourceReducer = (state: CharacterSourceState = INITIAL_SOURCE_STA
         anime: action.payload.reduce(dictionaryReducer, {}),
       };
     case CREATED_ANIME:
+    case UPDATED_ANIME:
       return {
         ...state,
         anime: {

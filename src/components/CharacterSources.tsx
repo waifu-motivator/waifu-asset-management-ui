@@ -10,7 +10,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectCharacterSourceState} from "../reducers";
 import {groupBy, values} from 'lodash';
 import {useFormik} from "formik";
-import {createdAnime, createdWaifu, updatedWaifu} from "../events/CharacterSourceEvents";
+import {createdAnime, createdWaifu, updatedAnime, updatedWaifu} from "../events/CharacterSourceEvents";
 import {v4 as uuid} from 'uuid';
 import {Anime, Waifu} from "../reducers/VisualAssetReducer";
 
@@ -57,11 +57,12 @@ const WaifuSubmission: FC<{ onSubmission: (newBestGirl: string) => void }> = ({
   </form>
 }
 
-const WaifuCharacterSource: FC<{
-  waifu: Waifu,
-  onUpdate: (updatedWaifu: Waifu) => void
+const EditableTreeItem: FC<{
+  value: string;
+  id: string;
+  onUpdate: (updatedWaifu: string) => void
 }> = ({
-        waifu, onUpdate
+        value, onUpdate, id, children
       }) => {
   const [isUpdate, setIsUpdate] = useState(false);
 
@@ -71,13 +72,11 @@ const WaifuCharacterSource: FC<{
     handleChange,
   } = useFormik({
     initialValues: {
-      name: waifu.name
+      value: value
     },
-    onSubmit: ({name}, {resetForm}) => {
-      onUpdate({
-        ...waifu,
-        name
-      });
+    enableReinitialize: true,
+    onSubmit: ({value: newValue}, {resetForm}) => {
+      onUpdate(newValue);
       resetForm();
       setIsUpdate(false);
     }
@@ -88,16 +87,21 @@ const WaifuCharacterSource: FC<{
   }
 
   return !isUpdate ?
-      <TreeItem nodeId={waifu.id} label={
-        <Tooltip title={'Click to edit'} placement={'top-start'}><span>{waifu.name}</span></Tooltip>
-      } title={'Click to edit'} onClick={()=>setIsUpdate(prevState => !prevState)}/>
+      <TreeItem nodeId={id} label={
+        <Tooltip title={'Click to edit'} placement={'top-start'}><span onClick={e => {
+          setIsUpdate(prevState => !prevState);
+          e.stopPropagation();
+        }}>{value}</span></Tooltip>
+      } >
+        {children}
+      </TreeItem>
     :
     <form onSubmit={handleSubmit}>
       <TextField label={'Name'}
-                 name={'name'}
+                 name={'value'}
                  variant={'outlined'}
                  placeholder={'Add a new best girl'}
-                 value={formValues.name}
+                 value={formValues.value}
                  onChange={handleChange}
       />
       <IconButton component={'button'} type={'submit'}>
@@ -125,8 +129,18 @@ const CharacterSources: FC = () => {
     }));
   };
 
-  const updateWaifu = (waifuUpdate: Waifu) => {
-    dispatch(updatedWaifu(waifuUpdate));
+  const updateWaifu = (waifuToUpdate: Waifu) => (newWaifuName: string) => {
+    dispatch(updatedWaifu({
+      ...waifuToUpdate,
+      name: newWaifuName,
+    }));
+  };
+
+  const updateAnime = (animeToUpdate: Anime) => (newAnimeName: string) => {
+    dispatch(updatedAnime({
+      ...animeToUpdate,
+      name: newAnimeName,
+    }));
   };
 
   const {
@@ -146,6 +160,8 @@ const CharacterSources: FC = () => {
     }
   });
 
+  console.tron(anime)
+
   return (
     <div className={classes.root}>
       <Typography variant={'h5'} paragraph>
@@ -159,18 +175,22 @@ const CharacterSources: FC = () => {
         {
           values(anime).map(dasAnime =>
             (
-              <TreeItem key={dasAnime.id}
-                        nodeId={dasAnime.id}
-                        label={dasAnime.name}>
+              <EditableTreeItem
+                        key={dasAnime.id}
+                        id={dasAnime.id}
+                        value={dasAnime.name}
+                        onUpdate={updateAnime(dasAnime)}
+              >
                 {
                   waifuByAnime[dasAnime.id]?.map(bestGirl => (
-                    <WaifuCharacterSource key={bestGirl.id}
-                                          waifu={bestGirl}
-                                          onUpdate={updateWaifu}/>
+                    <EditableTreeItem key={bestGirl.id}
+                                          value={bestGirl.name}
+                                          id={bestGirl.id}
+                                          onUpdate={updateWaifu(bestGirl)}/>
                   ))
                 }
                 <WaifuSubmission onSubmission={createWaifu(dasAnime)}/>
-              </TreeItem>
+              </EditableTreeItem>
             ))
         }
       </TreeView>

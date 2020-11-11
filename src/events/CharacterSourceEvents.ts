@@ -6,6 +6,7 @@ export const RECEIVED_ANIME_LIST = 'RECEIVED_ANIME_LIST';
 export const CREATED_ANIME = 'CREATED_ANIME';
 export const CREATED_WAIFU = 'CREATED_WAIFU';
 export const UPDATED_WAIFU = 'UPDATED_WAIFU';
+export const UPDATED_ANIME = 'UPDATED_ANIME';
 
 export const createReceivedWaifuList = (
   waifu: Waifu[],
@@ -40,5 +41,12 @@ export const updatedWaifu = (
 ): PayloadEvent<Waifu> => ({
   type: UPDATED_WAIFU,
   payload: waifu,
+});
+
+export const updatedAnime = (
+  anime: Anime,
+): PayloadEvent<Anime> => ({
+  type: UPDATED_ANIME,
+  payload: anime,
 });
 
