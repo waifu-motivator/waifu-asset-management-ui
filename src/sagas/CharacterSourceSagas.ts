@@ -1,13 +1,15 @@
 import {all, call, fork, put, select, takeEvery} from 'redux-saga/effects';
 import {INITIALIZED_APPLICATION} from "../events/ApplicationLifecycleEvents";
-import {selectVisualAssetState} from "../reducers";
+import {selectCharacterSourceState} from "../reducers";
 import {Storage} from "aws-amplify";
 import {Anime, Waifu} from "../reducers/VisualAssetReducer";
 import {createReceivedAnimeList, createReceivedWaifuList} from "../events/CharacterSourceEvents";
+import {CharacterSourceState} from "../reducers/CharacterSourceReducer";
+import {isEmpty} from "lodash";
 
 function* characterSourceAssetFetchSaga() {
-  const {s3List} = yield select(selectVisualAssetState)
-  if (s3List.legth) return;
+  const {anime, waifu}: CharacterSourceState = yield select(selectCharacterSourceState)
+  if (!(isEmpty(anime) || isEmpty(waifu))) return;
 
   yield fork(loadWaifuDefinitions);
   yield fork(loadAnimeDefinitions);

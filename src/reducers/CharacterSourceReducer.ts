@@ -1,5 +1,11 @@
 import {LOGGED_OFF} from '../events/SecurityEvents';
-import {RECEIVED_ANIME_LIST, RECEIVED_WAIFU_LIST} from "../events/CharacterSourceEvents";
+import {
+  CREATED_ANIME,
+  CREATED_WAIFU,
+  RECEIVED_ANIME_LIST,
+  RECEIVED_WAIFU_LIST,
+  UPDATED_WAIFU
+} from "../events/CharacterSourceEvents";
 import {Anime, Waifu} from "./VisualAssetReducer";
 import {StringDictionary} from "../types/SupportTypes";
 import {dictionaryReducer} from "../util/FunctionalTools";
@@ -27,6 +33,23 @@ const characterSourceReducer = (state: CharacterSourceState = INITIAL_SOURCE_STA
       return {
         ...state,
         anime: action.payload.reduce(dictionaryReducer, {}),
+      };
+    case CREATED_ANIME:
+      return {
+        ...state,
+        anime: {
+          ...state.anime,
+          [action.payload.id]: action.payload
+        },
+      };
+    case CREATED_WAIFU:
+    case UPDATED_WAIFU:
+      return {
+        ...state,
+        waifu: {
+          ...state.waifu,
+          [action.payload.id]: action.payload
+        },
       };
     case LOGGED_OFF:
       return INITIAL_SOURCE_STATE;

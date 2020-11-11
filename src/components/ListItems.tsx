@@ -10,7 +10,7 @@ import {OverridableComponent} from "@material-ui/core/OverridableComponent";
 import Dashboard from "./Dashboard";
 import {Link} from 'react-router-dom';
 import Upload from "./Upload";
-import CharacterDefinition from "./CharacterDefinition";
+import CharacterSources from "./CharacterSources";
 import Todo from "./Todo";
 
 interface RouteDefinition {
@@ -24,7 +24,7 @@ interface RouteDefinition {
 export const MainLocations: RouteDefinition[] = [
   {name: 'Dashboard', icon: DashboardIcon, route: '/', routeComponent: Dashboard, extraRouteProps: {exact: true}},
   {name: 'Upload', icon: CloudUpload, route: '/asset/upload', routeComponent: Upload, extraRouteProps: {}},
-  {name: 'Categorization', icon: Assignment, route: '/character/definition', routeComponent: CharacterDefinition, extraRouteProps: {}},
+  {name: 'Categorization', icon: Assignment, route: '/character/definition', routeComponent: CharacterSources, extraRouteProps: {}},
 ]
 
 export const SecondaryLocations: RouteDefinition[] = [
