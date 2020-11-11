@@ -7,10 +7,10 @@ function* logoffSaga() {
   yield call(() => Auth.signOut());
 }
 
-function* userSagas() {
+function* securitySagas() {
   yield takeEvery(REQUESTED_LOGOFF, logoffSaga)
 }
 
 export default function* (): Generator {
-  yield all([userSagas()]);
+  yield all([securitySagas()]);
 }

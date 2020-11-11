@@ -1,6 +1,7 @@
 import {LOGGED_OFF} from '../events/SecurityEvents';
 import {S3ListObject} from "../types/AssetTypes";
 import {RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/VisualAssetEvents";
+import {HasId} from "../types/SupportTypes";
 
 
 export enum WaifuAssetCategory {
@@ -26,13 +27,11 @@ export interface ImageDimensions {
   height: number;
 }
 
-export interface Anime {
-  id: string;
+export interface Anime extends HasId {
   name: string;
 }
 
-export interface Waifu {
-  id: string;
+export interface Waifu extends HasId {
   name: string;
   animeId: string;
 }

@@ -67,10 +67,10 @@ function* motivationAssetAssembly(
   }
 }
 
-function* userSagas() {
+function* motivationAssetSagas() {
   yield takeEvery(VIEWED_EXISTING_ASSET, motivationAssetViewSaga)
 }
 
 export default function* (): Generator {
-  yield all([userSagas()]);
+  yield all([motivationAssetSagas()]);
 }

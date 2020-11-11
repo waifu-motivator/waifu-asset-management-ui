@@ -1,6 +1,6 @@
 import {LOGGED_OFF} from '../events/SecurityEvents';
 import {S3ListObject} from "../types/AssetTypes";
-import {RECEIVED_AUDIBLE_ASSET_LIST, RECEIVED_AUDIBLE_S3_LIST} from "../events/AudibleAssetEvents";
+import {RECEIVED_AUDIBLE_ASSET_LIST, RECEIVED_WAIFU_LIST} from "../events/AudibleAssetEvents";
 import {WaifuAssetCategory} from "./VisualAssetReducer";
 
 
@@ -23,7 +23,7 @@ export const INITIAL_AUDIBLE_ASSET_STATE: AudibleAssetState = {
 // eslint-disable-next-line
 const audibleAssetReducer = (state: AudibleAssetState = INITIAL_AUDIBLE_ASSET_STATE, action: any) => {
   switch (action.type) {
-    case RECEIVED_AUDIBLE_S3_LIST:
+    case RECEIVED_WAIFU_LIST:
       return {
         ...state,
         s3List: action.payload,

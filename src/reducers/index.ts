@@ -7,6 +7,7 @@ import visualAssetReducer, {VisualAssetState} from "./VisualAssetReducer";
 import motivationAssetReducer, {MotivationAssetState} from "./MotivationAssetReducer";
 import audibleAssetReducer, {AudibleAssetDefinition} from "./AudibleAssetReducer";
 import textAssetReducer, {TextAssetState} from "./TextAssetReducer";
+import characterSourceReducer, {CharacterSourceState} from "./CharacterSourceReducer";
 
 export interface GlobalState {
   user: UserState;
@@ -14,6 +15,7 @@ export interface GlobalState {
   motivationAssets: MotivationAssetState;
   visualAssets: VisualAssetState;
   textAssets: TextAssetState;
+  characterSources: CharacterSourceState;
   audibleAssets: AudibleAssetDefinition;
 }
 
@@ -21,15 +23,22 @@ export interface GlobalState {
 const rootReducer = (history: History<any>): Reducer<any, any> =>
   combineReducers({
     user: userReducer,
-    visualAssets: visualAssetReducer,
-    audibleAssets: audibleAssetReducer,
-    textAssets: textAssetReducer,
-    motivationAssets: motivationAssetReducer,
     router: connectRouter(history),
+    motivationAssets: motivationAssetReducer,
+    visualAssets: visualAssetReducer,
+    textAssets: textAssetReducer,
+    characterSources: characterSourceReducer,
+    audibleAssets: audibleAssetReducer,
   });
 
 export const selectUserState = (globalState: GlobalState): UserState =>
   globalState.user;
+
+export const selectRouterState = (globalState: GlobalState): RouterState =>
+  globalState.router;
+
+export const selectMotivationAssetState = (globalState: GlobalState): MotivationAssetState =>
+  globalState.motivationAssets;
 
 export const selectVisualAssetState = (globalState: GlobalState): VisualAssetState =>
   globalState.visualAssets;
@@ -37,10 +46,7 @@ export const selectVisualAssetState = (globalState: GlobalState): VisualAssetSta
 export const selectTextAssetState = (globalState: GlobalState): TextAssetState =>
   globalState.textAssets;
 
-export const selectMotivationAssetState = (globalState: GlobalState): MotivationAssetState =>
-  globalState.motivationAssets;
-
-export const selectRouterState = (globalState: GlobalState): RouterState =>
-  globalState.router;
+export const selectCharacterSourceState = (globalState: GlobalState): CharacterSourceState =>
+  globalState.characterSources;
 
 export default rootReducer;

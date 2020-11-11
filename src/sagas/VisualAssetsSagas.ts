@@ -6,7 +6,7 @@ import {S3ListObject} from "../types/AssetTypes";
 import {createReceivedVisualAssetList, createReceivedVisualS3List} from "../events/VisualAssetEvents";
 import {VisualAssetDefinition} from "../reducers/VisualAssetReducer";
 
-function* userProfileFetchSaga() {
+function* visualAssetFetchSaga() {
   const {s3List} = yield select(selectVisualAssetState)
   if (s3List.legth) return;
 
@@ -41,10 +41,10 @@ function* assetJsonSaga() {
   }
 }
 
-function* userSagas() {
-  yield takeEvery(INITIALIZED_APPLICATION, userProfileFetchSaga)
+function* visualAssetSagas() {
+  yield takeEvery(INITIALIZED_APPLICATION, visualAssetFetchSaga)
 }
 
 export default function* (): Generator {
-  yield all([userSagas()]);
+  yield all([visualAssetSagas()]);
 }
