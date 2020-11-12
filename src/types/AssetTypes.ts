@@ -4,3 +4,9 @@ export interface S3ListObject {
   lastModified: Date;
   size: number
 }
+
+export enum AssetCategory {
+  VISUAL= 'visuals',
+  AUDIBLE= 'audible',
+  TEXT= 'text',
+}

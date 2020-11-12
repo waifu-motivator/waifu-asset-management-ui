@@ -41,10 +41,10 @@ function* assetJsonSaga() {
   }
 }
 
-function* audioAssetSagas() {
+function* audibleAssetSagas() {
   yield takeEvery(INITIALIZED_APPLICATION, visualAssetFetchSaga)
 }
 
 export default function* (): Generator {
-  yield all([audioAssetSagas()]);
+  yield all([audibleAssetSagas()]);
 }

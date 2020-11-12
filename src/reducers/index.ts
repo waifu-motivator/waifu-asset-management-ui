@@ -5,7 +5,7 @@ import {connectRouter, RouterState} from 'connected-react-router';
 import {History} from 'history';
 import visualAssetReducer, {VisualAssetState} from "./VisualAssetReducer";
 import motivationAssetReducer, {MotivationAssetState} from "./MotivationAssetReducer";
-import audibleAssetReducer, {AudibleAssetDefinition} from "./AudibleAssetReducer";
+import audibleAssetReducer, {AudibleAssetDefinition, AudibleAssetState} from "./AudibleAssetReducer";
 import textAssetReducer, {TextAssetState} from "./TextAssetReducer";
 import characterSourceReducer, {CharacterSourceState} from "./CharacterSourceReducer";
 
@@ -16,7 +16,7 @@ export interface GlobalState {
   visualAssets: VisualAssetState;
   textAssets: TextAssetState;
   characterSources: CharacterSourceState;
-  audibleAssets: AudibleAssetDefinition;
+  audibleAssets: AudibleAssetState;
 }
 
 // eslint-disable-next-line
@@ -42,6 +42,9 @@ export const selectMotivationAssetState = (globalState: GlobalState): Motivation
 
 export const selectVisualAssetState = (globalState: GlobalState): VisualAssetState =>
   globalState.visualAssets;
+
+export const selectAudibleAssetState = (globalState: GlobalState): AudibleAssetState =>
+  globalState.audibleAssets;
 
 export const selectTextAssetState = (globalState: GlobalState): TextAssetState =>
   globalState.textAssets;

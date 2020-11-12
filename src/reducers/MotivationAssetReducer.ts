@@ -5,6 +5,7 @@ import {VisualAssetDefinition} from "./VisualAssetReducer";
 import {AudibleAssetDefinition} from "./AudibleAssetReducer";
 import {CREATED_MOTIVATION_ASSET, FOUND_CURRENT_ASSET} from "../events/MotivationAssetEvents";
 import { omit } from 'lodash';
+import {AssetCategory} from "../types/AssetTypes";
 
 
 export interface LocalMotivationAsset {
@@ -58,7 +59,7 @@ const motivationAssetReducer = (state: MotivationAssetState = INITIAL_MOTIVATION
         ...state,
         assets: {
           ...state.assets,
-          [`visuals/${motivationAsset.visuals.path}`]: motivationAsset,
+          [`${AssetCategory.VISUAL}/${motivationAsset.visuals.path}`]: motivationAsset,
         }
       }
     }

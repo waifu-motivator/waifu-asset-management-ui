@@ -10,6 +10,7 @@ import {useSelector} from "react-redux";
 import {values as getValues} from 'lodash';
 import {selectCharacterSourceState} from "../reducers";
 import {getFileType, readFile} from "./Upload";
+import {AssetCategory} from "../types/AssetTypes";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -104,7 +105,7 @@ const MotivationAssetView: FC<Props> = ({
                          label="Image Path"
                          value={values.objectKey}
                          onChange={handleChange}
-                         placeholder={'visuals/best_girl.gif'}
+                         placeholder={`${AssetCategory.VISUAL}/best_girl.gif`}
                          variant={"outlined"}
                          inputProps={{readOnly: isEdit}}
               />

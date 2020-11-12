@@ -1,5 +1,5 @@
 import {all, call, put, select, take, takeEvery} from 'redux-saga/effects';
-import {selectMotivationAssetState, selectVisualAssetState} from "../reducers";
+import {selectAudibleAssetState, selectMotivationAssetState, selectVisualAssetState} from "../reducers";
 import {RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/VisualAssetEvents";
 import {VisualAssetDefinition, VisualAssetState} from "../reducers/VisualAssetReducer";
 import {
@@ -10,7 +10,9 @@ import {
 import {PayloadEvent} from "../events/Event";
 import {MotivationAsset, MotivationAssetState} from "../reducers/MotivationAssetReducer";
 import {buildS3ObjectLink} from "../util/AWSTools";
-import {S3ListObject} from "../types/AssetTypes";
+import {AssetCategory, S3ListObject} from "../types/AssetTypes";
+import {AudibleAssetDefinition, AudibleAssetState} from "../reducers/AudibleAssetReducer";
+import {RECEIVED_AUDIBLE_ASSET_LIST} from "../events/AudibleAssetEvents";
 
 function getKey(freshS3List: S3ListObject[], s3Etag: string) {
   return freshS3List.find(obj => obj.eTag === s3Etag)?.key;
@@ -49,16 +51,55 @@ function* fetchAssetForEtag(s3Etag: string) {
   }
 }
 
+function getAudibleMotivationAssets(audibleAssets: AudibleAssetDefinition[], groupId: string) {
+  const relevantAudibleAsset = audibleAssets.find(asset => asset.groupId === groupId);
+  if (relevantAudibleAsset) {
+    return {
+      audio: relevantAudibleAsset,
+      audioHref: buildS3ObjectLink(`${AssetCategory.AUDIBLE}/${relevantAudibleAsset.path}`)
+    }
+  }
+
+  return {};
+}
+
+function* resolveGroupedAudibleAsset(groupId: string) {
+  const {assets: cachedAssets}: AudibleAssetState = yield select(selectAudibleAssetState)
+  if (cachedAssets.length) {
+    return getAudibleMotivationAssets(cachedAssets, groupId);
+  }
+
+  const {payload: audibleAssets}: PayloadEvent<AudibleAssetDefinition[]> = yield take(RECEIVED_AUDIBLE_ASSET_LIST);
+  return getAudibleMotivationAssets(audibleAssets, groupId);
+
+}
+
+function* yieldGroupedAssets(visualAssetDefinition: VisualAssetDefinition) {
+  const groupId = visualAssetDefinition.groupId;
+  if (groupId) {
+    const {audibleAssets} = yield all({
+      audibleAssets: call(resolveGroupedAudibleAsset, groupId)
+    })
+    return {
+      ...audibleAssets,
+    }
+  }
+
+  return {};
+}
+
 function* motivationAssetAssembly(
   assetKey: string,
   assets: VisualAssetDefinition[],
 ) {
-  const trimmedKey = assetKey.substring('visuals/'.length);
+  const trimmedKey = assetKey.substring(`${AssetCategory.VISUAL}/`.length);
   const visualAssetDefinition = assets.find(assetDef => assetDef.path === trimmedKey);
   if (visualAssetDefinition) {
+    const groupedAssets = yield call(yieldGroupedAssets, visualAssetDefinition);
     const motivationAsset: MotivationAsset = {
+      ...groupedAssets,
       visuals: visualAssetDefinition,
-      imageHref: buildS3ObjectLink(assetKey)
+      imageHref: buildS3ObjectLink(assetKey),
     };
     yield put(createdMotivationAsset(motivationAsset));
     return motivationAsset;
