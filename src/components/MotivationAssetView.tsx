@@ -72,6 +72,7 @@ const MotivationAssetView: FC<Props> = ({
       categories: motivationAsset?.visuals?.categories,
       characterIds: motivationAsset?.visuals?.characterIds,
       sound: motivationAsset?.audioHref,
+      title: motivationAsset?.title,
     },
     enableReinitialize: true,
     onSubmit: values => {
@@ -191,10 +192,12 @@ const MotivationAssetView: FC<Props> = ({
               Related Assets
             </Typography>
             <div>
-              <TextField name='objectKey'
+              <TextField name='title'
                          label="Notification Title"
                          placeholder={'You\'re the best!'}
                          variant={"outlined"}
+                         value={values.title}
+                         onChange={handleChange}
                          style={{width: '100%'}}
               />
             </div>

@@ -1,5 +1,10 @@
 import {all, call, put, select, take, takeEvery} from 'redux-saga/effects';
-import {selectAudibleAssetState, selectMotivationAssetState, selectVisualAssetState} from "../reducers";
+import {
+  selectAudibleAssetState,
+  selectMotivationAssetState,
+  selectTextAssetState,
+  selectVisualAssetState
+} from "../reducers";
 import {RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/VisualAssetEvents";
 import {VisualAssetDefinition, VisualAssetState} from "../reducers/VisualAssetReducer";
 import {
@@ -13,6 +18,10 @@ import {buildS3ObjectLink} from "../util/AWSTools";
 import {AssetCategory, S3ListObject} from "../types/AssetTypes";
 import {AudibleAssetDefinition, AudibleAssetState} from "../reducers/AudibleAssetReducer";
 import {RECEIVED_AUDIBLE_ASSET_LIST} from "../events/AudibleAssetEvents";
+import {TextAssetState, TextualMotivationAsset} from "../reducers/TextAssetReducer";
+import {flatten, isEmpty, values} from 'lodash';
+import {StringDictionary} from "../types/SupportTypes";
+import {LOADED_ALL_TEXT_ASSETS} from "../events/TextAssetEvents";
 
 function getKey(freshS3List: S3ListObject[], s3Etag: string) {
   return freshS3List.find(obj => obj.eTag === s3Etag)?.key;
@@ -63,6 +72,18 @@ function getAudibleMotivationAssets(audibleAssets: AudibleAssetDefinition[], gro
   return {};
 }
 
+function getTextMotivationAssets(textAssets: StringDictionary<TextualMotivationAsset[]>, groupId: string) {
+  const relevantTextAsset = flatten(values(textAssets))
+    .find(asset => asset.groupId === groupId);
+  if (relevantTextAsset) {
+    return {
+      title: relevantTextAsset.title,
+    }
+  }
+
+  return {};
+}
+
 function* resolveGroupedAudibleAsset(groupId: string) {
   const {assets: cachedAssets}: AudibleAssetState = yield select(selectAudibleAssetState)
   if (cachedAssets.length) {
@@ -74,14 +95,31 @@ function* resolveGroupedAudibleAsset(groupId: string) {
 
 }
 
+function* resolveGroupedTextAsset(groupId: string) {
+  const {textAssets: cachedAssets}: TextAssetState = yield select(selectTextAssetState);
+  if (!isEmpty(cachedAssets)) {
+    return getTextMotivationAssets(cachedAssets, groupId);
+  }
+
+  const {payload: allTextAssets}: PayloadEvent<StringDictionary<TextualMotivationAsset[]>> =
+    yield take(LOADED_ALL_TEXT_ASSETS);
+  return getTextMotivationAssets(allTextAssets, groupId);
+
+}
+
 function* yieldGroupedAssets(visualAssetDefinition: VisualAssetDefinition) {
   const groupId = visualAssetDefinition.groupId;
   if (groupId) {
-    const {audibleAssets} = yield all({
-      audibleAssets: call(resolveGroupedAudibleAsset, groupId)
+    const {
+      audibleAssets,
+      textAssets,
+    } = yield all({
+      audibleAssets: call(resolveGroupedAudibleAsset, groupId),
+      textAssets: call(resolveGroupedTextAsset, groupId),
     })
     return {
       ...audibleAssets,
+      ...textAssets,
     }
   }
 
