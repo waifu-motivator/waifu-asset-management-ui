@@ -47,25 +47,36 @@ const _arrayBufferToBase64 = (buffer: ArrayBuffer) => {
   return window.btoa(binary);
 };
 
+export const readFile = (next: File): Promise<{ binaryStr: string; result: ArrayBuffer }> =>
+  new Promise(resolve => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = reader.result as ArrayBuffer;
+      const binaryStr = _arrayBufferToBase64(result)
+      resolve({binaryStr, result})
+    }
+    reader.readAsArrayBuffer(next)
+  });
+
+export function getFileType(next: File) {
+  return next.name.substr(next.name.lastIndexOf('.') + 1);
+}
+
 const Upload: FC = () => {
   const dispatch = useDispatch();
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.reduce((accum, next) => accum.then((others) =>
-      new Promise<LocalMotivationAsset[]>(resolve => {
-        const reader = new FileReader()
-        reader.onload = () => {
-          const result = reader.result as ArrayBuffer;
-          const binaryStr = _arrayBufferToBase64(result)
-          resolve([
-            ...others,
-            {
-              file: next,
-              checkSum: md5(result),
-              btoa: `data:image/${next.name.substr(next.name.lastIndexOf('.') + 1)};base64,${binaryStr}`,
-            }
-          ])
-        }
-        reader.readAsArrayBuffer(next)
+      readFile(next).then(({
+                             binaryStr, result
+                           }) => {
+        return ([
+          ...others,
+          {
+            file: next,
+            checkSum: md5(result),
+            btoa: `data:image/${(getFileType(next))};base64,${binaryStr}`,
+          }
+        ])
       })), Promise.resolve<LocalMotivationAsset[]>([]))
       .then(readWaifu => {
         dispatch(droppedWaifu(readWaifu));

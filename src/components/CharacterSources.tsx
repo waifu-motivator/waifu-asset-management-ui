@@ -17,7 +17,7 @@ import {Anime, Waifu} from "../reducers/VisualAssetReducer";
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    padding: theme.spacing(2),
+    padding: theme.spacing(4),
   },
   sourceTree: {
     flexGrow: 1,

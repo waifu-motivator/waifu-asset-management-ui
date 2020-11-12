@@ -1,4 +1,4 @@
-import React, {FC, useMemo} from 'react';
+import React, {FC, useMemo, useRef} from 'react';
 import {Chip, InputLabel, Paper, TextField, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {Autocomplete} from "@material-ui/lab";
@@ -9,6 +9,7 @@ import {WaifuAssetCategory} from "../reducers/VisualAssetReducer";
 import {useSelector} from "react-redux";
 import {values as getValues} from 'lodash';
 import {selectCharacterSourceState} from "../reducers";
+import {getFileType, readFile} from "./Upload";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -61,13 +62,15 @@ const MotivationAssetView: FC<Props> = ({
   const classes = useStyles();
   const {
     handleChange,
-    values
+    values,
+    setFieldValue,
   } = useFormik({
     initialValues: {
       objectKey: motivationAsset?.visuals?.path,
       imageAlt: motivationAsset?.visuals?.imageAlt,
       categories: motivationAsset?.visuals?.categories,
       characterIds: motivationAsset?.visuals?.characterIds,
+      sound: ''
     },
     enableReinitialize: true,
     onSubmit: values => {
@@ -196,9 +199,25 @@ const MotivationAssetView: FC<Props> = ({
             </div>
             <div style={{marginTop: '1rem'}}>
               <InputLabel style={{marginBottom: '0.5rem'}}>Audio</InputLabel>
-              <ReactAudioPlayer
-                src={"https://waifu-motivation-assets-nonprod.s3.amazonaws.com/audible/celebration/waoow.mp3"}
-                controls/>
+              {
+                values.sound && (
+                  <ReactAudioPlayer
+                    src={values.sound}
+                    controls/>
+                )
+              }
+
+              <input type={"file"}
+                     onChange={e => {
+                       const soundFile = (e?.target?.files || [])[0];
+                       readFile(soundFile)
+                         .then(({
+                           binaryStr
+                         }) => {
+                           setFieldValue('sound', `data:audio/${getFileType(soundFile)};base64,${binaryStr}`)
+                         })
+                     }}
+                     accept={"audio/*"} />
             </div>
           </div>
         </div>
