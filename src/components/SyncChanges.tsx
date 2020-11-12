@@ -1,9 +1,10 @@
-import React, {FC} from 'react';
+import React, {FC, useMemo} from 'react';
 import {Fab, useTheme, Zoom} from "@material-ui/core";
 import {CloudUpload} from "@material-ui/icons";
 import {useDispatch, useSelector} from "react-redux";
 import {requestSyncChanges} from "../events/ApplicationLifecycleEvents";
-import {selectUserState} from "../reducers";
+import {selectMotivationAssetState} from "../reducers";
+import {isEmpty} from 'lodash';
 
 const SyncChanges: FC = () => {
   const dispatch = useDispatch();
@@ -16,9 +17,10 @@ const SyncChanges: FC = () => {
     enter: theme.transitions.duration.enteringScreen,
     exit: theme.transitions.duration.leavingScreen,
   };
-  const {unsyncedAssets} = useSelector(selectUserState)
+  const {unsyncedAssets} = useSelector(selectMotivationAssetState)
+  const needsSync = useMemo(() => !isEmpty(unsyncedAssets), [unsyncedAssets]);
   return (
-    <Zoom in={!!unsyncedAssets.length}
+    <Zoom in={needsSync}
           timeout={transitionDuration}
           unmountOnExit
     >

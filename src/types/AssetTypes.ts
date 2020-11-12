@@ -6,15 +6,15 @@ export interface S3ListObject {
 }
 
 export enum AssetCategory {
-  VISUAL= 'visuals',
-  AUDIBLE= 'audible',
-  TEXT= 'text',
+  VISUAL = 'visuals',
+  AUDIBLE = 'audible',
+  TEXT = 'text',
 }
 
 export enum Assets {
-  ANIME,
-  WAIUFU,
-  VISUAL,
-  TEXT,
-  AUDIBLE
+  ANIME = 'ANIME',
+  WAIFU = 'WAIFU',
+  VISUAL = 'VISUAL',
+  TEXT = 'TEXT',
+  AUDIBLE = 'AUDIBLE'
 }

@@ -4,8 +4,10 @@ import {StringDictionary} from "../types/SupportTypes";
 import {VisualAssetDefinition} from "./VisualAssetReducer";
 import {AudibleAssetDefinition} from "./AudibleAssetReducer";
 import {CREATED_MOTIVATION_ASSET, FOUND_CURRENT_ASSET} from "../events/MotivationAssetEvents";
-import { omit } from 'lodash';
-import {AssetCategory} from "../types/AssetTypes";
+import {omit, values} from 'lodash';
+import {AssetCategory, Assets} from "../types/AssetTypes";
+import {CREATED_ANIME, CREATED_WAIFU, UPDATED_ANIME, UPDATED_WAIFU} from "../events/CharacterSourceEvents";
+import {SYNCED_ASSET} from "../events/ApplicationLifecycleEvents";
 
 
 export interface LocalMotivationAsset {
@@ -28,12 +30,22 @@ export type MotivationAssetState = {
   motivationAssetsToUpload: LocalMotivationAsset[];
   assets: StringDictionary<MotivationAsset>;
   currentViewedAsset?: MotivationAsset;
+  unsyncedAssets: StringDictionary<Assets>;
 };
 
 export const INITIAL_MOTIVATION_ASSET_STATE: MotivationAssetState = {
   motivationAssetsToUpload: [],
   assets: {},
+  unsyncedAssets: {},
 };
+
+const addToSync = (state: MotivationAssetState, anime: Assets): MotivationAssetState => ({
+  ...state,
+  unsyncedAssets: {
+    ...state.unsyncedAssets,
+    [anime]: anime
+  }
+});
 
 // eslint-disable-next-line
 const motivationAssetReducer = (state: MotivationAssetState = INITIAL_MOTIVATION_ASSET_STATE, action: any) => {
@@ -69,6 +81,26 @@ const motivationAssetReducer = (state: MotivationAssetState = INITIAL_MOTIVATION
         omit(state, 'currentViewedAsset') :
         state;
     }
+    case UPDATED_ANIME:
+    case CREATED_ANIME:
+      return addToSync(state, Assets.ANIME);
+
+    case UPDATED_WAIFU:
+    case CREATED_WAIFU:
+      return addToSync(state, Assets.WAIFU);
+
+    case SYNCED_ASSET:
+      return {
+        ...state,
+        unsyncedAssets: values(state.unsyncedAssets)
+          .filter(asset => asset !== action.payload)
+          .reduce((accum, next) => ({
+            ...accum,
+            [next]: next
+          }), {})
+      }
+
+
     case LOGGED_OFF:
       return INITIAL_MOTIVATION_ASSET_STATE;
     default:
