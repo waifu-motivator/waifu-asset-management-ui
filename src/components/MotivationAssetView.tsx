@@ -70,7 +70,7 @@ const MotivationAssetView: FC<Props> = ({
       imageAlt: motivationAsset?.visuals?.imageAlt,
       categories: motivationAsset?.visuals?.categories,
       characterIds: motivationAsset?.visuals?.characterIds,
-      sound: ''
+      sound: motivationAsset?.audioHref,
     },
     enableReinitialize: true,
     onSubmit: values => {

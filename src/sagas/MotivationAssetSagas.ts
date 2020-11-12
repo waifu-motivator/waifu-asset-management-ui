@@ -8,7 +8,7 @@ import {
   VIEWED_EXISTING_ASSET
 } from "../events/MotivationAssetEvents";
 import {PayloadEvent} from "../events/Event";
-import {MotivationAssetState} from "../reducers/MotivationAssetReducer";
+import {MotivationAsset, MotivationAssetState} from "../reducers/MotivationAssetReducer";
 import {buildS3ObjectLink} from "../util/AWSTools";
 import {S3ListObject} from "../types/AssetTypes";
 
@@ -56,7 +56,7 @@ function* motivationAssetAssembly(
   const trimmedKey = assetKey.substring('visuals/'.length);
   const visualAssetDefinition = assets.find(assetDef => assetDef.path === trimmedKey);
   if (visualAssetDefinition) {
-    const motivationAsset = {
+    const motivationAsset: MotivationAsset = {
       visuals: visualAssetDefinition,
       imageHref: buildS3ObjectLink(assetKey)
     };

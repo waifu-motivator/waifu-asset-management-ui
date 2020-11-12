@@ -16,8 +16,11 @@ export interface LocalMotivationAsset {
 export interface MotivationAsset {
   imageHref: string;
   visuals: VisualAssetDefinition;
-  title?: string;
+
+  // grouped assets
+  audioHref?: string;
   audio?: AudibleAssetDefinition;
+  title?: string;
 }
 
 export type MotivationAssetState = {
