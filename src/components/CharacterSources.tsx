@@ -160,8 +160,6 @@ const CharacterSources: FC = () => {
     }
   });
 
-  console.tron(anime)
-
   return (
     <div className={classes.root}>
       <Typography variant={'h5'} paragraph>
