@@ -2,11 +2,11 @@ import {all, call, fork, put, select, takeEvery} from 'redux-saga/effects';
 import {INITIALIZED_APPLICATION} from "../events/ApplicationLifecycleEvents";
 import {selectVisualAssetState} from "../reducers";
 import {Storage} from "aws-amplify";
-import {S3ListObject} from "../types/AssetTypes";
+import {AssetCategory, S3ListObject} from "../types/AssetTypes";
 import {createReceivedAudibleAssetList, createReceivedAudibleS3List} from "../events/AudibleAssetEvents";
 import {AudibleAssetDefinition} from "../reducers/AudibleAssetReducer";
 
-function* visualAssetFetchSaga() {
+function* audibleAssetFetchSaga() {
   const {s3List} = yield select(selectVisualAssetState)
   if (s3List.legth) return;
 
@@ -14,7 +14,7 @@ function* visualAssetFetchSaga() {
 
   try {
     const allVisualAssets: S3ListObject[] = yield call(() =>
-      Storage.list("audible/")
+      Storage.list(`${AssetCategory.AUDIBLE}/`)
         .then((result: S3ListObject[]) => result.filter(ob =>
           !(ob.key.endsWith("checksum.txt") || ob.key.endsWith(".json"))
         ))
@@ -31,7 +31,7 @@ function* visualAssetFetchSaga() {
 function* assetJsonSaga() {
   try {
     const assetJson: AudibleAssetDefinition[] = yield call(() =>
-      Storage.get("audible/assets.json", {download: true})
+      Storage.get(`${AssetCategory.AUDIBLE}/assets.json`, {download: true})
         .then((result: any) => result.Body.text())
         .then(JSON.parse)
     );
@@ -42,7 +42,7 @@ function* assetJsonSaga() {
 }
 
 function* audibleAssetSagas() {
-  yield takeEvery(INITIALIZED_APPLICATION, visualAssetFetchSaga)
+  yield takeEvery(INITIALIZED_APPLICATION, audibleAssetFetchSaga)
 }
 
 export default function* (): Generator {
