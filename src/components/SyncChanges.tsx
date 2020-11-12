@@ -1,13 +1,14 @@
 import React, {FC} from 'react';
 import {Fab, useTheme, Zoom} from "@material-ui/core";
 import {CloudUpload} from "@material-ui/icons";
-import {useDispatch} from "react-redux";
-import {createSyncChangesEvent} from "../events/ApplicationLifecycleEvents";
+import {useDispatch, useSelector} from "react-redux";
+import {requestSyncChanges} from "../events/ApplicationLifecycleEvents";
+import {selectUserState} from "../reducers";
 
 const SyncChanges: FC = () => {
   const dispatch = useDispatch();
   const syncChanges = () => {
-    dispatch(createSyncChangesEvent());
+    dispatch(requestSyncChanges());
   };
   const theme = useTheme();
 
@@ -15,8 +16,9 @@ const SyncChanges: FC = () => {
     enter: theme.transitions.duration.enteringScreen,
     exit: theme.transitions.duration.leavingScreen,
   };
+  const {unsyncedAssets} = useSelector(selectUserState)
   return (
-    <Zoom in={true}
+    <Zoom in={!!unsyncedAssets.length}
           timeout={transitionDuration}
           unmountOnExit
     >

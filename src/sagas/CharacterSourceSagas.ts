@@ -1,5 +1,5 @@
 import {all, call, fork, put, select, takeEvery} from 'redux-saga/effects';
-import {INITIALIZED_APPLICATION} from "../events/ApplicationLifecycleEvents";
+import {INITIALIZED_APPLICATION, REQUESTED_SYNC_CHANGES} from "../events/ApplicationLifecycleEvents";
 import {selectCharacterSourceState} from "../reducers";
 import {Storage} from "aws-amplify";
 import {Anime, Waifu} from "../reducers/VisualAssetReducer";
@@ -41,8 +41,13 @@ function* loadAnimeDefinitions() {
   }
 }
 
+function* characterSourceSyncSaga() {
+  console.tron("finna work on sync")
+}
+
 function* characterSourceSagas() {
   yield takeEvery(INITIALIZED_APPLICATION, characterSourceAssetFetchSaga)
+  yield takeEvery(REQUESTED_SYNC_CHANGES, characterSourceSyncSaga);
 }
 
 export default function* (): Generator {

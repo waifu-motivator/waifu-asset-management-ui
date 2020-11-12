@@ -10,3 +10,11 @@ export enum AssetCategory {
   AUDIBLE= 'audible',
   TEXT= 'text',
 }
+
+export enum Assets {
+  ANIME,
+  WAIUFU,
+  VISUAL,
+  TEXT,
+  AUDIBLE
+}
