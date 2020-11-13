@@ -1,5 +1,5 @@
 import React, {FC, useMemo, useRef} from 'react';
-import {Chip, InputLabel, Paper, TextField, Typography} from "@material-ui/core";
+import {Button, Chip, InputLabel, Paper, TextField, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {Autocomplete} from "@material-ui/lab";
 import ReactAudioPlayer from "react-audio-player";
@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
+    marginBottom: theme.spacing(15),
   },
   chips: {
     display: 'flex',
@@ -88,7 +89,7 @@ const MotivationAssetView: FC<Props> = ({
   })), []);
 
   return !motivationAsset ? (<span>Not-Found</span>) : (
-    <div style={{display: 'flex'}}>
+    <div style={{display: 'flex', flexDirection: "column", flexGrow: 1}}>
       <div style={{display: 'flex', margin: '0 auto', flexDirection: 'row', flexWrap: 'wrap', width: '100%'}}>
         <div className={classes.waifuContainer}>
           <Paper className={classes.paper}>
@@ -226,8 +227,28 @@ const MotivationAssetView: FC<Props> = ({
           </div>
         </div>
       </div>
+      <Paper  style={{
+        bottom: 0,
+        padding: '1.25rem 1rem',
+        width: "100%",
+        position:"fixed",
+        display: "flex",
+        flexDirection: 'row',
+        zIndex: 9001,
+        boxShadow: '0px -2px 4px -1px rgba(0,0,0,0.2), 0px -4px 5px 0px rgba(0,0,0,0.14), 0px -1px 10px 0px rgba(0,0,0,0.12'
+      }}>
+        <Button variant={"contained"}
+                color={"secondary"}
+                style={{width: 150, marginRight: '2rem'}}>SAVE</Button>
+        <Button variant={"outlined"} style={{width: 150, marginRight: '2rem'}}>
+          CANCEL
+        </Button>
+      </Paper>
     </div>
   );
 };
+
+// 0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12);
+
 
 export default MotivationAssetView;
