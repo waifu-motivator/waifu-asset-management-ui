@@ -19,6 +19,13 @@ export const createdMotivationAsset = (
   payload: motivationAsset,
 });
 
+export const updatedMotivationAsset = (
+  motivationAsset: MotivationAsset,
+): PayloadEvent<MotivationAsset> => ({
+  type: CREATED_MOTIVATION_ASSET,
+  payload: motivationAsset,
+});
+
 export const createCurrentMotivationAssetEvent = (
   motivationAsset: MotivationAsset,
 ): PayloadEvent<MotivationAsset> => ({

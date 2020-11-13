@@ -1,4 +1,4 @@
-import React, {FC, useMemo, useRef} from 'react';
+import React, {FC, useMemo} from 'react';
 import {Button, Chip, InputLabel, Paper, TextField, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {Autocomplete} from "@material-ui/lab";
@@ -6,11 +6,13 @@ import ReactAudioPlayer from "react-audio-player";
 import {MotivationAsset} from "../reducers/MotivationAssetReducer";
 import {useFormik} from "formik";
 import {WaifuAssetCategory} from "../reducers/VisualAssetReducer";
-import {useSelector} from "react-redux";
-import {values as getValues} from 'lodash';
+import {useDispatch, useSelector} from "react-redux";
+import {isEmpty, values as getValues} from 'lodash';
+import {useHistory} from 'react-router-dom';
 import {selectCharacterSourceState} from "../reducers";
 import {getFileType, readFile} from "./Upload";
 import {AssetCategory} from "../types/AssetTypes";
+import {updatedMotivationAsset} from "../events/MotivationAssetEvents";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -62,10 +64,21 @@ const MotivationAssetView: FC<Props> = ({
                                           motivationAsset, isEdit
                                         }) => {
   const classes = useStyles();
+
+  const history = useHistory();
+  const goBack = () => {
+    history.push(isEdit ? "/" : "/asset/upload")
+  }
+  const dispatch = useDispatch();
+
   const {
     handleChange,
     values,
     setFieldValue,
+    submitForm,
+    isSubmitting,
+    dirty,
+    errors
   } = useFormik({
     initialValues: {
       objectKey: motivationAsset?.visuals?.path,
@@ -73,11 +86,15 @@ const MotivationAssetView: FC<Props> = ({
       categories: motivationAsset?.visuals?.categories,
       characterIds: motivationAsset?.visuals?.characterIds,
       sound: motivationAsset?.audioHref,
+      soundFile: {} as File,
       title: motivationAsset?.title,
     },
     enableReinitialize: true,
-    onSubmit: values => {
-      console.tron("this", values);
+    onSubmit: (values, {setSubmitting}) => {
+      console.log("this", values.soundFile);
+      // dispatch(updatedMotivationAsset())
+      setSubmitting(false);
+      goBack();
     }
   });
 
@@ -86,7 +103,7 @@ const MotivationAssetView: FC<Props> = ({
   const listOfWaifu = useMemo(() => getValues(waifu).map(bestGirl => ({
     title: bestGirl.name,
     value: bestGirl.id,
-  })), []);
+  })), [waifu]);
 
   return !motivationAsset ? (<span>Not-Found</span>) : (
     <div style={{display: 'flex', flexDirection: "column", flexGrow: 1}}>
@@ -132,6 +149,10 @@ const MotivationAssetView: FC<Props> = ({
                     ) || waifuAssetCategories[0])}
                     style={{marginTop: '1rem'}}
                     filterSelectedOptions
+                    onChange={(event, newValue) => {
+                      setFieldValue("categories", newValue.map(option => option.value))
+                    }}
+                    getOptionSelected={(option => !!values.categories?.find(cat => cat === option.value))}
                     renderTags={(tagValue, getTagProps) =>
                       tagValue.map((option, index) => (
                         <Chip
@@ -165,6 +186,10 @@ const MotivationAssetView: FC<Props> = ({
                     ) || waifuAssetCategories[0])}
                     style={{marginTop: '1rem'}}
                     filterSelectedOptions
+                    onChange={(event, newValue) => {
+                      setFieldValue("characterIds", newValue.map(option => option.value))
+                    }}
+                    getOptionSelected={(option => !!values.characterIds?.find(cat => cat === option.value))}
                     renderTags={(tagValue, getTagProps) =>
                       tagValue.map((option, index) => (
                         <Chip
@@ -217,21 +242,22 @@ const MotivationAssetView: FC<Props> = ({
                        const soundFile = (e?.target?.files || [])[0];
                        readFile(soundFile)
                          .then(({
-                           binaryStr
-                         }) => {
+                                  binaryStr
+                                }) => {
+                           setFieldValue('soundFile', soundFile);
                            setFieldValue('sound', `data:audio/${getFileType(soundFile)};base64,${binaryStr}`)
                          })
                      }}
-                     accept={"audio/*"} />
+                     accept={"audio/*"}/>
             </div>
           </div>
         </div>
       </div>
-      <Paper  style={{
+      <Paper style={{
         bottom: 0,
         padding: '1.25rem 1rem',
         width: "100%",
-        position:"fixed",
+        position: "fixed",
         display: "flex",
         flexDirection: 'row',
         zIndex: 9001,
@@ -239,16 +265,21 @@ const MotivationAssetView: FC<Props> = ({
       }}>
         <Button variant={"contained"}
                 color={"secondary"}
+                disabled={
+                  !(dirty && isEmpty(errors)) ||
+                  isSubmitting
+                }
+                onClick={submitForm}
                 style={{width: 150, marginRight: '2rem'}}>SAVE</Button>
-        <Button variant={"outlined"} style={{width: 150, marginRight: '2rem'}}>
+        <Button variant={"outlined"}
+                onClick={goBack}
+                style={{width: 150, marginRight: '2rem'}}>
           CANCEL
         </Button>
       </Paper>
     </div>
   );
 };
-
-// 0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12);
 
 
 export default MotivationAssetView;
