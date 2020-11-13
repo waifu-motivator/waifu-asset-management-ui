@@ -10,6 +10,7 @@ import {
   createReceivedTextS3List
 } from "../events/TextAssetEvents";
 import {StringDictionary} from "../types/SupportTypes";
+import {downloadAsset} from "./CommonSagas";
 
 function* loadTextAssets(allTextAssets: TextAssetDefinition[]) {
   try {
@@ -50,12 +51,6 @@ function* textAssetFetchSaga() {
   } catch (e) {
     console.warn("Unable to get user profile information", e)
   }
-}
-
-function downloadAsset(key: string) {
-  return Storage.get(key, {download: true})
-    .then((result: any) => result.Body.text())
-    .then(JSON.parse);
 }
 
 function* assetJsonSaga() {

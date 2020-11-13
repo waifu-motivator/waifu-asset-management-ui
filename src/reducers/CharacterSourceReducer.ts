@@ -3,22 +3,25 @@ import {
   CREATED_ANIME,
   CREATED_WAIFU,
   RECEIVED_ANIME_LIST,
-  RECEIVED_WAIFU_LIST, UPDATED_ANIME,
+  RECEIVED_WAIFU_LIST,
+  UPDATED_ANIME,
   UPDATED_WAIFU
 } from "../events/CharacterSourceEvents";
 import {Anime, Waifu} from "./VisualAssetReducer";
-import {StringDictionary} from "../types/SupportTypes";
+import {StringDictionary, SyncType, UnsyncedAsset} from "../types/SupportTypes";
 import {dictionaryReducer} from "../util/FunctionalTools";
 
 
 export interface CharacterSourceState {
   anime: StringDictionary<Anime>;
   waifu: StringDictionary<Waifu>;
+  unSyncedWaifu: StringDictionary<UnsyncedAsset<Waifu>>;
 }
 
 export const INITIAL_SOURCE_STATE: CharacterSourceState = {
   anime: {},
   waifu: {},
+  unSyncedWaifu: {},
 };
 
 // eslint-disable-next-line
@@ -50,6 +53,13 @@ const characterSourceReducer = (state: CharacterSourceState = INITIAL_SOURCE_STA
         waifu: {
           ...state.waifu,
           [action.payload.id]: action.payload
+        },
+        unSyncedWaifu: {
+          ...state.unSyncedWaifu,
+          [action.payload.id]: {
+            syncType: SyncType.CREATE,
+            asset: action.payload,
+          } as UnsyncedAsset<Waifu>
         },
       };
     case LOGGED_OFF:
