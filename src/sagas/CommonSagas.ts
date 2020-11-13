@@ -3,6 +3,8 @@ import {Assets} from "../types/AssetTypes";
 import {MotivationAssetState} from "../reducers/MotivationAssetReducer";
 import {call, select} from "redux-saga/effects";
 import {selectMotivationAssetState} from "../reducers";
+import {StringDictionary, SyncType, UnsyncedAsset} from "../types/SupportTypes";
+import {values} from "lodash";
 
 export function downloadAsset(key: string) {
   return Storage.get(key, {download: true})
@@ -23,9 +25,15 @@ export enum ContentType {
 }
 
 export function* uploadAsset<T>(assetKey: string, asset: T, type: ContentType) {
-  yield call(()=>
+  yield call(() =>
     Storage.put(assetKey, asset, {
       contentType: type
     })
   );
+}
+
+export function extractAddedAssets<T>(unSyncedAnime: StringDictionary<UnsyncedAsset<T>>) {
+  return values(unSyncedAnime)
+    .filter(unsyncedAsset => unsyncedAsset.syncType === SyncType.CREATE)
+    .map(unsyncedAsset => unsyncedAsset.asset);
 }
