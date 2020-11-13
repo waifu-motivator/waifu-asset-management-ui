@@ -4,13 +4,14 @@ import {useSelector} from "react-redux";
 import {selectMotivationAssetState} from "../reducers";
 import MotivationAssetView from "./MotivationAssetView";
 import {MotivationAsset} from "../reducers/MotivationAssetReducer";
+import {Typography} from "@material-ui/core";
 
 const AssetUploadView: FC = () => {
   const {checkSum} = useParams<{ checkSum: string }>();
   const {motivationAssetsToUpload} = useSelector(selectMotivationAssetState);
-  const waifuAsset = motivationAssetsToUpload.find(assetToUpload => assetToUpload.checkSum === checkSum);
+  const waifuAsset = motivationAssetsToUpload.find(assetToUpload => assetToUpload.imageChecksum === checkSum);
   const motivationAsset = waifuAsset ? {
-    imageHref: waifuAsset.btoa,
+    imageHref: waifuAsset.imageHref,
     visuals: {
       imageAlt: '',
       path: 'bleh',
@@ -22,7 +23,9 @@ const AssetUploadView: FC = () => {
       characters: [],
     }
   } as MotivationAsset : undefined;
-  return (<MotivationAssetView motivationAsset={motivationAsset}/>)
+  return !motivationAsset ?
+    (<Typography>Not Found</Typography>) :
+    (<MotivationAssetView motivationAsset={motivationAsset}/>)
 };
 
 export default AssetUploadView;

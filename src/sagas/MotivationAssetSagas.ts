@@ -9,11 +9,11 @@ import {RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/Vis
 import {VisualAssetDefinition, VisualAssetState} from "../reducers/VisualAssetReducer";
 import {
   createCurrentMotivationAssetEvent,
-  createdMotivationAsset,
+  createdMotivationAsset, UPDATED_MOTIVATION_ASSET,
   VIEWED_EXISTING_ASSET
 } from "../events/MotivationAssetEvents";
 import {PayloadEvent} from "../events/Event";
-import {MotivationAsset, MotivationAssetState} from "../reducers/MotivationAssetReducer";
+import {LocalMotivationAsset, MotivationAsset, MotivationAssetState} from "../reducers/MotivationAssetReducer";
 import {buildS3ObjectLink} from "../util/AWSTools";
 import {AssetCategory, S3ListObject} from "../types/AssetTypes";
 import {AudibleAssetDefinition, AudibleAssetState} from "../reducers/AudibleAssetReducer";
@@ -146,8 +146,13 @@ function* motivationAssetAssembly(
   }
 }
 
+function* motivationAssetUpdateSaga({payload: motivationAsset}: PayloadEvent<LocalMotivationAsset>) {
+  console.log("Aww snap I need to do stuff!", motivationAsset)
+}
+
 function* motivationAssetSagas() {
-  yield takeEvery(VIEWED_EXISTING_ASSET, motivationAssetViewSaga)
+  yield takeEvery(VIEWED_EXISTING_ASSET, motivationAssetViewSaga);
+  yield takeEvery(UPDATED_MOTIVATION_ASSET, motivationAssetUpdateSaga);
 }
 
 export default function* (): Generator {

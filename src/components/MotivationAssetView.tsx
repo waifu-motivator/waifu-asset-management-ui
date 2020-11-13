@@ -56,7 +56,7 @@ const waifuAssetCategories = [
 ]
 
 interface Props {
-  motivationAsset?: MotivationAsset;
+  motivationAsset: MotivationAsset;
   isEdit?: boolean
 }
 
@@ -91,7 +91,11 @@ const MotivationAssetView: FC<Props> = ({
     },
     enableReinitialize: true,
     onSubmit: (values, {setSubmitting}) => {
-      // dispatch(updatedMotivationAsset())
+      dispatch(updatedMotivationAsset({
+        audioFile: values.soundFile,
+        imageHref: motivationAsset.imageHref,
+        visuals: motivationAsset.visuals
+      }))
       setSubmitting(false);
       goBack();
     }
@@ -104,180 +108,178 @@ const MotivationAssetView: FC<Props> = ({
     value: bestGirl.id,
   })), [waifu]);
 
-  return !motivationAsset ? (<span>Not-Found</span>) : (
-    <div style={{display: 'flex', flexDirection: "column", flexGrow: 1}}>
-      <div style={{display: 'flex', margin: '0 auto', flexDirection: 'row', flexWrap: 'wrap', width: '100%'}}>
-        <div className={classes.waifuContainer}>
-          <Paper className={classes.paper}>
-            <img src={motivationAsset.imageHref} alt={motivationAsset.visuals.imageAlt}/>
-          </Paper>
-          <Typography variant={"subtitle1"} style={{marginTop: '1rem'}}>Image Dimensions: </Typography>
+  return <div style={{display: 'flex', flexDirection: "column", flexGrow: 1}}>
+    <div style={{display: 'flex', margin: '0 auto', flexDirection: 'row', flexWrap: 'wrap', width: '100%'}}>
+      <div className={classes.waifuContainer}>
+        <Paper className={classes.paper}>
+          <img src={motivationAsset.imageHref} alt={motivationAsset.visuals.imageAlt}/>
+        </Paper>
+        <Typography variant={"subtitle1"} style={{marginTop: '1rem'}}>Image Dimensions: </Typography>
+      </div>
+      <div className={classes.waifuAssetDetails}>
+        <div style={{maxWidth: 500, marginRight: '2rem', minWidth: 300}}>
+          <Typography variant={'h5'} paragraph>
+            Asset Details
+          </Typography>
+          <form style={{display: 'flex', flexDirection: 'column'}}>
+            <TextField name='objectKey'
+                       label="Image Path"
+                       value={values.objectKey}
+                       onChange={handleChange}
+                       placeholder={`${AssetCategory.VISUAL}/best_girl.gif`}
+                       variant={"outlined"}
+                       inputProps={{readOnly: isEdit}}
+            />
+            <TextField name='imageAlt'
+                       placeholder={"Best Girl"}
+                       label="Image Alt"
+                       value={values.imageAlt}
+                       onChange={handleChange}
+                       variant={"outlined"}
+                       style={{marginTop: '1rem'}}
+
+            />
+            {
+              values.categories && (
+                <Autocomplete
+                  multiple
+                  id="categories"
+                  options={waifuAssetCategories}
+                  getOptionLabel={(option) => option.title}
+                  defaultValue={(values.categories || []).map(cat => waifuAssetCategories.find(
+                    waifuCat => waifuCat.value === cat
+                  ) || waifuAssetCategories[0])}
+                  style={{marginTop: '1rem'}}
+                  filterSelectedOptions
+                  onChange={(event, newValue) => {
+                    setFieldValue("categories", newValue.map(option => option.value))
+                  }}
+                  getOptionSelected={(option => !!values.categories?.find(cat => cat === option.value))}
+                  renderTags={(tagValue, getTagProps) =>
+                    tagValue.map((option, index) => (
+                      <Chip
+                        key={option.title}
+                        label={option.title}
+                        color={'secondary'}
+                        {...getTagProps({index})}
+                      />
+                    ))
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="Categories"
+                      placeholder="Category"
+                    />
+                  )}
+                />
+              )
+            }
+            {
+              motivationAsset?.visuals && (
+                <Autocomplete
+                  multiple
+                  id="characterIds"
+                  options={listOfWaifu}
+                  getOptionLabel={(option) => option.title}
+                  defaultValue={(values.characterIds || []).map(cat => waifuAssetCategories.find(
+                    waifuCat => waifuCat.value === cat
+                  ) || waifuAssetCategories[0])}
+                  style={{marginTop: '1rem'}}
+                  filterSelectedOptions
+                  onChange={(event, newValue) => {
+                    setFieldValue("characterIds", newValue.map(option => option.value))
+                  }}
+                  getOptionSelected={(option => !!values.characterIds?.find(cat => cat === option.value))}
+                  renderTags={(tagValue, getTagProps) =>
+                    tagValue.map((option, index) => (
+                      <Chip
+                        key={option.title}
+                        label={option.title}
+                        color={'secondary'}
+                        {...getTagProps({index})}
+                      />
+                    ))
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="Character(s)"
+                      placeholder="Waifu"
+                    />
+                  )}
+                />
+              )
+            }
+          </form>
         </div>
-        <div className={classes.waifuAssetDetails}>
-          <div style={{maxWidth: 500, marginRight: '2rem', minWidth: 300}}>
-            <Typography variant={'h5'} paragraph>
-              Asset Details
-            </Typography>
-            <form style={{display: 'flex', flexDirection: 'column'}}>
-              <TextField name='objectKey'
-                         label="Image Path"
-                         value={values.objectKey}
-                         onChange={handleChange}
-                         placeholder={`${AssetCategory.VISUAL}/best_girl.gif`}
-                         variant={"outlined"}
-                         inputProps={{readOnly: isEdit}}
-              />
-              <TextField name='imageAlt'
-                         placeholder={"Best Girl"}
-                         label="Image Alt"
-                         value={values.imageAlt}
-                         onChange={handleChange}
-                         variant={"outlined"}
-                         style={{marginTop: '1rem'}}
-
-              />
-              {
-                values.categories && (
-                  <Autocomplete
-                    multiple
-                    id="categories"
-                    options={waifuAssetCategories}
-                    getOptionLabel={(option) => option.title}
-                    defaultValue={(values.categories || []).map(cat => waifuAssetCategories.find(
-                      waifuCat => waifuCat.value === cat
-                    ) || waifuAssetCategories[0])}
-                    style={{marginTop: '1rem'}}
-                    filterSelectedOptions
-                    onChange={(event, newValue) => {
-                      setFieldValue("categories", newValue.map(option => option.value))
-                    }}
-                    getOptionSelected={(option => !!values.categories?.find(cat => cat === option.value))}
-                    renderTags={(tagValue, getTagProps) =>
-                      tagValue.map((option, index) => (
-                        <Chip
-                          key={option.title}
-                          label={option.title}
-                          color={'secondary'}
-                          {...getTagProps({index})}
-                        />
-                      ))
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        label="Categories"
-                        placeholder="Category"
-                      />
-                    )}
-                  />
-                )
-              }
-              {
-                motivationAsset?.visuals && (
-                  <Autocomplete
-                    multiple
-                    id="characterIds"
-                    options={listOfWaifu}
-                    getOptionLabel={(option) => option.title}
-                    defaultValue={(values.characterIds || []).map(cat => waifuAssetCategories.find(
-                      waifuCat => waifuCat.value === cat
-                    ) || waifuAssetCategories[0])}
-                    style={{marginTop: '1rem'}}
-                    filterSelectedOptions
-                    onChange={(event, newValue) => {
-                      setFieldValue("characterIds", newValue.map(option => option.value))
-                    }}
-                    getOptionSelected={(option => !!values.characterIds?.find(cat => cat === option.value))}
-                    renderTags={(tagValue, getTagProps) =>
-                      tagValue.map((option, index) => (
-                        <Chip
-                          key={option.title}
-                          label={option.title}
-                          color={'secondary'}
-                          {...getTagProps({index})}
-                        />
-                      ))
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        label="Character(s)"
-                        placeholder="Waifu"
-                      />
-                    )}
-                  />
-                )
-              }
-            </form>
+        <div style={{maxWidth: 500}}>
+          <Typography variant={'h5'} paragraph>
+            Related Assets
+          </Typography>
+          <div>
+            <TextField name='title'
+                       label="Notification Title"
+                       placeholder={'You\'re the best!'}
+                       variant={"outlined"}
+                       value={values.title}
+                       onChange={handleChange}
+                       style={{width: '100%'}}
+            />
           </div>
-          <div style={{maxWidth: 500}}>
-            <Typography variant={'h5'} paragraph>
-              Related Assets
-            </Typography>
-            <div>
-              <TextField name='title'
-                         label="Notification Title"
-                         placeholder={'You\'re the best!'}
-                         variant={"outlined"}
-                         value={values.title}
-                         onChange={handleChange}
-                         style={{width: '100%'}}
-              />
-            </div>
-            <div style={{marginTop: '1rem'}}>
-              <InputLabel style={{marginBottom: '0.5rem'}}>Audio</InputLabel>
-              {
-                values.sound && (
-                  <ReactAudioPlayer
-                    src={values.sound}
-                    controls/>
-                )
-              }
+          <div style={{marginTop: '1rem'}}>
+            <InputLabel style={{marginBottom: '0.5rem'}}>Audio</InputLabel>
+            {
+              values.sound && (
+                <ReactAudioPlayer
+                  src={values.sound}
+                  controls/>
+              )
+            }
 
-              <input type={"file"}
-                     onChange={e => {
-                       const soundFile = (e?.target?.files || [])[0];
-                       readFile(soundFile)
-                         .then(({
-                                  binaryStr
-                                }) => {
-                           setFieldValue('soundFile', soundFile);
-                           setFieldValue('sound', `data:audio/${getFileType(soundFile)};base64,${binaryStr}`)
-                         })
-                     }}
-                     accept={"audio/*"}/>
-            </div>
+            <input type={"file"}
+                   onChange={e => {
+                     const soundFile = (e?.target?.files || [])[0];
+                     readFile(soundFile)
+                       .then(({
+                                binaryStr
+                              }) => {
+                         setFieldValue('soundFile', soundFile);
+                         setFieldValue('sound', `data:audio/${getFileType(soundFile)};base64,${binaryStr}`)
+                       })
+                   }}
+                   accept={"audio/*"}/>
           </div>
         </div>
       </div>
-      <Paper style={{
-        bottom: 0,
-        padding: '1.25rem 1rem',
-        width: "100%",
-        position: "fixed",
-        display: "flex",
-        flexDirection: 'row',
-        zIndex: 9001,
-        boxShadow: '0px -2px 4px -1px rgba(0,0,0,0.2), 0px -4px 5px 0px rgba(0,0,0,0.14), 0px -1px 10px 0px rgba(0,0,0,0.12'
-      }}>
-        <Button variant={"contained"}
-                color={"secondary"}
-                disabled={
-                  !(dirty && isEmpty(errors)) ||
-                  isSubmitting
-                }
-                onClick={submitForm}
-                style={{width: 150, marginRight: '2rem'}}>SAVE</Button>
-        <Button variant={"outlined"}
-                onClick={goBack}
-                style={{width: 150, marginRight: '2rem'}}>
-          CANCEL
-        </Button>
-      </Paper>
     </div>
-  );
+    <Paper style={{
+      bottom: 0,
+      padding: '1.25rem 1rem',
+      width: "100%",
+      position: "fixed",
+      display: "flex",
+      flexDirection: 'row',
+      zIndex: 9001,
+      boxShadow: '0px -2px 4px -1px rgba(0,0,0,0.2), 0px -4px 5px 0px rgba(0,0,0,0.14), 0px -1px 10px 0px rgba(0,0,0,0.12'
+    }}>
+      <Button variant={"contained"}
+              color={"secondary"}
+              disabled={
+                !(dirty && isEmpty(errors)) ||
+                isSubmitting
+              }
+              onClick={submitForm}
+              style={{width: 150, marginRight: '2rem'}}>SAVE</Button>
+      <Button variant={"outlined"}
+              onClick={goBack}
+              style={{width: 150, marginRight: '2rem'}}>
+        CANCEL
+      </Button>
+    </Paper>
+  </div>
 };
 
 

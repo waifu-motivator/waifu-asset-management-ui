@@ -3,6 +3,7 @@ import {LocalMotivationAsset, MotivationAsset} from "../reducers/MotivationAsset
 
 export const VIEWED_EXISTING_ASSET = 'VIEWED_EXISTING_ASSET';
 export const CREATED_MOTIVATION_ASSET = 'CREATED_MOTIVATION_ASSET';
+export const UPDATED_MOTIVATION_ASSET = 'UPDATED_MOTIVATION_ASSET';
 export const FOUND_CURRENT_ASSET = 'FOUND_CURRENT_ASSET';
 
 export const createViewedExistingAssetEvent = (
@@ -22,7 +23,7 @@ export const createdMotivationAsset = (
 export const updatedMotivationAsset = (
   motivationAsset: LocalMotivationAsset,
 ): PayloadEvent<LocalMotivationAsset> => ({
-  type: CREATED_MOTIVATION_ASSET,
+  type: UPDATED_MOTIVATION_ASSET,
   payload: motivationAsset,
 });
 

@@ -11,12 +11,6 @@ import {SYNCED_ASSET} from "../events/ApplicationLifecycleEvents";
 import {CREATED_AUDIBLE_ASSET} from "../events/AudibleAssetEvents";
 
 
-export interface LocalMotivationAsset {
-  btoa: string;
-  checkSum: string;
-  file: File;
-}
-
 export interface MotivationAsset {
   imageHref: string;
   visuals: VisualAssetDefinition;
@@ -27,8 +21,10 @@ export interface MotivationAsset {
   title?: string;
 }
 
-export interface LocalMotivationAsset {
+export interface LocalMotivationAsset extends MotivationAsset {
   audioFile?: File
+  imageChecksum?: string;
+  imageFile?: File;
 }
 
 export type MotivationAssetState = {

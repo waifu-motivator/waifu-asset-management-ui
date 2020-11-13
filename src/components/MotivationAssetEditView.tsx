@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectMotivationAssetState} from "../reducers";
 import MotivationAssetView from "./MotivationAssetView";
 import {createViewedExistingAssetEvent} from "../events/MotivationAssetEvents";
+import {Typography} from "@material-ui/core";
 
 const MotivationAssetEditView: FC = () => {
   const {etag} = useParams<{ etag: string }>();
@@ -13,7 +14,10 @@ const MotivationAssetEditView: FC = () => {
   }, [etag]);
 
   const {currentViewedAsset} = useSelector(selectMotivationAssetState);
-  return <MotivationAssetView motivationAsset={currentViewedAsset} isEdit/>
+  return !currentViewedAsset ?
+    (<Typography>Not Found</Typography>) :
+    (<MotivationAssetView motivationAsset={currentViewedAsset} isEdit/>)
+
 };
 
 export default MotivationAssetEditView;

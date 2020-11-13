@@ -72,10 +72,10 @@ const Upload: FC = () => {
         return ([
           ...others,
           {
-            file: next,
-            checkSum: md5(result),
-            btoa: `data:image/${(getFileType(next))};base64,${binaryStr}`,
-          }
+            imageFile: next,
+            imageChecksum: md5(result),
+            imageHref: `data:image/${(getFileType(next))};base64,${binaryStr}`,
+          } as LocalMotivationAsset
         ])
       })), Promise.resolve<LocalMotivationAsset[]>([]))
       .then(readWaifu => {
@@ -119,10 +119,10 @@ const Upload: FC = () => {
         <Grid container spacing={3}>
           {
             motivationAssetsToUpload.map(motivationAssetToUpload => (
-              <Grid item key={motivationAssetToUpload.file.name}>
+              <Grid item key={motivationAssetToUpload.imageFile?.name}>
                 <Link style={{textDecoration: 'none', color: 'inherit'}}
-                      to={`/assets/view/upload/${motivationAssetToUpload.checkSum}`}>
-                  <WaifuDisplay href={motivationAssetToUpload.btoa}/>
+                      to={`/assets/view/upload/${motivationAssetToUpload.imageChecksum}`}>
+                  <WaifuDisplay href={motivationAssetToUpload.imageHref}/>
                 </Link>
               </Grid>
             ))
