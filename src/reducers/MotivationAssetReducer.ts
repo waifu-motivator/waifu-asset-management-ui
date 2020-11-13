@@ -8,6 +8,7 @@ import {omit, values} from 'lodash';
 import {AssetCategory, Assets} from "../types/AssetTypes";
 import {CREATED_ANIME, CREATED_WAIFU, UPDATED_ANIME, UPDATED_WAIFU} from "../events/CharacterSourceEvents";
 import {SYNCED_ASSET} from "../events/ApplicationLifecycleEvents";
+import {CREATED_AUDIBLE_ASSET} from "../events/AudibleAssetEvents";
 
 
 export interface LocalMotivationAsset {
@@ -24,6 +25,10 @@ export interface MotivationAsset {
   audioHref?: string;
   audio?: AudibleAssetDefinition;
   title?: string;
+}
+
+export interface LocalMotivationAsset {
+  audioFile?: File
 }
 
 export type MotivationAssetState = {
@@ -88,6 +93,9 @@ const motivationAssetReducer = (state: MotivationAssetState = INITIAL_MOTIVATION
     case UPDATED_WAIFU:
     case CREATED_WAIFU:
       return addToSync(state, Assets.WAIFU);
+
+    case CREATED_AUDIBLE_ASSET:
+      return addToSync(state, Assets.AUDIBLE);
 
     case SYNCED_ASSET:
       return {

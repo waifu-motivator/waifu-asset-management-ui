@@ -1,5 +1,5 @@
 import {PayloadEvent} from './Event';
-import {MotivationAsset} from "../reducers/MotivationAssetReducer";
+import {LocalMotivationAsset, MotivationAsset} from "../reducers/MotivationAssetReducer";
 
 export const VIEWED_EXISTING_ASSET = 'VIEWED_EXISTING_ASSET';
 export const CREATED_MOTIVATION_ASSET = 'CREATED_MOTIVATION_ASSET';
@@ -20,8 +20,8 @@ export const createdMotivationAsset = (
 });
 
 export const updatedMotivationAsset = (
-  motivationAsset: MotivationAsset,
-): PayloadEvent<MotivationAsset> => ({
+  motivationAsset: LocalMotivationAsset,
+): PayloadEvent<LocalMotivationAsset> => ({
   type: CREATED_MOTIVATION_ASSET,
   payload: motivationAsset,
 });

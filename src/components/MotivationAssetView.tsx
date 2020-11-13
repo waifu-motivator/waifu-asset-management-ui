@@ -91,7 +91,6 @@ const MotivationAssetView: FC<Props> = ({
     },
     enableReinitialize: true,
     onSubmit: (values, {setSubmitting}) => {
-      console.log("this", values.soundFile);
       // dispatch(updatedMotivationAsset())
       setSubmitting(false);
       goBack();
