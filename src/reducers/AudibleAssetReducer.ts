@@ -1,13 +1,13 @@
 import {LOGGED_OFF} from '../events/SecurityEvents';
 import {S3ListObject} from "../types/AssetTypes";
 import {CREATED_AUDIBLE_ASSET, RECEIVED_AUDIBLE_ASSET_LIST, RECEIVED_WAIFU_LIST} from "../events/AudibleAssetEvents";
-import {Anime, WaifuAssetCategory} from "./VisualAssetReducer";
+import {WaifuAssetCategory} from "./VisualAssetReducer";
 import {StringDictionary, SyncType, UnsyncedAsset} from "../types/SupportTypes";
 
 
 export interface AudibleAssetDefinition {
   path: string;
-  categories: WaifuAssetCategory;
+  categories: WaifuAssetCategory[];
   groupId?: string;
 }
 
@@ -48,10 +48,15 @@ const audibleAssetReducer = (state: AudibleAssetState = INITIAL_AUDIBLE_ASSET_ST
           ...state.assets,
           action.payload,
         ],
-        [action.payload.path]: {
-          syncType: SyncType.CREATE,
-          asset: action.payload,
-        } as UnsyncedAsset<Anime>
+        unsyncedAssets: {
+          ...state.unsyncedAssets,
+
+          // todo: what about duplicate file names?
+          [action.payload.path]: {
+            syncType: SyncType.CREATE,
+            asset: action.payload,
+          } as UnsyncedAsset<LocalAudibleAssetDefinition>
+        }
       };
     }
     case LOGGED_OFF:

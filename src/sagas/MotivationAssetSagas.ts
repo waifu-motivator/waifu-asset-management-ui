@@ -5,11 +5,12 @@ import {
   selectTextAssetState,
   selectVisualAssetState
 } from "../reducers";
-import {RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/VisualAssetEvents";
+import {createdVisualAsset, RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/VisualAssetEvents";
 import {VisualAssetDefinition, VisualAssetState} from "../reducers/VisualAssetReducer";
 import {
   createCurrentMotivationAssetEvent,
-  createdMotivationAsset, UPDATED_MOTIVATION_ASSET,
+  createdMotivationAsset,
+  UPDATED_MOTIVATION_ASSET,
   VIEWED_EXISTING_ASSET
 } from "../events/MotivationAssetEvents";
 import {PayloadEvent} from "../events/Event";
@@ -17,9 +18,10 @@ import {LocalMotivationAsset, MotivationAsset, MotivationAssetState} from "../re
 import {buildS3ObjectLink} from "../util/AWSTools";
 import {AssetCategory, S3ListObject} from "../types/AssetTypes";
 import {AudibleAssetDefinition, AudibleAssetState} from "../reducers/AudibleAssetReducer";
-import {RECEIVED_AUDIBLE_ASSET_LIST} from "../events/AudibleAssetEvents";
+import {createdAudibleAsset, RECEIVED_AUDIBLE_ASSET_LIST} from "../events/AudibleAssetEvents";
+import {v4 as uuid} from 'uuid';
 import {TextAssetState, TextualMotivationAsset} from "../reducers/TextAssetReducer";
-import {flatten, isEmpty, values} from 'lodash';
+import {flatten, isEmpty, omit, values} from 'lodash';
 import {StringDictionary} from "../types/SupportTypes";
 import {LOADED_ALL_TEXT_ASSETS} from "../events/TextAssetEvents";
 
@@ -146,8 +148,27 @@ function* motivationAssetAssembly(
   }
 }
 
+function getPath(visualAsset: VisualAssetDefinition) {
+  const directory = visualAsset.path.split("/")[0];
+  return directory.indexOf('.') < 0 && !!directory ? directory : '';
+}
+
 function* motivationAssetUpdateSaga({payload: motivationAsset}: PayloadEvent<LocalMotivationAsset>) {
-  console.log("Aww snap I need to do stuff!", motivationAsset)
+  const visualAsset = motivationAsset.visuals;
+  const groupId = visualAsset.groupId || uuid();
+  if (motivationAsset.audioFile) {
+    yield put(createdAudibleAsset({
+      groupId,
+      file: motivationAsset.audioFile,
+      categories: visualAsset.categories,
+      path: `${getPath(visualAsset)}${motivationAsset.audioFile.name}`
+    }));
+  }
+  yield put(createdVisualAsset({
+    ...omit(visualAsset, 'groupId'),
+    file: motivationAsset.imageFile,
+    ...(!!motivationAsset.audioFile || !!motivationAsset.title ? {groupId} : {}),
+  }))
 }
 
 function* motivationAssetSagas() {

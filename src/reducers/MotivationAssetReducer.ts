@@ -1,5 +1,5 @@
 import {LOGGED_OFF} from '../events/SecurityEvents';
-import {DROPPED_WAIFU} from "../events/VisualAssetEvents";
+import {CREATED_VISUAL_ASSET, DROPPED_WAIFU} from "../events/VisualAssetEvents";
 import {StringDictionary} from "../types/SupportTypes";
 import {VisualAssetDefinition} from "./VisualAssetReducer";
 import {AudibleAssetDefinition} from "./AudibleAssetReducer";
@@ -92,6 +92,9 @@ const motivationAssetReducer = (state: MotivationAssetState = INITIAL_MOTIVATION
 
     case CREATED_AUDIBLE_ASSET:
       return addToSync(state, Assets.AUDIBLE);
+
+    case CREATED_VISUAL_ASSET:
+      return addToSync(state, Assets.VISUAL);
 
     case SYNCED_ASSET:
       return {

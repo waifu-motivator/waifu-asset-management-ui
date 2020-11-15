@@ -21,8 +21,8 @@ export const createReceivedAudibleAssetList = (
 });
 
 export const createdAudibleAsset = (
-  audibleAssets: LocalAudibleAssetDefinition[],
-): PayloadEvent<LocalAudibleAssetDefinition[]> => ({
+  audibleAssets: LocalAudibleAssetDefinition,
+): PayloadEvent<LocalAudibleAssetDefinition> => ({
   type: CREATED_AUDIBLE_ASSET,
   payload: audibleAssets,
 });

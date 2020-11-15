@@ -1,8 +1,7 @@
 import {LOGGED_OFF} from '../events/SecurityEvents';
 import {S3ListObject} from "../types/AssetTypes";
-import {RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/VisualAssetEvents";
-import {HasId} from "../types/SupportTypes";
-
+import {CREATED_VISUAL_ASSET, RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/VisualAssetEvents";
+import {HasId, StringDictionary, SyncType, UnsyncedAsset} from "../types/SupportTypes";
 
 export enum WaifuAssetCategory {
   ACKNOWLEDGEMENT = 'ACKNOWLEDGEMENT',
@@ -46,14 +45,20 @@ export interface VisualAssetDefinition {
   characters?: string[];
 }
 
+export interface LocalVisualAssetDefinition extends VisualAssetDefinition {
+  file?: File;
+}
+
 export type VisualAssetState = {
   assets: VisualAssetDefinition[];
   s3List: S3ListObject[];
+  unsyncedAssets: StringDictionary<UnsyncedAsset<LocalVisualAssetDefinition>>
 };
 
 export const INITIAL_VISUAL_ASSET_STATE: VisualAssetState = {
   assets: [],
   s3List: [],
+  unsyncedAssets: {},
 };
 
 
@@ -70,6 +75,23 @@ const visualAssetReducer = (state: VisualAssetState = INITIAL_VISUAL_ASSET_STATE
         ...state,
         assets: action.payload,
       };
+
+    case CREATED_VISUAL_ASSET: {
+      return {
+        ...state,
+        assets: [
+          ...state.assets,
+          action.payload,
+        ],
+        unsyncedAssets: {
+          ...state.unsyncedAssets,
+          [action.payload.path]: {
+            syncType: SyncType.CREATE,
+            asset: action.payload,
+          } as UnsyncedAsset<LocalVisualAssetDefinition>
+        }
+      };
+    }
     case LOGGED_OFF:
       return INITIAL_VISUAL_ASSET_STATE;
     default:

@@ -24,7 +24,6 @@ const InfiniteScroll: FC<Props> = ({
 
 
   useEffect(() => {
-    console.log('loader', loader);
     const options = {
       root: null,
       rootMargin: "20px",
