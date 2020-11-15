@@ -28,7 +28,7 @@ const SyncChanges: FC = () => {
         position: "fixed",
         bottom: '2rem',
         right: '2rem',
-        zIndex: 9001,
+        zIndex: 90001,
       }} title={'Sync Changes'} onClick={syncChanges}>
         <CloudUpload/>
       </Fab>

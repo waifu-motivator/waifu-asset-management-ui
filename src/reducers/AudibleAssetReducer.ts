@@ -4,7 +4,6 @@ import {CREATED_AUDIBLE_ASSET, RECEIVED_AUDIBLE_ASSET_LIST, RECEIVED_WAIFU_LIST}
 import {WaifuAssetCategory} from "./VisualAssetReducer";
 import {StringDictionary, SyncType, UnsyncedAsset} from "../types/SupportTypes";
 
-
 export interface AudibleAssetDefinition {
   path: string;
   categories: WaifuAssetCategory[];

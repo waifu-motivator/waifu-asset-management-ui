@@ -93,7 +93,7 @@ function* characterSourceSyncSaga() {
 }
 
 function* characterSourceSagas() {
-  yield takeEvery(INITIALIZED_APPLICATION, characterSourceAssetFetchSaga)
+  yield takeEvery(INITIALIZED_APPLICATION, characterSourceAssetFetchSaga);
   yield takeEvery(REQUESTED_SYNC_CHANGES, characterSourceSyncSaga);
 }
 

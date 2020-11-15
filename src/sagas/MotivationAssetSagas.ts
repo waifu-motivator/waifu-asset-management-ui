@@ -87,9 +87,14 @@ function getTextMotivationAssets(textAssets: StringDictionary<TextualMotivationA
 }
 
 function* resolveGroupedAudibleAsset(groupId: string) {
-  const {assets: cachedAssets}: AudibleAssetState = yield select(selectAudibleAssetState)
+  const {assets: cachedAssets, unsyncedAssets}: AudibleAssetState = yield select(selectAudibleAssetState)
   if (cachedAssets.length) {
-    return getAudibleMotivationAssets(cachedAssets, groupId);
+    // todo: viewing unsynced grouped assets
+    const assetFromCache = getAudibleMotivationAssets(cachedAssets, groupId);
+    return assetFromCache || getAudibleMotivationAssets(
+      values(unsyncedAssets)
+        .map(cachedAsset => cachedAsset.asset)
+      , groupId);
   }
 
   const {payload: audibleAssets}: PayloadEvent<AudibleAssetDefinition[]> = yield take(RECEIVED_AUDIBLE_ASSET_LIST);
@@ -100,7 +105,8 @@ function* resolveGroupedAudibleAsset(groupId: string) {
 function* resolveGroupedTextAsset(groupId: string) {
   const {textAssets: cachedAssets}: TextAssetState = yield select(selectTextAssetState);
   if (!isEmpty(cachedAssets)) {
-    return getTextMotivationAssets(cachedAssets, groupId);
+    const titleFromCache = getTextMotivationAssets(cachedAssets, groupId);
+    return titleFromCache; // todo: from unsynced
   }
 
   const {payload: allTextAssets}: PayloadEvent<StringDictionary<TextualMotivationAsset[]>> =

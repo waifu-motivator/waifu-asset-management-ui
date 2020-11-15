@@ -1,10 +1,12 @@
 import {all, call, fork, put, select, takeEvery} from 'redux-saga/effects';
-import {INITIALIZED_APPLICATION} from "../events/ApplicationLifecycleEvents";
-import {selectVisualAssetState} from "../reducers";
+import {INITIALIZED_APPLICATION, REQUESTED_SYNC_CHANGES} from "../events/ApplicationLifecycleEvents";
+import {selectAudibleAssetState, selectVisualAssetState} from "../reducers";
 import {Storage} from "aws-amplify";
-import {AssetCategory, S3ListObject} from "../types/AssetTypes";
+import {AssetCategory, Assets, S3ListObject} from "../types/AssetTypes";
 import {createReceivedAudibleAssetList, createReceivedAudibleS3List} from "../events/AudibleAssetEvents";
-import {AudibleAssetDefinition} from "../reducers/AudibleAssetReducer";
+import {AudibleAssetDefinition, AudibleAssetState, LocalAudibleAssetDefinition} from "../reducers/AudibleAssetReducer";
+import {assetUpload, downloadAsset, extractAddedAssets, syncSaga} from "./CommonSagas";
+import {pick, values} from "lodash";
 
 function* audibleAssetFetchSaga() {
   const {s3List} = yield select(selectVisualAssetState)
@@ -41,8 +43,69 @@ function* assetJsonSaga() {
   }
 }
 
+const AUDIBLE_ASSET_LIST_KEY = "audible/assets.json";
+
+const AUDIBLE_ASSET_WHITELIST = [
+  "groupId",
+  "categories",
+  "path",
+]
+
+
+function* uploadAudibleAssets(assetsToUpload: LocalAudibleAssetDefinition[]) {
+  yield call(() => assetsToUpload.reduce(
+    (accum, assetToUpload) =>
+      accum.then(() =>
+        assetUpload(
+          assetToUpload.path,
+          assetToUpload.file,
+          assetToUpload.file.type
+        )),
+    Promise.resolve()
+    )
+  );
+}
+
+function* attemptToSyncAudibleAssets() {
+  try {
+    const freshCharacterList: AudibleAssetDefinition[] | undefined = yield call(getAudibleAssetDefinitions);
+    const definedCharacterList = freshCharacterList || [];
+    const {unsyncedAssets}: AudibleAssetState = yield select(selectAudibleAssetState);
+    const addedAudibleAssets = extractAddedAssets<LocalAudibleAssetDefinition>(unsyncedAssets);
+    // todo: this
+    // yield call(uploadAudibleAssets, addedAudibleAssets)
+
+    const newAudibleAssets = values(
+      definedCharacterList.concat(addedAudibleAssets)
+        .map(asset => pick(asset, AUDIBLE_ASSET_WHITELIST) as AudibleAssetDefinition)
+        .reduce((accum, asset) => ({
+          ...accum,
+          [asset.path]: asset
+        }), {}),
+    );
+    // yield call(uploadAsset, AUDIBLE_ASSET_LIST_KEY, JSON.stringify(newAudibleAssets), ContentType.JSON);
+    // yield put(syncedChanges(Assets.AUDIBLE));
+  } catch (e) {
+    console.warn("unable to sync waifu for raisins", e)
+  }
+}
+
+function* getAudibleAssetDefinitions() {
+  try {
+    const audibleAssetDefinitions: AudibleAssetDefinition[] = yield call(() => downloadAsset(AUDIBLE_ASSET_LIST_KEY));
+    return audibleAssetDefinitions;
+  } catch (e) {
+    console.warn("Unable to get to get audible assets 囧", e)
+  }
+}
+
+function* audibleAssetSyncSaga() {
+  yield fork(syncSaga, Assets.AUDIBLE, attemptToSyncAudibleAssets);
+}
+
 function* audibleAssetSagas() {
-  yield takeEvery(INITIALIZED_APPLICATION, audibleAssetFetchSaga)
+  yield takeEvery(INITIALIZED_APPLICATION, audibleAssetFetchSaga);
+  yield takeEvery(REQUESTED_SYNC_CHANGES, audibleAssetSyncSaga);
 }
 
 export default function* (): Generator {

@@ -24,11 +24,14 @@ export enum ContentType {
   JSON = "application/json"
 }
 
+export const assetUpload = <T>(assetKey: string, asset: T, type: ContentType | string): Promise<any> =>
+  Storage.put(assetKey, asset, {
+    contentType: type
+  });
+
 export function* uploadAsset<T>(assetKey: string, asset: T, type: ContentType) {
   yield call(() =>
-    Storage.put(assetKey, asset, {
-      contentType: type
-    })
+    assetUpload(assetKey, asset, type)
   );
 }
 
