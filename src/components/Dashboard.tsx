@@ -1,6 +1,6 @@
 import React, {FC, useState} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
-import {Box, Container, Grid, Link as MUILink, Paper, Typography} from "@material-ui/core";
+import {Box, Container, Grid, Link as MUILink, Typography} from "@material-ui/core";
 import {useSelector} from "react-redux";
 import {selectVisualAssetState} from "../reducers";
 import InfiniteScroll from "./util/InfiniteScroll";
@@ -47,7 +47,7 @@ const Dashboard: FC = () => {
   const viewedS3Items = s3List.slice(0, assetIndex)
   const hasMore = s3List.length > viewedS3Items.length;
   const fetchData = () => {
-    if(hasMore){
+    if (hasMore) {
       setAssetIndex(prevState => {
         const nextIndex = prevState + waifuPerPage;
         return nextIndex > s3List.length ? s3List.length : nextIndex;
@@ -59,17 +59,17 @@ const Dashboard: FC = () => {
   return !s3List.length ? (<></>) : (
     <Container className={classes.container}>
       <InfiniteScroll
-                      loadMore={fetchData}
-                      hasMore={hasMore}
-                      loadMoreDisplay={<h3>Hang tight Senpai...</h3>}
+        loadMore={fetchData}
+        hasMore={hasMore}
+        loadMoreDisplay={<h3>Hang tight Senpai...</h3>}
       >
         <Grid container spacing={3}>
 
           {
             viewedS3Items.map(s3Item => (
-              <Grid item key={s3Item.key}>
+              <Grid item key={s3Item.key} xs={6}>
                 <Link style={{textDecoration: 'none', color: 'inherit'}} to={`/assets/view/${s3Item.eTag}`}>
-                  <WaifuDisplay href={buildS3ObjectLink(s3Item.key)} />
+                  <WaifuDisplay href={buildS3ObjectLink(s3Item.key)}/>
                 </Link>
               </Grid>
             ))

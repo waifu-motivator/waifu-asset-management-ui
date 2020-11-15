@@ -119,7 +119,7 @@ const Upload: FC = () => {
         <Grid container spacing={3}>
           {
             motivationAssetsToUpload.map(motivationAssetToUpload => (
-              <Grid item key={motivationAssetToUpload.imageFile?.name}>
+              <Grid item key={motivationAssetToUpload.imageFile?.name} xs={6}>
                 <Link style={{textDecoration: 'none', color: 'inherit'}}
                       to={`/assets/view/upload/${motivationAssetToUpload.imageChecksum}`}>
                   <WaifuDisplay href={motivationAssetToUpload.imageHref}/>

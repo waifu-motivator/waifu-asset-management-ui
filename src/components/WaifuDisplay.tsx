@@ -26,7 +26,8 @@ const WaifuDisplay: FC<Props> = ({
     <Paper className={classes.paper}>
       <img src={href}
            style={{
-             borderRadius: '0.5rem'
+             borderRadius: '0.5rem',
+             objectFit: 'contain'
            }}
            alt={href}/>
     </Paper>
