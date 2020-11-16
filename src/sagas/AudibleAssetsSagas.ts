@@ -1,11 +1,11 @@
 import {all, call, fork, put, select, takeEvery} from 'redux-saga/effects';
-import {INITIALIZED_APPLICATION, REQUESTED_SYNC_CHANGES} from "../events/ApplicationLifecycleEvents";
+import {INITIALIZED_APPLICATION, REQUESTED_SYNC_CHANGES, syncedChanges} from "../events/ApplicationLifecycleEvents";
 import {selectAudibleAssetState, selectVisualAssetState} from "../reducers";
 import {Storage} from "aws-amplify";
 import {AssetCategory, Assets, S3ListObject} from "../types/AssetTypes";
 import {createReceivedAudibleAssetList, createReceivedAudibleS3List} from "../events/AudibleAssetEvents";
 import {AudibleAssetDefinition, AudibleAssetState, LocalAudibleAssetDefinition} from "../reducers/AudibleAssetReducer";
-import {assetUpload, downloadAsset, extractAddedAssets, syncSaga} from "./CommonSagas";
+import {assetUpload, ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAsset} from "./CommonSagas";
 import {pick, values} from "lodash";
 
 function* audibleAssetFetchSaga() {
@@ -72,8 +72,7 @@ function* attemptToSyncAudibleAssets() {
     const definedCharacterList = freshCharacterList || [];
     const {unsyncedAssets}: AudibleAssetState = yield select(selectAudibleAssetState);
     const addedAudibleAssets = extractAddedAssets<LocalAudibleAssetDefinition>(unsyncedAssets);
-    // todo: this
-    // yield call(uploadAudibleAssets, addedAudibleAssets)
+    yield call(uploadAudibleAssets, addedAudibleAssets)
 
     const newAudibleAssets = values(
       definedCharacterList.concat(addedAudibleAssets)
@@ -83,8 +82,8 @@ function* attemptToSyncAudibleAssets() {
           [asset.path]: asset
         }), {}),
     );
-    // yield call(uploadAsset, AUDIBLE_ASSET_LIST_KEY, JSON.stringify(newAudibleAssets), ContentType.JSON);
-    // yield put(syncedChanges(Assets.AUDIBLE));
+    yield call(uploadAsset, AUDIBLE_ASSET_LIST_KEY, JSON.stringify(newAudibleAssets), ContentType.JSON);
+    yield put(syncedChanges(Assets.AUDIBLE));
   } catch (e) {
     console.warn("unable to sync waifu for raisins", e)
   }
