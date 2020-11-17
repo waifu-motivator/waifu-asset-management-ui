@@ -17,7 +17,7 @@ function* loadTextAssets(allTextAssets: TextAssetDefinition[]) {
     const textAssets: StringDictionary<TextualMotivationAsset[]> = yield call(() =>
       allTextAssets.reduce((accum, textAsset) =>
           accum.then(accumTextAssets =>
-            downloadAsset(`${AssetCategory.TEXT}/${textAsset.path}`)
+            downloadAsset<TextualMotivationAsset[]>(`${AssetCategory.TEXT}/${textAsset.path}`)
               .then((textAssets: TextualMotivationAsset[]) => ({
                 ...accumTextAssets,
                 [textAsset.categories[0]]: textAssets,

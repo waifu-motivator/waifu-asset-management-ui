@@ -6,7 +6,7 @@ import {AssetCategory, Assets, S3ListObject} from "../types/AssetTypes";
 import {createReceivedAudibleAssetList, createReceivedAudibleS3List} from "../events/AudibleAssetEvents";
 import {AudibleAssetDefinition, AudibleAssetState, LocalAudibleAssetDefinition} from "../reducers/AudibleAssetReducer";
 import {assetUpload, ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAsset} from "./CommonSagas";
-import {pick, values} from "lodash";
+import {omit, values} from "lodash";
 
 function* audibleAssetFetchSaga() {
   const {s3List} = yield select(selectVisualAssetState)
@@ -43,21 +43,18 @@ function* assetJsonSaga() {
   }
 }
 
-const AUDIBLE_ASSET_LIST_KEY = "audible/assets.json";
+const AUDIBLE_ASSET_LIST_KEY = `${AssetCategory.AUDIBLE}/assets.json`;
 
-const AUDIBLE_ASSET_WHITELIST = [
-  "groupId",
-  "categories",
-  "path",
+const AUDIBLE_ASSET_BLACKLIST = [
+  "file"
 ]
-
 
 function* uploadAudibleAssets(assetsToUpload: LocalAudibleAssetDefinition[]) {
   yield call(() => assetsToUpload.reduce(
     (accum, assetToUpload) =>
       accum.then(() =>
         assetUpload(
-          assetToUpload.path,
+          `${AssetCategory.AUDIBLE}/${assetToUpload.path}`,
           assetToUpload.file,
           assetToUpload.file.type
         )),
@@ -68,30 +65,32 @@ function* uploadAudibleAssets(assetsToUpload: LocalAudibleAssetDefinition[]) {
 
 function* attemptToSyncAudibleAssets() {
   try {
-    const freshCharacterList: AudibleAssetDefinition[] | undefined = yield call(getAudibleAssetDefinitions);
-    const definedCharacterList = freshCharacterList || [];
+    const freshAudibleList: AudibleAssetDefinition[] | undefined = yield call(getAudibleAssetDefinitions);
+    const definedAudibleList = freshAudibleList || [];
     const {unsyncedAssets}: AudibleAssetState = yield select(selectAudibleAssetState);
     const addedAudibleAssets = extractAddedAssets<LocalAudibleAssetDefinition>(unsyncedAssets);
-    yield call(uploadAudibleAssets, addedAudibleAssets)
+    yield call(uploadAudibleAssets, addedAudibleAssets);
 
     const newAudibleAssets = values(
-      definedCharacterList.concat(addedAudibleAssets)
-        .map(asset => pick(asset, AUDIBLE_ASSET_WHITELIST) as AudibleAssetDefinition)
+      definedAudibleList.concat(addedAudibleAssets)
+        .map(asset => omit(asset, AUDIBLE_ASSET_BLACKLIST) as AudibleAssetDefinition)
         .reduce((accum, asset) => ({
           ...accum,
           [asset.path]: asset
         }), {}),
     );
-    yield call(uploadAsset, AUDIBLE_ASSET_LIST_KEY, JSON.stringify(newAudibleAssets), ContentType.JSON);
-    yield put(syncedChanges(Assets.AUDIBLE));
+    console.log('audible', newAudibleAssets)
+    // yield call(uploadAsset, AUDIBLE_ASSET_LIST_KEY, JSON.stringify(newAudibleAssets), ContentType.JSON);
+    // yield put(syncedChanges(Assets.AUDIBLE));
   } catch (e) {
-    console.warn("unable to sync waifu for raisins", e)
+    console.warn("unable to sync audio for raisins", e)
   }
 }
 
 function* getAudibleAssetDefinitions() {
   try {
-    const audibleAssetDefinitions: AudibleAssetDefinition[] = yield call(() => downloadAsset(AUDIBLE_ASSET_LIST_KEY));
+    const audibleAssetDefinitions: AudibleAssetDefinition[] = yield call(() =>
+      downloadAsset(AUDIBLE_ASSET_LIST_KEY));
     return audibleAssetDefinitions;
   } catch (e) {
     console.warn("Unable to get to get audible assets 囧", e)

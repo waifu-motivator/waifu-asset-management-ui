@@ -19,6 +19,7 @@ const SyncChanges: FC = () => {
   };
   const {unsyncedAssets} = useSelector(selectMotivationAssetState)
   const needsSync = useMemo(() => !isEmpty(unsyncedAssets), [unsyncedAssets]);
+  // todo: uploading and upload complete
   return (
     <Zoom in={needsSync}
           timeout={transitionDuration}

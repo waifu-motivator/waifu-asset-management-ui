@@ -145,6 +145,7 @@ function* motivationAssetAssembly(
     const motivationAsset: MotivationAsset = {
       ...groupedAssets,
       visuals: visualAssetDefinition,
+      // todo: image dimensions
       imageHref: buildS3ObjectLink(assetKey),
     };
     yield put(createdMotivationAsset(motivationAsset));
