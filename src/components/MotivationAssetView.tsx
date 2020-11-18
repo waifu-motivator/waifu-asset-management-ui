@@ -11,7 +11,7 @@ import {isEmpty, values as getValues} from 'lodash';
 import {useHistory} from 'react-router-dom';
 import {selectCharacterSourceState} from "../reducers";
 import {getFileType, readFile} from "./Upload";
-import {AssetCategory} from "../types/AssetTypes";
+import {AssetGroupKeys} from "../types/AssetTypes";
 import {updatedMotivationAsset} from "../events/MotivationAssetEvents";
 
 const useStyles = makeStyles((theme) => ({
@@ -126,7 +126,7 @@ const MotivationAssetView: FC<Props> = ({
                        label="Image Path"
                        value={values.objectKey}
                        onChange={handleChange}
-                       placeholder={`${AssetCategory.VISUAL}/best_girl.gif`}
+                       placeholder={`${AssetGroupKeys.VISUAL}/best_girl.gif`}
                        variant={"outlined"}
                        inputProps={{readOnly: isEdit}}
             />

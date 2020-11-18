@@ -25,7 +25,6 @@ export enum ContentType {
   JSON = "application/json"
 }
 
-// todo: make objects actually public
 export const assetUpload = <T>(assetKey: string, asset: T, type: ContentType | string): Promise<any> =>
   Storage.put(assetKey, asset, {
     contentType: type,

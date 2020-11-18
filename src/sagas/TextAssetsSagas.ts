@@ -2,7 +2,7 @@ import {all, call, fork, put, select, takeEvery} from 'redux-saga/effects';
 import {INITIALIZED_APPLICATION} from "../events/ApplicationLifecycleEvents";
 import {selectVisualAssetState} from "../reducers";
 import {Storage} from "aws-amplify";
-import {AssetCategory, S3ListObject} from "../types/AssetTypes";
+import {AssetGroupKeys, S3ListObject} from "../types/AssetTypes";
 import {TextAssetDefinition, TextualMotivationAsset} from "../reducers/TextAssetReducer";
 import {
   createLoadedAllTextAssets,
@@ -17,7 +17,7 @@ function* loadTextAssets(allTextAssets: TextAssetDefinition[]) {
     const textAssets: StringDictionary<TextualMotivationAsset[]> = yield call(() =>
       allTextAssets.reduce((accum, textAsset) =>
           accum.then(accumTextAssets =>
-            downloadAsset<TextualMotivationAsset[]>(`${AssetCategory.TEXT}/${textAsset.path}`)
+            downloadAsset<TextualMotivationAsset[]>(`${AssetGroupKeys.TEXT}/${textAsset.path}`)
               .then((textAssets: TextualMotivationAsset[]) => ({
                 ...accumTextAssets,
                 [textAsset.categories[0]]: textAssets,
@@ -39,7 +39,7 @@ function* textAssetFetchSaga() {
 
   try {
     const allTextAssets: S3ListObject[] = yield call(() =>
-      Storage.list(`${AssetCategory.TEXT}/`)
+      Storage.list(`${AssetGroupKeys.TEXT}/`)
         .then((result: S3ListObject[]) => result.filter(ob =>
           !(ob.key.endsWith("checksum.txt") || ob.key.endsWith("assets.json"))
         ))
@@ -56,7 +56,7 @@ function* textAssetFetchSaga() {
 function* assetJsonSaga() {
   try {
     const assetJson: TextAssetDefinition[] = yield call(() =>
-      downloadAsset(`${AssetCategory.TEXT}/assets.json`)
+      downloadAsset(`${AssetGroupKeys.TEXT}/assets.json`)
     );
     yield fork(loadTextAssets, assetJson);
     yield put(createReceivedTextAssetList(assetJson));

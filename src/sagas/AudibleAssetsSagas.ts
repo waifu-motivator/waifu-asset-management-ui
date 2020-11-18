@@ -1,11 +1,11 @@
 import {all, call, fork, put, select, takeEvery} from 'redux-saga/effects';
-import {INITIALIZED_APPLICATION, REQUESTED_SYNC_CHANGES, syncedChanges} from "../events/ApplicationLifecycleEvents";
+import {INITIALIZED_APPLICATION, REQUESTED_SYNC_CHANGES} from "../events/ApplicationLifecycleEvents";
 import {selectAudibleAssetState, selectVisualAssetState} from "../reducers";
 import {Storage} from "aws-amplify";
-import {AssetCategory, Assets, S3ListObject} from "../types/AssetTypes";
+import {AssetGroupKeys, Assets, S3ListObject} from "../types/AssetTypes";
 import {createReceivedAudibleAssetList, createReceivedAudibleS3List} from "../events/AudibleAssetEvents";
 import {AudibleAssetDefinition, AudibleAssetState, LocalAudibleAssetDefinition} from "../reducers/AudibleAssetReducer";
-import {assetUpload, ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAsset} from "./CommonSagas";
+import {assetUpload, downloadAsset, extractAddedAssets, syncSaga} from "./CommonSagas";
 import {omit, values} from "lodash";
 
 function* audibleAssetFetchSaga() {
@@ -16,7 +16,7 @@ function* audibleAssetFetchSaga() {
 
   try {
     const allVisualAssets: S3ListObject[] = yield call(() =>
-      Storage.list(`${AssetCategory.AUDIBLE}/`)
+      Storage.list(`${AssetGroupKeys.AUDIBLE}/`)
         .then((result: S3ListObject[]) => result.filter(ob =>
           !(ob.key.endsWith("checksum.txt") || ob.key.endsWith(".json"))
         ))
@@ -33,7 +33,7 @@ function* audibleAssetFetchSaga() {
 function* assetJsonSaga() {
   try {
     const assetJson: AudibleAssetDefinition[] = yield call(() =>
-      Storage.get(`${AssetCategory.AUDIBLE}/assets.json`, {download: true})
+      Storage.get(`${AssetGroupKeys.AUDIBLE}/assets.json`, {download: true})
         .then((result: any) => result.Body.text())
         .then(JSON.parse)
     );
@@ -43,7 +43,7 @@ function* assetJsonSaga() {
   }
 }
 
-const AUDIBLE_ASSET_LIST_KEY = `${AssetCategory.AUDIBLE}/assets.json`;
+const AUDIBLE_ASSET_LIST_KEY = `${AssetGroupKeys.AUDIBLE}/assets.json`;
 
 const AUDIBLE_ASSET_BLACKLIST = [
   "file"
@@ -54,7 +54,7 @@ function* uploadAudibleAssets(assetsToUpload: LocalAudibleAssetDefinition[]) {
     (accum, assetToUpload) =>
       accum.then(() =>
         assetUpload(
-          `${AssetCategory.AUDIBLE}/${assetToUpload.path}`,
+          `${AssetGroupKeys.AUDIBLE}/${assetToUpload.path}`,
           assetToUpload.file,
           assetToUpload.file.type
         )),

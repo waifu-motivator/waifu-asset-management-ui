@@ -5,7 +5,7 @@ export interface S3ListObject {
   size: number
 }
 
-export enum AssetCategory {
+export enum AssetGroupKeys {
   VISUAL = 'visuals',
   AUDIBLE = 'audible',
   TEXT = 'text',

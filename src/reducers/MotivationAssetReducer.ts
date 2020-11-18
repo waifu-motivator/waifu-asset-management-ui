@@ -5,7 +5,7 @@ import {VisualAssetDefinition} from "./VisualAssetReducer";
 import {AudibleAssetDefinition} from "./AudibleAssetReducer";
 import {CREATED_MOTIVATION_ASSET, FOUND_CURRENT_ASSET} from "../events/MotivationAssetEvents";
 import {omit, values} from 'lodash';
-import {AssetCategory, Assets} from "../types/AssetTypes";
+import {AssetGroupKeys, Assets} from "../types/AssetTypes";
 import {CREATED_ANIME, CREATED_WAIFU, UPDATED_ANIME, UPDATED_WAIFU} from "../events/CharacterSourceEvents";
 import {SYNCED_ASSET} from "../events/ApplicationLifecycleEvents";
 import {CREATED_AUDIBLE_ASSET} from "../events/AudibleAssetEvents";
@@ -72,7 +72,7 @@ const motivationAssetReducer = (state: MotivationAssetState = INITIAL_MOTIVATION
         ...state,
         assets: {
           ...state.assets,
-          [`${AssetCategory.VISUAL}/${motivationAsset.visuals.path}`]: motivationAsset,
+          [`${AssetGroupKeys.VISUAL}/${motivationAsset.visuals.path}`]: motivationAsset,
         }
       }
     }

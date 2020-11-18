@@ -2,7 +2,7 @@ import {all, call, fork, put, select, takeEvery} from 'redux-saga/effects';
 import {INITIALIZED_APPLICATION, REQUESTED_SYNC_CHANGES} from "../events/ApplicationLifecycleEvents";
 import {selectVisualAssetState} from "../reducers";
 import {Storage} from "aws-amplify";
-import {AssetCategory, Assets, S3ListObject} from "../types/AssetTypes";
+import {AssetGroupKeys, Assets, S3ListObject} from "../types/AssetTypes";
 import {createReceivedVisualAssetList, createReceivedVisualS3List} from "../events/VisualAssetEvents";
 import {LocalVisualAssetDefinition, VisualAssetDefinition, VisualAssetState} from "../reducers/VisualAssetReducer";
 import {assetUpload, downloadAsset, extractAddedAssets, syncSaga} from "./CommonSagas";
@@ -16,7 +16,7 @@ function* visualAssetFetchSaga() {
 
   try {
     const allVisualAssets: S3ListObject[] = yield call(() =>
-      Storage.list(`${AssetCategory.VISUAL}/`)
+      Storage.list(`${AssetGroupKeys.VISUAL}/`)
         .then((result: S3ListObject[]) => result.filter(ob =>
           !(ob.key.endsWith("checksum.txt") || ob.key.endsWith(".json"))
         ))
@@ -33,7 +33,7 @@ function* visualAssetFetchSaga() {
 function* assetJsonSaga() {
   try {
     const assetJson: VisualAssetDefinition[] = yield call(() =>
-      Storage.get(`${AssetCategory.VISUAL}/assets.json`, {download: true})
+      Storage.get(`${AssetGroupKeys.VISUAL}/assets.json`, {download: true})
         .then((result: any) => result.Body.text())
         .then(JSON.parse)
     );
@@ -43,7 +43,7 @@ function* assetJsonSaga() {
   }
 }
 
-const VISUAL_ASSET_LIST_KEY = `${AssetCategory.VISUAL}/assets.json`;
+const VISUAL_ASSET_LIST_KEY = `${AssetGroupKeys.VISUAL}/assets.json`;
 
 const VISUAL_ASSET_BLACKLIST = [
   "file"
@@ -65,7 +65,7 @@ function* uploadVisualAssets(assetsToUpload: LocalVisualAssetDefinition[]) {
       (accum, assetToUpload) =>
         accum.then(() =>
           assetUpload(
-            `${AssetCategory.VISUAL}/${assetToUpload.path}`,
+            `${AssetGroupKeys.VISUAL}/${assetToUpload.path}`,
             assetToUpload.file,
             assetToUpload.file?.type || ''
           )),

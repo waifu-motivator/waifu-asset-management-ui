@@ -16,7 +16,7 @@ import {
 import {PayloadEvent} from "../events/Event";
 import {LocalMotivationAsset, MotivationAsset, MotivationAssetState} from "../reducers/MotivationAssetReducer";
 import {buildS3ObjectLink} from "../util/AWSTools";
-import {AssetCategory, S3ListObject} from "../types/AssetTypes";
+import {AssetGroupKeys, S3ListObject} from "../types/AssetTypes";
 import {AudibleAssetDefinition, AudibleAssetState} from "../reducers/AudibleAssetReducer";
 import {createdAudibleAsset, RECEIVED_AUDIBLE_ASSET_LIST} from "../events/AudibleAssetEvents";
 import {v4 as uuid} from 'uuid';
@@ -67,7 +67,7 @@ function getAudibleMotivationAssets(audibleAssets: AudibleAssetDefinition[], gro
   if (relevantAudibleAsset) {
     return {
       audio: relevantAudibleAsset,
-      audioHref: buildS3ObjectLink(`${AssetCategory.AUDIBLE}/${relevantAudibleAsset.path}`)
+      audioHref: buildS3ObjectLink(`${AssetGroupKeys.AUDIBLE}/${relevantAudibleAsset.path}`)
     }
   }
 
@@ -138,7 +138,7 @@ function* motivationAssetAssembly(
   assetKey: string,
   assets: VisualAssetDefinition[],
 ) {
-  const trimmedKey = assetKey.substring(`${AssetCategory.VISUAL}/`.length);
+  const trimmedKey = assetKey.substring(`${AssetGroupKeys.VISUAL}/`.length);
   const visualAssetDefinition = assets.find(assetDef => assetDef.path === trimmedKey);
   if (visualAssetDefinition) {
     const groupedAssets = yield call(yieldGroupedAssets, visualAssetDefinition);
@@ -148,10 +148,10 @@ function* motivationAssetAssembly(
       // todo: image dimensions
       imageHref: buildS3ObjectLink(assetKey),
     };
+
+    // todo: checksum generation
     yield put(createdMotivationAsset(motivationAsset));
     return motivationAsset;
-  } else {
-    // todo: what do?
   }
 }
 
