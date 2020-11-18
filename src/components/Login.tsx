@@ -41,33 +41,37 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   onLogin: () => void;
+  loading: boolean;
 }
 
-// todo: loading while auth grant
-const Login: FC<Props> = ({onLogin}) => {
+const Login: FC<Props> = ({onLogin, loading}) => {
   const classes = useStyles();
+
+  // todo: loading indicator.
 
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline/>
       <Grid item xs={false} sm={4} md={7} className={classes.image}/>
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square style={{
-        display: "flex"
-      }}>
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon/>
-          </Avatar>
-          <Typography component="h1" variant="h5" paragraph>
-            Waifu Asset Management
-          </Typography>
-          <form className={classes.form} noValidate>
-            <GoogleButton onClick={onLogin} style={{
-              marginTop: '2rem'
-            }}/>
-          </form>
-        </div>
-      </Grid>
+      {
+        !loading && (<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square style={{
+          display: "flex"
+        }}>
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon/>
+            </Avatar>
+            <Typography component="h1" variant="h5" paragraph>
+              Waifu Asset Management
+            </Typography>
+            <form className={classes.form} noValidate>
+              <GoogleButton onClick={onLogin} style={{
+                marginTop: '2rem'
+              }}/>
+            </form>
+          </div>
+        </Grid>)
+      }
     </Grid>
   );
 };

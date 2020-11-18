@@ -4,7 +4,10 @@ import Login from "./Login";
 
 export const withAuthenticator = (Component: FC): FC => {
   const Authenticator = () => {
-    const [user, setUser] = useState<any>();
+    const [user, setUser] = useState<any>(undefined);
+    const getUser = (): any => Auth.currentAuthenticatedUser()
+      .then(userData => userData)
+      .catch(() => null);
 
     useEffect(() => {
       Hub.listen('auth', ({payload: {event, data}}) => {
@@ -26,12 +29,6 @@ export const withAuthenticator = (Component: FC): FC => {
         .then((userData: any) => setUser(userData));
     }, []);
 
-    function getUser(): any {
-      return Auth.currentAuthenticatedUser()
-        .then(userData => userData)
-        .catch(() => console.log('Not signed in'));
-    }
-
     // @ts-ignore
     const login = () => Auth.federatedSignIn({provider: 'Google'});
     return (
@@ -39,7 +36,8 @@ export const withAuthenticator = (Component: FC): FC => {
         {user ? (
           <Component/>
         ) : (
-          <Login onLogin={login}/>
+          <Login onLogin={login}
+                 loading={user === undefined}/>
         )}
       </div>
     );
