@@ -30,8 +30,8 @@ export const droppedWaifu = (
 });
 
 export const createdVisualAsset = (
-  audibleAssets: LocalVisualAssetDefinition,
+  visualAsset: LocalVisualAssetDefinition,
 ): PayloadEvent<LocalVisualAssetDefinition> => ({
   type: CREATED_VISUAL_ASSET,
-  payload: audibleAssets,
+  payload: visualAsset,
 });

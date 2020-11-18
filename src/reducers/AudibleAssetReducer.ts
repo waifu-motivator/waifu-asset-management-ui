@@ -1,17 +1,11 @@
 import {LOGGED_OFF} from '../events/SecurityEvents';
-import {S3ListObject} from "../types/AssetTypes";
+import {AssetDefinition, LocalAsset, S3ListObject} from "../types/AssetTypes";
 import {CREATED_AUDIBLE_ASSET, RECEIVED_AUDIBLE_ASSET_LIST, RECEIVED_WAIFU_LIST} from "../events/AudibleAssetEvents";
-import {WaifuAssetCategory} from "./VisualAssetReducer";
 import {StringDictionary, SyncType, UnsyncedAsset} from "../types/SupportTypes";
 
-export interface AudibleAssetDefinition {
-  path: string;
-  categories: WaifuAssetCategory[];
-  groupId?: string;
-}
+export type AudibleAssetDefinition = AssetDefinition
 
-export interface LocalAudibleAssetDefinition extends AudibleAssetDefinition {
-  file: File
+export interface LocalAudibleAssetDefinition extends AudibleAssetDefinition, LocalAsset {
 }
 
 export type AudibleAssetState = {

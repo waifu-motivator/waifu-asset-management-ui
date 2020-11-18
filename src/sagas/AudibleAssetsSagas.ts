@@ -1,11 +1,11 @@
 import {all, call, fork, put, select, takeEvery} from 'redux-saga/effects';
-import {INITIALIZED_APPLICATION, REQUESTED_SYNC_CHANGES} from "../events/ApplicationLifecycleEvents";
+import {INITIALIZED_APPLICATION, REQUESTED_SYNC_CHANGES, syncedChanges} from "../events/ApplicationLifecycleEvents";
 import {selectAudibleAssetState, selectVisualAssetState} from "../reducers";
 import {Storage} from "aws-amplify";
 import {AssetGroupKeys, Assets, S3ListObject} from "../types/AssetTypes";
 import {createReceivedAudibleAssetList, createReceivedAudibleS3List} from "../events/AudibleAssetEvents";
 import {AudibleAssetDefinition, AudibleAssetState, LocalAudibleAssetDefinition} from "../reducers/AudibleAssetReducer";
-import {assetUpload, downloadAsset, extractAddedAssets, syncSaga} from "./CommonSagas";
+import {ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAsset, uploadAssetsSaga} from "./CommonSagas";
 import {omit, values} from "lodash";
 
 function* audibleAssetFetchSaga() {
@@ -49,27 +49,14 @@ const AUDIBLE_ASSET_BLACKLIST = [
   "file"
 ]
 
-function* uploadAudibleAssets(assetsToUpload: LocalAudibleAssetDefinition[]) {
-  yield call(() => assetsToUpload.reduce(
-    (accum, assetToUpload) =>
-      accum.then(() =>
-        assetUpload(
-          `${AssetGroupKeys.AUDIBLE}/${assetToUpload.path}`,
-          assetToUpload.file,
-          assetToUpload.file.type
-        )),
-    Promise.resolve()
-    )
-  );
-}
-
 function* attemptToSyncAudibleAssets() {
   try {
     const freshAudibleList: AudibleAssetDefinition[] | undefined = yield call(getAudibleAssetDefinitions);
     const definedAudibleList = freshAudibleList || [];
     const {unsyncedAssets}: AudibleAssetState = yield select(selectAudibleAssetState);
     const addedAudibleAssets = extractAddedAssets<LocalAudibleAssetDefinition>(unsyncedAssets);
-    yield call(uploadAudibleAssets, addedAudibleAssets);
+
+    yield call(uploadAssetsSaga, AssetGroupKeys.AUDIBLE, addedAudibleAssets);
 
     const newAudibleAssets = values(
       definedAudibleList.concat(addedAudibleAssets)
@@ -79,9 +66,8 @@ function* attemptToSyncAudibleAssets() {
           [asset.path]: asset
         }), {}),
     );
-    console.log('audible', newAudibleAssets)
-    // yield call(uploadAsset, AUDIBLE_ASSET_LIST_KEY, JSON.stringify(newAudibleAssets), ContentType.JSON);
-    // yield put(syncedChanges(Assets.AUDIBLE));
+    yield call(uploadAsset, AUDIBLE_ASSET_LIST_KEY, JSON.stringify(newAudibleAssets), ContentType.JSON);
+    yield put(syncedChanges(Assets.AUDIBLE));
   } catch (e) {
     console.warn("unable to sync audio for raisins", e)
   }

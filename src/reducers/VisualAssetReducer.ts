@@ -1,5 +1,5 @@
 import {LOGGED_OFF} from '../events/SecurityEvents';
-import {S3ListObject} from "../types/AssetTypes";
+import {AssetDefinition, LocalAsset, S3ListObject} from "../types/AssetTypes";
 import {CREATED_VISUAL_ASSET, RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/VisualAssetEvents";
 import {HasId, StringDictionary, SyncType, UnsyncedAsset} from "../types/SupportTypes";
 
@@ -35,18 +35,14 @@ export interface Waifu extends HasId {
   animeId: string;
 }
 
-export interface VisualAssetDefinition {
-  path: string;
+export interface VisualAssetDefinition extends AssetDefinition {
   imageAlt: string;
   imageDimensions: ImageDimensions;
-  categories: WaifuAssetCategory[];
-  groupId?: string;
   characterIds?: string[]
   characters?: string[];
 }
 
-export interface LocalVisualAssetDefinition extends VisualAssetDefinition {
-  file?: File;
+export interface LocalVisualAssetDefinition extends VisualAssetDefinition, LocalAsset {
 }
 
 export type VisualAssetState = {

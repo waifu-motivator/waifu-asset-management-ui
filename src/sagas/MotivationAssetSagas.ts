@@ -149,7 +149,6 @@ function* motivationAssetAssembly(
       imageHref: buildS3ObjectLink(assetKey),
     };
 
-    // todo: checksum generation
     yield put(createdMotivationAsset(motivationAsset));
     return motivationAsset;
   }

@@ -1,14 +1,15 @@
 import {Storage} from "aws-amplify";
-import {Assets} from "../types/AssetTypes";
+import {AssetDefinition, Assets, LocalAsset} from "../types/AssetTypes";
 import {MotivationAssetState} from "../reducers/MotivationAssetReducer";
 import {call, select} from "redux-saga/effects";
 import {selectMotivationAssetState} from "../reducers";
 import {StringDictionary, SyncType, UnsyncedAsset} from "../types/SupportTypes";
 import {values} from "lodash";
+import {readFile} from "../components/Upload";
+import md5 from "js-md5";
 
-export function downloadAsset<T>(key: string) : Promise<T> {
+export function downloadAsset<T>(key: string): Promise<T> {
   return Storage.get(key, {download: true})
-
     .then((result: any) => result.Body.text())
     .then(JSON.parse);
 }
@@ -22,7 +23,8 @@ export function* syncSaga(asset: Assets, sagaToRun: () => void) {
 }
 
 export enum ContentType {
-  JSON = "application/json"
+  JSON = "application/json",
+  TEXT = "text/plain",
 }
 
 export const assetUpload = <T>(assetKey: string, asset: T, type: ContentType | string): Promise<any> =>
@@ -37,8 +39,42 @@ export function* uploadAsset<T>(assetKey: string, asset: T, type: ContentType): 
   );
 }
 
-export function extractAddedAssets<T>(unSyncedAnime: StringDictionary<UnsyncedAsset<T>>) {
+export function extractAddedAssets<T>(unSyncedAnime: StringDictionary<UnsyncedAsset<T>>): T[] {
   return values(unSyncedAnime)
     .filter(unsyncedAsset => unsyncedAsset.syncType === SyncType.CREATE)
     .map(unsyncedAsset => unsyncedAsset.asset);
+}
+
+export function* uploadAssetsSaga<T extends (AssetDefinition & LocalAsset)>(
+  assetGroupKey: string,
+  assetsToUpload: T[]
+): Generator {
+  yield call(() => assetsToUpload
+    .filter(assetToUpload => !!assetToUpload.file)
+    .reduce((accum, assetToUpload) => {
+      return accum.then(() => readFile(assetToUpload.file!))
+        .then(({result}) =>
+          assetUpload(
+            `${assetGroupKey}/${assetToUpload.path}.checksum.txt`,
+            md5(result),
+            ContentType.TEXT
+          )
+        );
+    }, Promise.resolve()))
+
+  yield call(() =>
+    assetsToUpload
+      .filter(asset => !!asset.file)
+      .reduce(
+      (accum, assetToUpload) => {
+        return accum.then(() =>
+          assetUpload(
+            `${assetGroupKey}/${assetToUpload.path}`,
+            assetToUpload.file,
+            assetToUpload.file?.type || ''
+          ));
+      },
+      Promise.resolve()
+    )
+  );
 }

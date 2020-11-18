@@ -1,3 +1,5 @@
+import {WaifuAssetCategory} from "../reducers/VisualAssetReducer";
+
 export interface S3ListObject {
   eTag: string;
   key: string;
@@ -17,4 +19,14 @@ export enum Assets {
   VISUAL = 'VISUAL',
   TEXT = 'TEXT',
   AUDIBLE = 'AUDIBLE'
+}
+
+export interface AssetDefinition {
+  path: string;
+  groupId?: string;
+  categories: WaifuAssetCategory[];
+}
+
+export interface LocalAsset {
+  file?: File;
 }
