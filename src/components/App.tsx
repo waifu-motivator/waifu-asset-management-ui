@@ -1,6 +1,5 @@
 import './App.css';
-import {withAuthenticator} from "@aws-amplify/ui-react";
-import React, {useEffect, useMemo} from 'react';
+import React, {FC, useEffect, useMemo} from 'react';
 import Header, {drawerWidth} from "./header/Header";
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
@@ -18,6 +17,7 @@ import {selectRouterState} from "../reducers";
 import MotivationAssetEditView from "./MotivationAssetEditView";
 import AssetUploadView from "./AssetUploadView";
 import SyncChanges from './SyncChanges';
+import {withAuthenticator} from "./SecurityComponents";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -108,13 +108,13 @@ const App = () => {
         <Divider/>
         <List>{secondaryListItems(pathname)}</List>
       </Drawer>
-      <SyncChanges />
+      <SyncChanges/>
 
       <main className={classes.content}>
         <div className={classes.appBarSpacer}/>
         <Switch>
-          <Route path={'/assets/view/upload/:checkSum'} component={AssetUploadView} />
-          <Route path={'/assets/view/:etag'} component={MotivationAssetEditView} />
+          <Route path={'/assets/view/upload/:checkSum'} component={AssetUploadView}/>
+          <Route path={'/assets/view/:etag'} component={MotivationAssetEditView}/>
           {
             routes
           }
