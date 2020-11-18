@@ -1,9 +1,10 @@
 import React, {FC, useEffect, useState} from "react";
 import {Auth, Hub} from 'aws-amplify';
+import Login from "./Login";
 
 export const withAuthenticator = (Component: FC): FC => {
   const Authenticator = () => {
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<any>();
 
     useEffect(() => {
       Hub.listen('auth', ({payload: {event, data}}) => {
@@ -38,7 +39,7 @@ export const withAuthenticator = (Component: FC): FC => {
         {user ? (
           <Component/>
         ) : (
-          <button onClick={login}>Federated Sign In</button>
+          <Login onLogin={login}/>
         )}
       </div>
     );
