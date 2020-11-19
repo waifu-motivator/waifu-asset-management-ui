@@ -108,13 +108,15 @@ const MotivationAssetView: FC<Props> = ({
     value: bestGirl.id,
   })), [waifu]);
 
+  const imageDimensions = motivationAsset.visuals?.imageDimensions;
   return <div style={{display: 'flex', flexDirection: "column", flexGrow: 1}}>
     <div style={{display: 'flex', margin: '0 auto', flexDirection: 'row', flexWrap: 'wrap', width: '100%'}}>
       <div className={classes.waifuContainer}>
         <Paper className={classes.paper}>
           <img src={motivationAsset.imageHref} alt={motivationAsset.visuals.imageAlt}/>
         </Paper>
-        <Typography variant={"subtitle1"} style={{marginTop: '1rem'}}>Image Dimensions: </Typography>
+        <Typography variant={"subtitle1"} style={{marginTop: '1rem'}}>Image Dimensions:{' '}
+          {imageDimensions?.width}x{imageDimensions?.height}</Typography>
       </div>
       <div className={classes.waifuAssetDetails}>
         <div style={{maxWidth: 500, marginRight: '2rem', minWidth: 300}}>

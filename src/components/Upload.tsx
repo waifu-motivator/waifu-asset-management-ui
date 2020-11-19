@@ -1,6 +1,6 @@
 import React, {FC, useCallback, useMemo} from 'react';
 import {useDropzone} from 'react-dropzone'
-import {Grid, TextField} from "@material-ui/core";
+import {Container, Grid} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import WaifuDisplay from "./WaifuDisplay";
 import md5 from 'js-md5';
@@ -8,6 +8,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {droppedWaifu} from "../events/VisualAssetEvents";
 import {selectMotivationAssetState} from "../reducers";
 import {LocalMotivationAsset} from "../reducers/MotivationAssetReducer";
+import {makeStyles} from "@material-ui/core/styles";
+import {ImageDimensions} from "../reducers/VisualAssetReducer";
 
 const baseStyle = {
   flex: 1,
@@ -58,26 +60,69 @@ export const readFile = (next: File): Promise<{ binaryStr: string; result: Array
     reader.readAsArrayBuffer(next)
   });
 
-export function getFileType(next: File) {
+const useStyles = makeStyles((theme) => ({
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+}));
+
+export function getFileType(next: File): string {
   return next.name.substr(next.name.lastIndexOf('.') + 1);
+}
+
+function readImageDimensions(binaryStr: string): Promise<ImageDimensions> {
+  return new Promise<ImageDimensions>((res, rej) => {
+    const img = new Image();
+    img.onload = function () {
+      const height = img.height;
+      const width = img.width;
+      res({
+        width,
+        height
+      })
+    }
+    img.src = binaryStr;
+  });
+}
+
+function getImageHref(next: File, binaryStr: string) {
+  return `data:image/${(getFileType(next))};base64,${binaryStr}`;
 }
 
 const Upload: FC = () => {
   const dispatch = useDispatch();
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    acceptedFiles.reduce((accum, next) => accum.then((others) =>
-      readFile(next).then(({
-                             binaryStr, result
-                           }) => {
-        return ([
-          ...others,
-          {
-            imageFile: next,
-            imageChecksum: md5(result),
-            imageHref: `data:image/${(getFileType(next))};base64,${binaryStr}`,
-          } as LocalMotivationAsset
-        ])
-      })), Promise.resolve<LocalMotivationAsset[]>([]))
+    acceptedFiles.reduce((accum, next) =>
+      accum.then((others) =>
+        readFile(next)
+          .then(({binaryStr, result}) =>
+            readImageDimensions(getImageHref(next, binaryStr))
+              .then(imageDimensions => ({
+                binaryStr,
+                result,
+                imageDimensions,
+              })))
+          .then(({
+                   binaryStr, result, imageDimensions
+                 }) => {
+            return ([
+              ...others,
+              {
+                imageFile: next,
+                imageChecksum: md5(result),
+                imageHref: getImageHref(next, binaryStr),
+                visuals: {
+                  imageDimensions,
+                  path: `${next.name}`,
+                  imageAlt: '',
+                  categories: [],
+                  characterIds: [],
+                  characters: []
+                }
+              } as LocalMotivationAsset
+            ])
+          })), Promise.resolve<LocalMotivationAsset[]>([]))
       .then(readWaifu => {
         dispatch(droppedWaifu(readWaifu));
       });
@@ -103,33 +148,32 @@ const Upload: FC = () => {
 
   const {motivationAssetsToUpload} = useSelector(selectMotivationAssetState);
 
+  const classes = useStyles();
+
   return (
-    <section className="container">
-      {/*// @ts-ignore*/}
-      <div {...getRootProps({style})}>
-        <input {...getInputProps()} />
-        <p>Drag/drop some waifu here, or click to select waifu</p>
-      </div>
-      <TextField name='Asset Directory'
-                 placeholder={"surprised/"}
-                 label="Destination directory"
-                 variant={"outlined"}
-      />
-      <aside>
-        <Grid container spacing={3}>
-          {
-            motivationAssetsToUpload.map(motivationAssetToUpload => (
-              <Grid item key={motivationAssetToUpload.imageFile?.name} xs={6}>
-                <Link style={{textDecoration: 'none', color: 'inherit'}}
-                      to={`/assets/view/upload/${motivationAssetToUpload.imageChecksum}`}>
-                  <WaifuDisplay href={motivationAssetToUpload.imageHref}/>
-                </Link>
-              </Grid>
-            ))
-          }
-        </Grid>
-      </aside>
-    </section>
+    <Container className={classes.container}>
+      <section className="container" style={{'cursor': "pointer"}}>
+        {/*// @ts-ignore*/}
+        <div {...getRootProps({style})}>
+          <input {...getInputProps()} />
+          <p>Drag/drop some waifu here, or click to select waifu</p>
+        </div>
+        <aside style={{margin: '2rem 0 0 0'}}>
+          <Grid container spacing={3}>
+            {
+              motivationAssetsToUpload.map(motivationAssetToUpload => (
+                <Grid item key={motivationAssetToUpload.imageFile?.name} xs={6}>
+                  <Link style={{textDecoration: 'none', color: 'inherit'}}
+                        to={`/assets/view/upload/${motivationAssetToUpload.imageChecksum}`}>
+                    <WaifuDisplay href={motivationAssetToUpload.imageHref}/>
+                  </Link>
+                </Grid>
+              ))
+            }
+          </Grid>
+        </aside>
+      </section>
+    </Container>
   )
 };
 
