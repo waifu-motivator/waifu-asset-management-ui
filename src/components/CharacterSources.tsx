@@ -26,9 +26,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const WaifuSubmission: FC<{ onSubmission: (newBestGirl: string) => void }> = ({
-                                                                                onSubmission,
-                                                                              }) => {
+const WaifuSubmission: FC<{ onSubmission: (newBestGirl: string) => void, anime: string }> = ({
+                                                                                               onSubmission,
+                                                                                               anime,
+                                                                                             }) => {
   const {
     handleSubmit,
     values: formValues,
@@ -43,8 +44,8 @@ const WaifuSubmission: FC<{ onSubmission: (newBestGirl: string) => void }> = ({
     }
   })
 
-  return <form onSubmit={handleSubmit}>
-    <TextField label={'Add Waifu'}
+  return <form onSubmit={handleSubmit} style={{margin: '1rem 0'}}>
+    <TextField label={`Add ${anime} Waifu`}
                name={'bestGirl'}
                variant={'outlined'}
                placeholder={'Add a new best girl'}
@@ -87,16 +88,16 @@ const EditableTreeItem: FC<{
   }
 
   return !isUpdate ?
-      <TreeItem nodeId={id} label={
-        <Tooltip title={'Click to edit'} placement={'top-start'}><span onClick={e => {
-          setIsUpdate(prevState => !prevState);
-          e.stopPropagation();
-        }}>{value}</span></Tooltip>
-      } >
-        {children}
-      </TreeItem>
+    <TreeItem nodeId={id} label={
+      <Tooltip title={'Click to edit'} placement={'top-start'}><span onClick={e => {
+        setIsUpdate(prevState => !prevState);
+        e.stopPropagation();
+      }}>{value}</span></Tooltip>
+    }>
+      {children}
+    </TreeItem>
     :
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{margin: '1rem 0'}}>
       <TextField label={'Name'}
                  name={'value'}
                  variant={'outlined'}
@@ -174,26 +175,26 @@ const CharacterSources: FC = () => {
           values(anime).map(dasAnime =>
             (
               <EditableTreeItem
-                        key={dasAnime.id}
-                        id={dasAnime.id}
-                        value={dasAnime.name}
-                        onUpdate={updateAnime(dasAnime)}
+                key={dasAnime.id}
+                id={dasAnime.id}
+                value={dasAnime.name}
+                onUpdate={updateAnime(dasAnime)}
               >
                 {
                   waifuByAnime[dasAnime.id]?.map(bestGirl => (
                     <EditableTreeItem key={bestGirl.id}
-                                          value={bestGirl.name}
-                                          id={bestGirl.id}
-                                          onUpdate={updateWaifu(bestGirl)}/>
+                                      value={bestGirl.name}
+                                      id={bestGirl.id}
+                                      onUpdate={updateWaifu(bestGirl)}/>
                   ))
                 }
-                <WaifuSubmission onSubmission={createWaifu(dasAnime)}/>
+                <WaifuSubmission onSubmission={createWaifu(dasAnime)} anime={dasAnime.name}/>
               </EditableTreeItem>
             ))
         }
       </TreeView>
       <div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} style={{margin: '1rem 0'}}>
           <TextField label={'Anime'}
                      name={'anime'}
                      variant={'outlined'}
