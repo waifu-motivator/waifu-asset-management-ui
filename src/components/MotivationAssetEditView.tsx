@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectMotivationAssetState} from "../reducers";
 import MotivationAssetView from "./MotivationAssetView";
 import {createViewedExistingAssetEvent} from "../events/MotivationAssetEvents";
-import {Typography} from "@material-ui/core";
+import CenteredLoadingScreen from "./CenteredLoadingScreen";
 
 const MotivationAssetEditView: FC = () => {
   const {etag} = useParams<{ etag: string }>();
@@ -15,7 +15,7 @@ const MotivationAssetEditView: FC = () => {
 
   const {currentViewedAsset} = useSelector(selectMotivationAssetState);
   return !currentViewedAsset ?
-    (<Typography>Not Found</Typography>) :
+    ((<CenteredLoadingScreen/>)) :
     (<MotivationAssetView motivationAsset={currentViewedAsset} isEdit/>)
 
 };

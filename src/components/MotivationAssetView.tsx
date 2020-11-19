@@ -221,16 +221,16 @@ const MotivationAssetView: FC<Props> = ({
           <Typography variant={'h5'} paragraph>
             Related Assets
           </Typography>
-          <div>
-            <TextField name='title'
-                       label="Notification Title"
-                       placeholder={'You\'re the best!'}
-                       variant={"outlined"}
-                       value={values.title}
-                       onChange={handleChange}
-                       style={{width: '100%'}}
-            />
-          </div>
+          {/*<div>*/}
+          {/*  <TextField name='title'*/}
+          {/*             label="Notification Title"*/}
+          {/*             placeholder={'You\'re the best!'}*/}
+          {/*             variant={"outlined"}*/}
+          {/*             value={values.title}*/}
+          {/*             onChange={handleChange}*/}
+          {/*             style={{width: '100%'}}*/}
+          {/*  />*/}
+          {/*</div>*/}
           <div style={{marginTop: '1rem'}}>
             <InputLabel style={{marginBottom: '0.5rem'}}>Audio</InputLabel>
             {
