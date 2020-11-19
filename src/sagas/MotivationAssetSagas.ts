@@ -11,7 +11,7 @@ import {
   createCurrentMotivationAssetEvent,
   createdMotivationAsset,
   UPDATED_MOTIVATION_ASSET,
-  VIEWED_EXISTING_ASSET
+  VIEWED_EXISTING_ASSET, VIEWED_UPLOADED_ASSET
 } from "../events/MotivationAssetEvents";
 import {PayloadEvent} from "../events/Event";
 import {LocalMotivationAsset, MotivationAsset, MotivationAssetState} from "../reducers/MotivationAssetReducer";
@@ -40,9 +40,13 @@ function* fetchAssetKey(s3Etag: string) {
   return getKey(s3List, s3Etag);
 }
 
-
 function* motivationAssetViewSaga({payload: s3Etag}: PayloadEvent<string>) {
   const motivationAsset = yield call(fetchAssetForEtag, s3Etag);
+  yield put(createCurrentMotivationAssetEvent(motivationAsset));
+}
+
+function* localMotivationAssetViewSaga({payload: checkSum}: PayloadEvent<string>) {
+  const motivationAsset = yield call(fetchAssetForChecksum, checkSum);
   yield put(createCurrentMotivationAssetEvent(motivationAsset));
 }
 
@@ -60,6 +64,13 @@ function* fetchAssetForEtag(s3Etag: string) {
   } else {
     return yield call(motivationAssetAssembly, assetKey, visualAssetDefinitions);
   }
+}
+
+function* fetchAssetForChecksum(checkSum: string) {
+  const {assets}: MotivationAssetState = yield select(selectMotivationAssetState)
+  const cachedAsset = values(assets).find(asset => asset.imageChecksum === checkSum);
+  if (cachedAsset)
+    return cachedAsset;
 }
 
 function getAudibleMotivationAssets(audibleAssets: AudibleAssetDefinition[], groupId: string) {
@@ -178,6 +189,7 @@ function* motivationAssetUpdateSaga({payload: motivationAsset}: PayloadEvent<Loc
 
 function* motivationAssetSagas() {
   yield takeEvery(VIEWED_EXISTING_ASSET, motivationAssetViewSaga);
+  yield takeEvery(VIEWED_UPLOADED_ASSET, localMotivationAssetViewSaga);
   yield takeEvery(UPDATED_MOTIVATION_ASSET, motivationAssetUpdateSaga);
 }
 

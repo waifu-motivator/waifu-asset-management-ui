@@ -7,7 +7,7 @@ import md5 from 'js-md5';
 import {useDispatch, useSelector} from "react-redux";
 import {droppedWaifu} from "../events/VisualAssetEvents";
 import {selectMotivationAssetState} from "../reducers";
-import {LocalMotivationAsset} from "../reducers/MotivationAssetReducer";
+import {LocalMotivationAsset, MotivationAssetState} from "../reducers/MotivationAssetReducer";
 import {makeStyles} from "@material-ui/core/styles";
 import {ImageDimensions} from "../reducers/VisualAssetReducer";
 import {values} from 'lodash';
@@ -152,7 +152,11 @@ const Upload: FC = () => {
     isDragAccept
   ]);
 
-  const {motivationAssetsToUpload} = useSelector(selectMotivationAssetState);
+  const {assets}: MotivationAssetState = useSelector(selectMotivationAssetState);
+
+  const motivationAssetsToUpload = useMemo(()=>
+    values(assets).filter(asset => !!asset.imageChecksum)
+  , [assets])
 
   const classes = useStyles();
 

@@ -92,9 +92,15 @@ const MotivationAssetView: FC<Props> = ({
     enableReinitialize: true,
     onSubmit: (values, {setSubmitting}) => {
       dispatch(updatedMotivationAsset({
+        ...motivationAsset,
         audioFile: values.soundFile,
         imageHref: motivationAsset.imageHref,
-        visuals: motivationAsset.visuals
+        visuals: {
+          ...motivationAsset.visuals,
+          imageAlt: values.imageAlt || '',
+          categories: values.categories,
+          characterIds: values.characterIds
+        }
       }))
       setSubmitting(false);
       goBack();
