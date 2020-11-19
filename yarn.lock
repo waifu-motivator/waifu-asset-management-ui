@@ -2277,7 +2277,7 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.3", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.3", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
   version "7.12.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.5.tgz#410e7e487441e1b360c29be715d870d9b985882e"
   integrity sha512-plcc+hbExy3McchJCEQG3knOsuh3HH+Prx1P6cLIkET/0dLuQDEnrT+s27Axgc9bqfsmNUNHfscgMUdBpC9xfg==
@@ -2921,6 +2921,13 @@
     "@svgr/plugin-svgo" "^5.4.0"
     loader-utils "^2.0.0"
 
+"@tanem/svg-injector@^8.1.0":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@tanem/svg-injector/-/svg-injector-8.1.0.tgz#f04c65903c4cded31d6f3c23d3986458307ad827"
+  integrity sha512-AqV81eHF4qxXjT5KceY1AP7Fvnd0LmmQsHMFlH2yvzfNj7Y6tJyUY+nNvE5wpLyU28DDX4aWsKgMdmPaRMBBRQ==
+  dependencies:
+    "@babel/runtime" "^7.12.1"
+
 "@testing-library/dom@^7.26.4":
   version "7.26.5"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.26.5.tgz#804a74fc893bf6da1a7970dbca7b94c2bbfe983d"
@@ -3178,6 +3185,13 @@
   dependencies:
     react-dropzone "*"
 
+"@types/react-loader-spinner@^3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@types/react-loader-spinner/-/react-loader-spinner-3.1.2.tgz#b063904bdc8df50b47f3762454abd3c8d39a7626"
+  integrity sha512-QJKgx4H2+C1GtQTWsK+takg2fq2AHu0Y+vE8BpYwDxOatjeV7Koe4ckUtocGbokksumVhQHKoz8hz1pUCDisgg==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-redux@^7.1.11":
   version "7.1.11"
   resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-7.1.11.tgz#a18e8ab3651e8e8cc94798934927937c66021217"
@@ -3204,6 +3218,13 @@
   dependencies:
     "@types/history" "*"
     "@types/react" "*"
+
+"@types/react-svg@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-svg/-/react-svg-5.0.0.tgz#32c9b5e987cadff2797468bbee0abd265f44b75c"
+  integrity sha512-SKvgyw45ZaZX91uulrA1dgENZ0tC6D3owupmZKOuJFffkHJvp8lvfjbb+5juC3z4qCYoqESgxkkiS6owa+gemg==
+  dependencies:
+    react-svg "*"
 
 "@types/react-transition-group@^4.2.0":
   version "4.4.0"
@@ -11111,6 +11132,14 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
 
+react-loader-spinner@^3.1.14:
+  version "3.1.14"
+  resolved "https://registry.yarnpkg.com/react-loader-spinner/-/react-loader-spinner-3.1.14.tgz#2a201f07379c492766175609903c0f2ced57c720"
+  integrity sha512-7V+upnW+RVA/O94LIB/EQLK2uaz/TpZBHG5uNXlOXgvxvALxlxVYeEDmus5Oex2C58fiwrsRvSyu/4VRmLbZ9Q==
+  dependencies:
+    babel-runtime "^6.26.0"
+    prop-types "^15.7.2"
+
 react-native-get-random-values@^1.4.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/react-native-get-random-values/-/react-native-get-random-values-1.5.0.tgz#91cda18f0e66e3d9d7660ba80c61c914030c1e05"
@@ -11227,6 +11256,15 @@ react-scripts@4.0.0:
     workbox-webpack-plugin "5.1.4"
   optionalDependencies:
     fsevents "^2.1.3"
+
+react-svg@*, react-svg@^11.1.1:
+  version "11.1.1"
+  resolved "https://registry.yarnpkg.com/react-svg/-/react-svg-11.1.1.tgz#0e9b11fbf0efc7df347d8f268e8d77fd9d022a3a"
+  integrity sha512-bqj+2C/niy/V519ABD3fUD9+T33DiDUUUuu39d2O9G2RXTXSFHqA7zU7DEjF+yadMXmEbe0+NlNSZimHWN5jew==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    "@tanem/svg-injector" "^8.1.0"
+    prop-types "^15.7.2"
 
 react-transition-group@^4.4.0:
   version "4.4.1"

@@ -7,6 +7,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import GoogleButton from "react-google-button";
+import LoadingIndicator from './LoadingIndicator';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,31 +47,35 @@ interface Props {
 
 const Login: FC<Props> = ({onLogin, loading}) => {
   const classes = useStyles();
-
-  // todo: loading indicator.
-
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline/>
       <Grid item xs={false} sm={4} md={7} className={classes.image}/>
       {
-        !loading && (<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square style={{
-          display: "flex"
-        }}>
-          <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
-              <LockOutlinedIcon/>
-            </Avatar>
-            <Typography component="h1" variant="h5" paragraph>
-              Waifu Asset Management
-            </Typography>
-            <form className={classes.form} noValidate>
-              <GoogleButton onClick={onLogin} style={{
-                marginTop: '2rem'
-              }}/>
-            </form>
+        loading ?
+          <div style={{
+            margin: 'auto'
+          }}>
+            <LoadingIndicator/>
           </div>
-        </Grid>)
+          :
+          (<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square style={{
+            display: "flex"
+          }}>
+            <div className={classes.paper}>
+              <Avatar className={classes.avatar}>
+                <LockOutlinedIcon/>
+              </Avatar>
+              <Typography component="h1" variant="h5" paragraph>
+                Waifu Asset Management
+              </Typography>
+              <form className={classes.form} noValidate>
+                <GoogleButton onClick={onLogin} style={{
+                  margin: '2rem auto 0 auto'
+                }}/>
+              </form>
+            </div>
+          </Grid>)
       }
     </Grid>
   );
