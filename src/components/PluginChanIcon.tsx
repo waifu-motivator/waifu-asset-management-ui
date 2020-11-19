@@ -1,6 +1,7 @@
 import * as React from 'react';
 import PluginChanIcon from '../images/PluginChanIcon.svg';
 import { ReactSVG } from 'react-svg'
+import {FC} from "react";
 
 export type SizeType = {
   width?: string | number;
@@ -17,7 +18,7 @@ const defaultSize: SizeType = {
   width: '150px',
 };
 
-const PluginChan = (props: Props) => {
+const PluginChan: FC<Props> = (props: Props) => {
   const {size, styles} = props;
   const usableSize = size || defaultSize;
   return (

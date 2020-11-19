@@ -1,5 +1,5 @@
 import './App.css';
-import React, {FC, useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import Header, {drawerWidth} from "./header/Header";
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';

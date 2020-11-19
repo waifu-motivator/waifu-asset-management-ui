@@ -74,7 +74,7 @@ export function getFileType(next: File): string {
 }
 
 function readImageDimensions(binaryStr: string): Promise<ImageDimensions> {
-  return new Promise<ImageDimensions>((res, rej) => {
+  return new Promise<ImageDimensions>((res) => {
     const img = new Image();
     img.onload = function () {
       const height = img.height;

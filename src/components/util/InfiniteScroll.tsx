@@ -19,6 +19,7 @@ const InfiniteScroll: FC<Props> = ({
     const target = entities[0];
     if (target.isIntersecting) {
       loadMore(page + 1)
+      setPage(prevState => prevState + 1)
     }
   }
 

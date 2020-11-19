@@ -5,7 +5,7 @@ import {connectRouter, RouterState} from 'connected-react-router';
 import {History} from 'history';
 import visualAssetReducer, {VisualAssetState} from "./VisualAssetReducer";
 import motivationAssetReducer, {MotivationAssetState} from "./MotivationAssetReducer";
-import audibleAssetReducer, {AudibleAssetDefinition, AudibleAssetState} from "./AudibleAssetReducer";
+import audibleAssetReducer, {AudibleAssetState} from "./AudibleAssetReducer";
 import textAssetReducer, {TextAssetState} from "./TextAssetReducer";
 import characterSourceReducer, {CharacterSourceState} from "./CharacterSourceReducer";
 
