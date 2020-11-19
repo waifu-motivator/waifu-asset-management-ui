@@ -3,10 +3,17 @@ import {INITIALIZED_APPLICATION, REQUESTED_SYNC_CHANGES, syncedChanges} from "..
 import {selectVisualAssetState} from "../reducers";
 import {Storage} from "aws-amplify";
 import {AssetGroupKeys, Assets, S3ListObject} from "../types/AssetTypes";
-import {createReceivedVisualAssetList, createReceivedVisualS3List} from "../events/VisualAssetEvents";
+import {
+  createdVisualAsset,
+  createReceivedVisualAssetList,
+  createReceivedVisualS3List,
+  DROPPED_WAIFU
+} from "../events/VisualAssetEvents";
 import {LocalVisualAssetDefinition, VisualAssetDefinition, VisualAssetState} from "../reducers/VisualAssetReducer";
 import {ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAsset, uploadAssetsSaga} from "./CommonSagas";
 import {omit, values} from "lodash";
+import {PayloadEvent} from "../events/Event";
+import {LocalMotivationAsset} from "../reducers/MotivationAssetReducer";
 
 function* visualAssetFetchSaga() {
   const {s3List} = yield select(selectVisualAssetState)
@@ -83,12 +90,23 @@ function* attemptToSyncVisualAssets() {
   }
 }
 
+function* visualAssetExtractionSaga({payload}: PayloadEvent<LocalMotivationAsset[]>) {
+  yield all(
+    payload.filter(asset => !!asset.visuals)
+      .map(asset => put(createdVisualAsset({
+        ...asset.visuals,
+        file: asset.imageFile
+      })))
+  );
+}
+
 function* visualAssetSyncSaga() {
   yield fork(syncSaga, Assets.VISUAL, attemptToSyncVisualAssets);
 }
 
 function* visualAssetSagas() {
   yield takeEvery(INITIALIZED_APPLICATION, visualAssetFetchSaga)
+  yield takeEvery(DROPPED_WAIFU, visualAssetExtractionSaga)
   yield takeEvery(REQUESTED_SYNC_CHANGES, visualAssetSyncSaga)
 }
 

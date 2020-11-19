@@ -10,6 +10,8 @@ import {selectMotivationAssetState} from "../reducers";
 import {LocalMotivationAsset} from "../reducers/MotivationAssetReducer";
 import {makeStyles} from "@material-ui/core/styles";
 import {ImageDimensions} from "../reducers/VisualAssetReducer";
+import {values} from 'lodash';
+import {StringDictionary} from "../types/SupportTypes";
 
 const baseStyle = {
   flex: 1,
@@ -93,36 +95,40 @@ function getImageHref(next: File, binaryStr: string) {
 const Upload: FC = () => {
   const dispatch = useDispatch();
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    acceptedFiles.reduce((accum, next) =>
-      accum.then((others) =>
-        readFile(next)
-          .then(({binaryStr, result}) =>
-            readImageDimensions(getImageHref(next, binaryStr))
-              .then(imageDimensions => ({
-                binaryStr,
-                result,
-                imageDimensions,
-              })))
-          .then(({
-                   binaryStr, result, imageDimensions
-                 }) => {
-            return ([
-              ...others,
-              {
-                imageFile: next,
-                imageChecksum: md5(result),
-                imageHref: getImageHref(next, binaryStr),
-                visuals: {
+    values(acceptedFiles.reduce((accum, next) => ({
+      ...accum,
+      [next.name]: next
+    }), {} as StringDictionary<File>))
+      .reduce((accum, next) =>
+        accum.then((others) =>
+          readFile(next)
+            .then(({binaryStr, result}) =>
+              readImageDimensions(getImageHref(next, binaryStr))
+                .then(imageDimensions => ({
+                  binaryStr,
+                  result,
                   imageDimensions,
-                  path: `${next.name}`,
-                  imageAlt: '',
-                  categories: [],
-                  characterIds: [],
-                  characters: []
-                }
-              } as LocalMotivationAsset
-            ])
-          })), Promise.resolve<LocalMotivationAsset[]>([]))
+                })))
+            .then(({
+                     binaryStr, result, imageDimensions
+                   }) => {
+              return ([
+                ...others,
+                {
+                  imageFile: next,
+                  imageChecksum: md5(result),
+                  imageHref: getImageHref(next, binaryStr),
+                  visuals: {
+                    imageDimensions,
+                    path: `${next.name}`,
+                    imageAlt: '',
+                    categories: [],
+                    characterIds: [],
+                    characters: []
+                  }
+                } as LocalMotivationAsset
+              ])
+            })), Promise.resolve<LocalMotivationAsset[]>([]))
       .then(readWaifu => {
         dispatch(droppedWaifu(readWaifu));
       });
