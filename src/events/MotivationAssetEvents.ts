@@ -6,6 +6,7 @@ export const VIEWED_UPLOADED_ASSET = 'VIEWED_UPLOADED_ASSET';
 export const CREATED_MOTIVATION_ASSET = 'CREATED_MOTIVATION_ASSET';
 export const UPDATED_MOTIVATION_ASSET = 'UPDATED_MOTIVATION_ASSET';
 export const FOUND_CURRENT_ASSET = 'FOUND_CURRENT_ASSET';
+export const SEARCHED_FOR_ASSET = 'SEARCHED_FOR_ASSET';
 
 export const createViewedExistingAssetEvent = (
   s3Etag: string
@@ -19,6 +20,13 @@ export const createViewedLocalAssetEvent = (
 ): PayloadEvent<string> => ({
   type: VIEWED_UPLOADED_ASSET,
   payload: s3Etag,
+});
+
+export const searchForItem = (
+  keywordToSearch: string
+): PayloadEvent<string> => ({
+  type: SEARCHED_FOR_ASSET,
+  payload: keywordToSearch,
 });
 
 export const createdMotivationAsset = (

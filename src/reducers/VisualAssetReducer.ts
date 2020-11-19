@@ -1,6 +1,11 @@
 import {LOGGED_OFF} from '../events/SecurityEvents';
 import {AssetDefinition, LocalAsset, S3ListObject} from "../types/AssetTypes";
-import {CREATED_VISUAL_ASSET, RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/VisualAssetEvents";
+import {
+  CREATED_VISUAL_ASSET,
+  FILTERED_VISUAL_ASSETS,
+  RECEIVED_VISUAL_ASSET_LIST,
+  RECEIVED_VISUAL_S3_LIST
+} from "../events/VisualAssetEvents";
 import {HasId, StringDictionary, SyncType, UnsyncedAsset} from "../types/SupportTypes";
 
 export enum WaifuAssetCategory {
@@ -48,12 +53,14 @@ export interface LocalVisualAssetDefinition extends VisualAssetDefinition, Local
 export type VisualAssetState = {
   assets: VisualAssetDefinition[];
   s3List: S3ListObject[];
+  displayS3List: S3ListObject[];
   unsyncedAssets: StringDictionary<UnsyncedAsset<LocalVisualAssetDefinition>>
 };
 
 export const INITIAL_VISUAL_ASSET_STATE: VisualAssetState = {
   assets: [],
   s3List: [],
+  displayS3List: [],
   unsyncedAssets: {},
 };
 
@@ -65,6 +72,7 @@ const visualAssetReducer = (state: VisualAssetState = INITIAL_VISUAL_ASSET_STATE
       return {
         ...state,
         s3List: action.payload,
+        displayS3List: action.payload,
       };
     case RECEIVED_VISUAL_ASSET_LIST:
       return {
@@ -72,6 +80,12 @@ const visualAssetReducer = (state: VisualAssetState = INITIAL_VISUAL_ASSET_STATE
         assets: action.payload,
       };
 
+    case FILTERED_VISUAL_ASSETS: {
+      return {
+        ...state,
+        displayS3List: action.payload
+      }
+    }
     case CREATED_VISUAL_ASSET: {
       return {
         ...state,

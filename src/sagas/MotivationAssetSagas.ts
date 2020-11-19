@@ -5,13 +5,20 @@ import {
   selectTextAssetState,
   selectVisualAssetState
 } from "../reducers";
-import {createdVisualAsset, RECEIVED_VISUAL_ASSET_LIST, RECEIVED_VISUAL_S3_LIST} from "../events/VisualAssetEvents";
+import {
+  createdVisualAsset,
+  createFilteredVisualS3List,
+  RECEIVED_VISUAL_ASSET_LIST,
+  RECEIVED_VISUAL_S3_LIST
+} from "../events/VisualAssetEvents";
 import {VisualAssetDefinition, VisualAssetState} from "../reducers/VisualAssetReducer";
 import {
   createCurrentMotivationAssetEvent,
   createdMotivationAsset,
+  SEARCHED_FOR_ASSET,
   UPDATED_MOTIVATION_ASSET,
-  VIEWED_EXISTING_ASSET, VIEWED_UPLOADED_ASSET
+  VIEWED_EXISTING_ASSET,
+  VIEWED_UPLOADED_ASSET
 } from "../events/MotivationAssetEvents";
 import {PayloadEvent} from "../events/Event";
 import {LocalMotivationAsset, MotivationAsset, MotivationAssetState} from "../reducers/MotivationAssetReducer";
@@ -24,6 +31,7 @@ import {TextAssetState, TextualMotivationAsset} from "../reducers/TextAssetReduc
 import {flatten, isEmpty, omit, values} from 'lodash';
 import {StringDictionary} from "../types/SupportTypes";
 import {LOADED_ALL_TEXT_ASSETS} from "../events/TextAssetEvents";
+import {push} from "connected-react-router";
 
 function getKey(freshS3List: S3ListObject[], s3Etag: string) {
   return freshS3List.find(obj => obj.eTag === s3Etag)?.key;
@@ -145,11 +153,15 @@ function* yieldGroupedAssets(visualAssetDefinition: VisualAssetDefinition) {
   return {};
 }
 
+function getTrimmedKey(assetKey: string) {
+  return assetKey.substring(`${AssetGroupKeys.VISUAL}/`.length);
+}
+
 function* motivationAssetAssembly(
   assetKey: string,
   assets: VisualAssetDefinition[],
 ) {
-  const trimmedKey = assetKey.substring(`${AssetGroupKeys.VISUAL}/`.length);
+  const trimmedKey = getTrimmedKey(assetKey);
   const visualAssetDefinition = assets.find(assetDef => assetDef.path === trimmedKey);
   if (visualAssetDefinition) {
     const groupedAssets = yield call(yieldGroupedAssets, visualAssetDefinition);
@@ -187,10 +199,47 @@ function* motivationAssetUpdateSaga({payload: motivationAsset}: PayloadEvent<Loc
   }))
 }
 
+const SEARCH_KEYS = [
+  "path", "imageAlt"
+]
+
+function containsKeyword(
+  asset: VisualAssetDefinition,
+  searchKeyword: string
+): boolean {
+  // @ts-ignore
+  return !!SEARCH_KEYS.map(key => asset[key])
+    .map(field => field + '')
+    .find(fieldValue => fieldValue.indexOf(searchKeyword) > -1)
+}
+
+function getS3Object(
+  asset: VisualAssetDefinition,
+  s3List: S3ListObject[]
+): S3ListObject | undefined {
+  return s3List.find(s3Object => getTrimmedKey(s3Object.key) === asset.path);
+}
+
+function* motivationAssetSearchSaga({payload: keyword}: PayloadEvent<string>) {
+  const {s3List, assets}: VisualAssetState = yield select(selectVisualAssetState);
+  if (!keyword) {
+    yield put(createFilteredVisualS3List(s3List))
+  } else {
+    const searchKeyword = keyword.toLowerCase();
+    yield put(createFilteredVisualS3List(
+      assets.filter(asset => containsKeyword(asset, searchKeyword))
+        .map(asset => getS3Object(asset, s3List))
+        .filter(Boolean) as S3ListObject[]
+    ))
+  }
+  yield put(push("/"));
+}
+
 function* motivationAssetSagas() {
   yield takeEvery(VIEWED_EXISTING_ASSET, motivationAssetViewSaga);
   yield takeEvery(VIEWED_UPLOADED_ASSET, localMotivationAssetViewSaga);
   yield takeEvery(UPDATED_MOTIVATION_ASSET, motivationAssetUpdateSaga);
+  yield takeEvery(SEARCHED_FOR_ASSET, motivationAssetSearchSaga);
 }
 
 export default function* (): Generator {

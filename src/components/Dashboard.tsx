@@ -41,27 +41,27 @@ const waifuPerPage = 10;
 const Dashboard: FC = () => {
   const classes = useStyles();
 
-  const {s3List} = useSelector(selectVisualAssetState);
+  const {displayS3List} = useSelector(selectVisualAssetState);
   const [assetIndex, setAssetIndex] = useState(waifuPerPage);
 
-  const viewedS3Items = s3List.slice(0, assetIndex)
-  const hasMore = s3List.length > viewedS3Items.length;
+  const viewedS3Items = displayS3List.slice(0, assetIndex)
+  const hasMore = displayS3List.length > viewedS3Items.length;
   const fetchData = () => {
     if (hasMore) {
       setAssetIndex(prevState => {
         const nextIndex = prevState + waifuPerPage;
-        return nextIndex > s3List.length ? s3List.length : nextIndex;
+        return nextIndex > displayS3List.length ? displayS3List.length : nextIndex;
       })
     }
 
   };
 
-  return !s3List.length ? (<></>) : (
+  return !displayS3List.length ? (<></>) : (
     <Container className={classes.container}>
       <InfiniteScroll
         loadMore={fetchData}
         hasMore={hasMore}
-        loadMoreDisplay={<h3>Hang tight Senpai...</h3>}
+        loadMoreDisplay={<h3 style={{margin: '2rem auto'}}>Hang tight Senpai...</h3>}
       >
         <Grid container spacing={3}>
 

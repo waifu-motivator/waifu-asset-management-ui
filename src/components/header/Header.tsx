@@ -1,4 +1,4 @@
-import React, {FC, MouseEventHandler} from 'react';
+import React, {FC, MouseEventHandler, useState} from 'react';
 import clsx from "clsx";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -13,6 +13,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectUserState} from "../../reducers";
 import {requestLogoff} from "../../events/SecurityEvents";
 import { Search } from '@material-ui/icons';
+import {invokeOnEnter} from "../util/Tools";
+import {searchForItem} from "../../events/MotivationAssetEvents";
 
 interface Props {
   onOpen: MouseEventHandler;
@@ -111,6 +113,12 @@ const Header: FC<Props> = ({
     dispatch(requestLogoff())
   }
 
+  const [searchItem, setSearchItem] = useState('');
+
+  const search = () => {
+    dispatch(searchForItem(searchItem));
+  };
+
   return (
     <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
       <Toolbar className={classes.toolbar}>
@@ -126,7 +134,7 @@ const Header: FC<Props> = ({
         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
           Waifu Asset Management
         </Typography>
-        <div className={classes.search}>
+        <div className={classes.search} onKeyUp={invokeOnEnter(search)}>
           <div className={classes.searchIcon}>
             <Search />
           </div>
@@ -137,6 +145,7 @@ const Header: FC<Props> = ({
               input: classes.inputInput,
             }}
             inputProps={{ 'aria-label': 'search' }}
+            onChange={e => setSearchItem(e.target.value)}
           />
         </div>
         {
