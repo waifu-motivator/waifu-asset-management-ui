@@ -3,7 +3,12 @@ import {CREATED_VISUAL_ASSET, DROPPED_WAIFU} from "../events/VisualAssetEvents";
 import {StringDictionary} from "../types/SupportTypes";
 import {VisualAssetDefinition} from "./VisualAssetReducer";
 import {AudibleAssetDefinition} from "./AudibleAssetReducer";
-import {CREATED_MOTIVATION_ASSET, FOUND_CURRENT_ASSET, UPDATED_MOTIVATION_ASSET} from "../events/MotivationAssetEvents";
+import {
+  CLEANED_UP_ASSETS,
+  CREATED_MOTIVATION_ASSET,
+  FOUND_CURRENT_ASSET, SEARCHED_FOR_ASSET,
+  UPDATED_MOTIVATION_ASSET
+} from "../events/MotivationAssetEvents";
 import {omit, values} from 'lodash';
 import {AssetGroupKeys, Assets} from "../types/AssetTypes";
 import {CREATED_ANIME, CREATED_WAIFU, UPDATED_ANIME, UPDATED_WAIFU} from "../events/CharacterSourceEvents";
@@ -31,6 +36,7 @@ export type MotivationAssetState = {
   assets: StringDictionary<LocalMotivationAsset>;
   currentViewedAsset?: LocalMotivationAsset;
   unsyncedAssets: StringDictionary<Assets>;
+  searchTerm?: string;
 };
 
 export const INITIAL_MOTIVATION_ASSET_STATE: MotivationAssetState = {
@@ -51,8 +57,18 @@ function getKey(motivationAsset: LocalMotivationAsset) {
     `${AssetGroupKeys.VISUAL}/${motivationAsset.visuals.path}`;
 }
 
+function constructMotivationAssets(motivationAssets: LocalMotivationAsset[]) {
+  return motivationAssets.reduce((accum, motivationAsset) => ({
+    ...accum,
+    [getKey(motivationAsset)]: motivationAsset
+  }), {} as StringDictionary<LocalMotivationAsset>);
+}
+
 // eslint-disable-next-line
-const motivationAssetReducer = (state: MotivationAssetState = INITIAL_MOTIVATION_ASSET_STATE, action: any) => {
+const motivationAssetReducer = (
+  state: MotivationAssetState = INITIAL_MOTIVATION_ASSET_STATE,
+  action: any
+) => {
   switch (action.type) {
     case DROPPED_WAIFU: {
       const motivationAssets: LocalMotivationAsset[] = action.payload;
@@ -60,11 +76,21 @@ const motivationAssetReducer = (state: MotivationAssetState = INITIAL_MOTIVATION
         ...state,
         assets: {
           ...state.assets,
-          ...motivationAssets.reduce((accum, motivationAsset) => ({
-            ...accum,
-            [getKey(motivationAsset)]: motivationAsset
-          }), {} as StringDictionary<LocalMotivationAsset>),
+          ...constructMotivationAssets(motivationAssets),
         }
+      }
+    }
+    case SEARCHED_FOR_ASSET: {
+      return {
+        ...state,
+        searchTerm: action.payload
+      }
+    }
+    case CLEANED_UP_ASSETS: {
+      const motivationAssets: LocalMotivationAsset[] = action.payload;
+      return {
+        ...state,
+        assets: constructMotivationAssets(motivationAssets),
       }
     }
     case FOUND_CURRENT_ASSET: {

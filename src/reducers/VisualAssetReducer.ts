@@ -4,7 +4,7 @@ import {
   CREATED_VISUAL_ASSET,
   FILTERED_VISUAL_ASSETS,
   RECEIVED_VISUAL_ASSET_LIST,
-  RECEIVED_VISUAL_S3_LIST
+  RECEIVED_VISUAL_S3_LIST, UPDATED_VISUAL_ASSET_LIST, UPDATED_VISUAL_S3_LIST
 } from "../events/VisualAssetEvents";
 import {HasId, StringDictionary, SyncType, UnsyncedAsset} from "../types/SupportTypes";
 
@@ -75,6 +75,12 @@ const visualAssetReducer = (state: VisualAssetState = INITIAL_VISUAL_ASSET_STATE
         s3List: action.payload,
         displayS3List: action.payload,
       };
+    case UPDATED_VISUAL_S3_LIST:
+      return {
+        ...state,
+        s3List: action.payload,
+      };
+    case UPDATED_VISUAL_ASSET_LIST:
     case RECEIVED_VISUAL_ASSET_LIST:
       return {
         ...state,

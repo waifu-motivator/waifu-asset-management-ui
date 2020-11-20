@@ -7,6 +7,7 @@ export const CREATED_MOTIVATION_ASSET = 'CREATED_MOTIVATION_ASSET';
 export const UPDATED_MOTIVATION_ASSET = 'UPDATED_MOTIVATION_ASSET';
 export const FOUND_CURRENT_ASSET = 'FOUND_CURRENT_ASSET';
 export const SEARCHED_FOR_ASSET = 'SEARCHED_FOR_ASSET';
+export const CLEANED_UP_ASSETS = 'CLEANED_UP_ASSETS';
 
 export const createViewedExistingAssetEvent = (
   s3Etag: string
@@ -35,6 +36,14 @@ export const createdMotivationAsset = (
   type: CREATED_MOTIVATION_ASSET,
   payload: motivationAsset,
 });
+
+export const cleanedUpMotivationAssets = (
+  localMotivationAssets: LocalMotivationAsset[],
+): PayloadEvent<LocalMotivationAsset[]> => ({
+  type: CLEANED_UP_ASSETS,
+  payload: localMotivationAssets,
+});
+
 
 export const updatedMotivationAsset = (
   motivationAsset: LocalMotivationAsset,

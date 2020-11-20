@@ -1,19 +1,40 @@
 import {all, call, fork, put, select, takeEvery} from 'redux-saga/effects';
-import {INITIALIZED_APPLICATION, REQUESTED_SYNC_CHANGES, syncedChanges} from "../events/ApplicationLifecycleEvents";
-import {selectVisualAssetState} from "../reducers";
+import {
+  INITIALIZED_APPLICATION,
+  REQUESTED_SYNC_CHANGES,
+  SYNCED_ASSET,
+  syncedChanges
+} from "../events/ApplicationLifecycleEvents";
+import {selectMotivationAssetState, selectVisualAssetState} from "../reducers";
 import {Storage} from "aws-amplify";
 import {AssetGroupKeys, Assets, S3ListObject} from "../types/AssetTypes";
 import {
   createdVisualAsset,
   createReceivedVisualAssetList,
   createReceivedVisualS3List,
+  createUpdatedVisualAssetList, createUpdatedVisualS3List,
   DROPPED_WAIFU
 } from "../events/VisualAssetEvents";
 import {LocalVisualAssetDefinition, VisualAssetDefinition, VisualAssetState} from "../reducers/VisualAssetReducer";
 import {ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAsset, uploadAssetsSaga} from "./CommonSagas";
 import {omit, values} from "lodash";
 import {PayloadEvent} from "../events/Event";
-import {LocalMotivationAsset} from "../reducers/MotivationAssetReducer";
+import {LocalMotivationAsset, MotivationAssetState} from "../reducers/MotivationAssetReducer";
+import {cleanedUpMotivationAssets} from "../events/MotivationAssetEvents";
+import {StringDictionary} from "../types/SupportTypes";
+
+function* fetchS3List() {
+  const allVisualAssets: S3ListObject[] = yield call(() =>
+    Storage.list(`${AssetGroupKeys.VISUAL}/`, {cacheControl: 'no-cache'})
+      .then((result: S3ListObject[]) => result.filter(ob =>
+        !(ob.key.endsWith("checksum.txt") || ob.key.endsWith(".json"))
+      ))
+  );
+  return allVisualAssets.map(s3Asset => ({
+    ...s3Asset,
+    eTag: s3Asset.eTag.replaceAll('"', '')
+  }));
+}
 
 function* visualAssetFetchSaga() {
   const {s3List} = yield select(selectVisualAssetState)
@@ -22,16 +43,8 @@ function* visualAssetFetchSaga() {
   yield fork(assetJsonSaga);
 
   try {
-    const allVisualAssets: S3ListObject[] = yield call(() =>
-      Storage.list(`${AssetGroupKeys.VISUAL}/`)
-        .then((result: S3ListObject[]) => result.filter(ob =>
-          !(ob.key.endsWith("checksum.txt") || ob.key.endsWith(".json"))
-        ))
-    );
-    yield put(createReceivedVisualS3List(allVisualAssets.map(s3Asset => ({
-      ...s3Asset,
-      eTag: s3Asset.eTag.replaceAll('"', '')
-    }))));
+    const visualAssets = yield call(fetchS3List);
+    yield put(createReceivedVisualS3List(visualAssets));
   } catch (e) {
     console.warn("Unable to get user profile information", e)
   }
@@ -82,8 +95,10 @@ function* attemptToSyncVisualAssets() {
         .reduce((accum, asset) => ({
           ...accum,
           [asset.path]: asset
-        }), {}),
+        }), {} as StringDictionary<VisualAssetDefinition>),
     );
+
+    yield put(createUpdatedVisualAssetList(newVisualAssets));
     yield call(uploadAsset, VISUAL_ASSET_LIST_KEY, JSON.stringify(newVisualAssets), ContentType.JSON);
     yield put(syncedChanges(Assets.VISUAL));
   } catch (e) {
@@ -102,6 +117,19 @@ function* visualAssetExtractionSaga({payload}: PayloadEvent<LocalMotivationAsset
   );
 }
 
+function* localAssetCleanupSaga({ payload: syncedAsset }:PayloadEvent<Assets>) {
+  if(syncedAsset === Assets.VISUAL) {
+    // todo: move to motivation asset sagas
+    const {assets}: MotivationAssetState = yield select(selectMotivationAssetState);
+    yield put(cleanedUpMotivationAssets(
+      values(assets)
+        .filter(asset => !asset.imageChecksum)
+    ));
+    const newAssetList = yield call(fetchS3List);
+    yield put(createUpdatedVisualS3List(newAssetList))
+  }
+}
+
 function* visualAssetSyncSaga() {
   yield fork(syncSaga, Assets.VISUAL, attemptToSyncVisualAssets);
 }
@@ -110,6 +138,7 @@ function* visualAssetSagas() {
   yield takeEvery(INITIALIZED_APPLICATION, visualAssetFetchSaga);
   yield takeEvery(DROPPED_WAIFU, visualAssetExtractionSaga);
   yield takeEvery(REQUESTED_SYNC_CHANGES, visualAssetSyncSaga);
+  yield takeEvery(SYNCED_ASSET, localAssetCleanupSaga);
 }
 
 export default function* (): Generator {

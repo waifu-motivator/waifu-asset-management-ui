@@ -9,7 +9,8 @@ import {
   createdVisualAsset,
   createFilteredVisualS3List,
   RECEIVED_VISUAL_ASSET_LIST,
-  RECEIVED_VISUAL_S3_LIST
+  RECEIVED_VISUAL_S3_LIST,
+  UPDATED_VISUAL_S3_LIST
 } from "../events/VisualAssetEvents";
 import {VisualAssetDefinition, VisualAssetState} from "../reducers/VisualAssetReducer";
 import {
@@ -221,8 +222,7 @@ function getS3Object(
   return s3List.find(s3Object => getTrimmedKey(s3Object.key) === asset.path);
 }
 
-function* motivationAssetSearchSaga({payload: keyword}: PayloadEvent<string>) {
-  const {s3List, assets}: VisualAssetState = yield select(selectVisualAssetState);
+function* filterAssets(keyword: string, s3List: S3ListObject[], assets: VisualAssetDefinition[]) {
   if (!keyword) {
     yield put(createFilteredVisualS3List(s3List))
   } else {
@@ -233,6 +233,17 @@ function* motivationAssetSearchSaga({payload: keyword}: PayloadEvent<string>) {
         .filter(Boolean) as S3ListObject[]
     ))
   }
+}
+
+function* updateSearch({payload: s3List}: PayloadEvent<S3ListObject[]>) {
+  const {searchTerm}: MotivationAssetState = yield select(selectMotivationAssetState);
+  const {assets}: VisualAssetState = yield select(selectVisualAssetState);
+  yield call(filterAssets, searchTerm || '', s3List, assets);
+}
+
+function* motivationAssetSearchSaga({payload: keyword}: PayloadEvent<string>) {
+  const {s3List, assets}: VisualAssetState = yield select(selectVisualAssetState);
+  yield call(filterAssets, keyword, s3List, assets);
   yield put(push("/"));
 }
 
@@ -241,6 +252,7 @@ function* motivationAssetSagas() {
   yield takeEvery(VIEWED_UPLOADED_ASSET, localMotivationAssetViewSaga);
   yield takeEvery(UPDATED_MOTIVATION_ASSET, motivationAssetUpdateSaga);
   yield takeEvery(SEARCHED_FOR_ASSET, motivationAssetSearchSaga);
+  yield takeEvery(UPDATED_VISUAL_S3_LIST, updateSearch);
 }
 
 export default function* (): Generator {
