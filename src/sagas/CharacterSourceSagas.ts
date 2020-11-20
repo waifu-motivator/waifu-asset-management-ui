@@ -29,7 +29,7 @@ const ANIME_ASSET_LIST_KEY = "anime/list.json";
 
 function* getWaifuDefinitions() {
   try {
-    const waifuList: Waifu[] = yield call(() => downloadAsset(WAIFU_ASSET_LIST_KEY));
+    const waifuList: Waifu[] = yield call(() => downloadAsset(WAIFU_ASSET_LIST_KEY, true));
     return waifuList;
   } catch (e) {
     console.warn("Unable to get waifu 囧", e)
@@ -45,7 +45,7 @@ function* loadAnimeDefinitions() {
 
 function* getAnimeDefinitions() {
   try {
-    const myAnimeList: Anime[] = yield call(() => downloadAsset(ANIME_ASSET_LIST_KEY));
+    const myAnimeList: Anime[] = yield call(() => downloadAsset(ANIME_ASSET_LIST_KEY, true));
     return myAnimeList;
   } catch (e) {
     console.warn("Unable to get anime 囧", e)

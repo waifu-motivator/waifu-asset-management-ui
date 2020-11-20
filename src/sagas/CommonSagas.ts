@@ -8,8 +8,11 @@ import {values} from "lodash";
 import {readFile} from "../components/Upload";
 import md5 from "js-md5";
 
-export function downloadAsset<T>(key: string): Promise<T> {
-  return Storage.get(key, {download: true})
+export function downloadAsset<T>(key: string, noCache: boolean = false): Promise<T> {
+  return Storage.get(key, {
+    download: true,
+    ...(noCache ? {cacheControl: 'no-cache'} : {}),
+  })
     .then((result: any) => result.Body.text())
     .then(JSON.parse);
 }
@@ -66,15 +69,15 @@ export function* uploadAssetsSaga<T extends (AssetDefinition & LocalAsset)>(
     assetsToUpload
       .filter(asset => !!asset.file)
       .reduce(
-      (accum, assetToUpload) => {
-        return accum.then(() =>
-          assetUpload(
-            `${assetGroupKey}/${assetToUpload.path}`,
-            assetToUpload.file,
-            assetToUpload.file?.type || ''
-          ));
-      },
-      Promise.resolve()
-    )
+        (accum, assetToUpload) => {
+          return accum.then(() =>
+            assetUpload(
+              `${assetGroupKey}/${assetToUpload.path}`,
+              assetToUpload.file,
+              assetToUpload.file?.type || ''
+            ));
+        },
+        Promise.resolve()
+      )
   );
 }

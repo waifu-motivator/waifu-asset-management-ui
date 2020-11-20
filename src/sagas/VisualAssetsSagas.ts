@@ -37,10 +37,13 @@ function* visualAssetFetchSaga() {
   }
 }
 
+const VISUAL_ASSET_LIST_KEY = `${AssetGroupKeys.VISUAL}/assets.json`;
+
 function* assetJsonSaga() {
   try {
     const assetJson: VisualAssetDefinition[] = yield call(() =>
-      Storage.get(`${AssetGroupKeys.VISUAL}/assets.json`, {download: true})
+      Storage.get(VISUAL_ASSET_LIST_KEY,
+        {download: true, cacheControl: 'no-cache'})
         .then((result: any) => result.Body.text())
         .then(JSON.parse)
     );
@@ -50,8 +53,6 @@ function* assetJsonSaga() {
   }
 }
 
-const VISUAL_ASSET_LIST_KEY = `${AssetGroupKeys.VISUAL}/assets.json`;
-
 const VISUAL_ASSET_BLACKLIST = [
   "file"
 ]
@@ -59,7 +60,7 @@ const VISUAL_ASSET_BLACKLIST = [
 function* getVisualAssetDefinitions() {
   try {
     const visualAssetDefinitions: VisualAssetDefinition[] =
-      yield call(() => downloadAsset(VISUAL_ASSET_LIST_KEY));
+      yield call(() => downloadAsset(VISUAL_ASSET_LIST_KEY, true));
     return visualAssetDefinitions;
   } catch (e) {
     console.warn("Unable to get to get visual assets 囧", e)
@@ -108,7 +109,7 @@ function* visualAssetSyncSaga() {
 function* visualAssetSagas() {
   yield takeEvery(INITIALIZED_APPLICATION, visualAssetFetchSaga);
   yield takeEvery(DROPPED_WAIFU, visualAssetExtractionSaga);
-  yield takeEvery(REQUESTED_SYNC_CHANGES, visualAssetSyncSaga); // todo: fix local upload not adding to asset list.
+  yield takeEvery(REQUESTED_SYNC_CHANGES, visualAssetSyncSaga);
 }
 
 export default function* (): Generator {

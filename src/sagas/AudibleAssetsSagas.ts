@@ -30,10 +30,13 @@ function* audibleAssetFetchSaga() {
   }
 }
 
+const AUDIBLE_ASSET_LIST_KEY = `${AssetGroupKeys.AUDIBLE}/assets.json`;
+
 function* assetJsonSaga() {
   try {
     const assetJson: AudibleAssetDefinition[] = yield call(() =>
-      Storage.get(`${AssetGroupKeys.AUDIBLE}/assets.json`, {download: true})
+      Storage.get(AUDIBLE_ASSET_LIST_KEY,
+        {download: true, cacheControl: 'no-cache'})
         .then((result: any) => result.Body.text())
         .then(JSON.parse)
     );
@@ -42,8 +45,6 @@ function* assetJsonSaga() {
     console.warn("Unable to get user profile information", e)
   }
 }
-
-const AUDIBLE_ASSET_LIST_KEY = `${AssetGroupKeys.AUDIBLE}/assets.json`;
 
 const AUDIBLE_ASSET_BLACKLIST = [
   "file"
@@ -76,7 +77,7 @@ function* attemptToSyncAudibleAssets() {
 function* getAudibleAssetDefinitions() {
   try {
     const audibleAssetDefinitions: AudibleAssetDefinition[] = yield call(() =>
-      downloadAsset(AUDIBLE_ASSET_LIST_KEY));
+      downloadAsset(AUDIBLE_ASSET_LIST_KEY, true));
     return audibleAssetDefinitions;
   } catch (e) {
     console.warn("Unable to get to get audible assets 囧", e)

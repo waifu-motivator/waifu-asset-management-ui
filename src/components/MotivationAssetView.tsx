@@ -192,9 +192,9 @@ const MotivationAssetView: FC<Props> = ({
                   id="characterIds"
                   options={listOfWaifu}
                   getOptionLabel={(option) => option.title}
-                  defaultValue={(values.characterIds || []).map(cat => waifuAssetCategories.find(
+                  defaultValue={(values.characterIds || []).map(cat => listOfWaifu.find(
                     waifuCat => waifuCat.value === cat
-                  ) || waifuAssetCategories[0])}
+                  ) || listOfWaifu[0])}
                   style={{marginTop: '1rem'}}
                   filterSelectedOptions
                   onChange={(event, newValue) => {
