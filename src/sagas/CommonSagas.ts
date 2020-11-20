@@ -1,5 +1,5 @@
 import {Storage} from "aws-amplify";
-import {AssetDefinition, Assets, LocalAsset} from "../types/AssetTypes";
+import {AssetDefinition, AssetGroupKeys, Assets, LocalAsset} from "../types/AssetTypes";
 import {MotivationAssetState} from "../reducers/MotivationAssetReducer";
 import {call, select} from "redux-saga/effects";
 import {selectMotivationAssetState} from "../reducers";
@@ -8,7 +8,7 @@ import {values} from "lodash";
 import {readFile} from "../components/Upload";
 import md5 from "js-md5";
 
-export function downloadAsset<T>(key: string, noCache: boolean = false): Promise<T> {
+export function downloadAsset<T>(key: string, noCache = false): Promise<T> {
   return Storage.get(key, {
     download: true,
     ...(noCache ? {cacheControl: 'no-cache'} : {}),
@@ -30,13 +30,16 @@ export enum ContentType {
   TEXT = "text/plain",
 }
 
-export const assetUpload = <T>(assetKey: string, asset: T, type: ContentType | string): Promise<any> =>
+const assetUpload = <T>(assetKey: string, asset: T, type: ContentType | string): Promise<any> =>
   Storage.put(assetKey, asset, {
     contentType: type,
     level: 'public',
   });
 
-export function* uploadAsset<T>(assetKey: string, asset: T, type: ContentType): Generator {
+export function* uploadAsset(assetGroup: AssetGroupKeys, assetKey: string, asset: string, type: ContentType): Generator {
+  yield call(() =>
+    uploadChecksum(assetGroup, assetKey, asset)
+  );
   yield call(() =>
     assetUpload(assetKey, asset, type)
   );
@@ -48,6 +51,14 @@ export function extractAddedAssets<T>(unSyncedAnime: StringDictionary<UnsyncedAs
     .map(unsyncedAsset => unsyncedAsset.asset);
 }
 
+function uploadChecksum(assetGroupKey: string, path: string, result: ArrayBuffer | string) {
+  return assetUpload(
+    `${assetGroupKey}/${path}.checksum.txt`,
+    md5(result),
+    ContentType.TEXT
+  );
+}
+
 export function* uploadAssetsSaga<T extends (AssetDefinition & LocalAsset)>(
   assetGroupKey: string,
   assetsToUpload: T[]
@@ -57,11 +68,7 @@ export function* uploadAssetsSaga<T extends (AssetDefinition & LocalAsset)>(
     .reduce((accum, assetToUpload) => {
       return accum.then(() => readFile(assetToUpload.file!))
         .then(({result}) =>
-          assetUpload(
-            `${assetGroupKey}/${assetToUpload.path}.checksum.txt`,
-            md5(result),
-            ContentType.TEXT
-          )
+          uploadChecksum(assetGroupKey, assetToUpload.path, result)
         );
     }, Promise.resolve()))
 

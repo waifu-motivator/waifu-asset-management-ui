@@ -67,7 +67,10 @@ function* attemptToSyncAudibleAssets() {
           [asset.path]: asset
         }), {}),
     );
-    yield call(uploadAsset, AUDIBLE_ASSET_LIST_KEY, JSON.stringify(newAudibleAssets), ContentType.JSON);
+    yield call(uploadAsset,
+      AssetGroupKeys.AUDIBLE, 'assets.json', // todo: consolidate string literal
+      JSON.stringify(newAudibleAssets), ContentType.JSON
+    );
     yield put(syncedChanges(Assets.AUDIBLE));
   } catch (e) {
     console.warn("unable to sync audio for raisins", e)

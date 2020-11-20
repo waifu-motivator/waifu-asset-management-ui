@@ -5,7 +5,7 @@ import {Anime, Waifu} from "../reducers/VisualAssetReducer";
 import {createReceivedAnimeList, createReceivedWaifuList} from "../events/CharacterSourceEvents";
 import {CharacterSourceState} from "../reducers/CharacterSourceReducer";
 import {isEmpty, values} from "lodash";
-import {Assets} from "../types/AssetTypes";
+import {AssetGroupKeys, Assets} from "../types/AssetTypes";
 import {dictionaryReducer} from "../util/FunctionalTools";
 import {ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAsset} from "./CommonSagas";
 
@@ -24,6 +24,7 @@ function* loadWaifuDefinitions() {
   }
 }
 
+// todo: consolidate string literals
 const WAIFU_ASSET_LIST_KEY = "waifu/list.json";
 const ANIME_ASSET_LIST_KEY = "anime/list.json";
 
@@ -63,7 +64,10 @@ function* attemptCharacterSync() {
       definedCharacterList.concat(addedWaifu)
         .reduce(dictionaryReducer, {})
     )
-    yield call(uploadAsset, WAIFU_ASSET_LIST_KEY, JSON.stringify(newWaifuList), ContentType.JSON);
+    yield call(uploadAsset,
+      AssetGroupKeys.WAIFU, 'list.json', // todo: consolidate string literals
+      JSON.stringify(newWaifuList), ContentType.JSON
+    );
     yield put(syncedChanges(Assets.WAIFU));
   } catch (e) {
     console.warn("unable to sync waifu for raisins", e)
@@ -80,7 +84,10 @@ function* attemptAnimeSync() {
       definedAnimeList.concat(addedAnime)
         .reduce(dictionaryReducer, {})
     )
-    yield call(uploadAsset, ANIME_ASSET_LIST_KEY, JSON.stringify(newAnimeList), ContentType.JSON);
+    yield call(uploadAsset,
+      AssetGroupKeys.ANIME, 'list.json',
+      JSON.stringify(newAnimeList), ContentType.JSON
+    );
     yield put(syncedChanges(Assets.ANIME));
   } catch (e) {
     console.warn("unable to sync anime for raisins", e)

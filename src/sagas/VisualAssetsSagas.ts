@@ -50,6 +50,7 @@ function* visualAssetFetchSaga() {
   }
 }
 
+// todo: consolidate string literals
 const VISUAL_ASSET_LIST_KEY = `${AssetGroupKeys.VISUAL}/assets.json`;
 
 function* assetJsonSaga() {
@@ -99,7 +100,10 @@ function* attemptToSyncVisualAssets() {
     );
 
     yield put(createUpdatedVisualAssetList(newVisualAssets));
-    yield call(uploadAsset, VISUAL_ASSET_LIST_KEY, JSON.stringify(newVisualAssets), ContentType.JSON);
+    yield call(uploadAsset,
+      AssetGroupKeys.VISUAL, 'assets.json', // todo: consolidate string literals2
+      JSON.stringify(newVisualAssets), ContentType.JSON
+    );
     yield put(syncedChanges(Assets.VISUAL));
   } catch (e) {
     console.warn("unable to sync images for raisins", e)

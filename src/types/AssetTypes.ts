@@ -11,6 +11,8 @@ export enum AssetGroupKeys {
   VISUAL = 'visuals',
   AUDIBLE = 'audible',
   TEXT = 'text',
+  WAIFU = 'waifu',
+  ANIME = 'anime',
 }
 
 export enum Assets {
