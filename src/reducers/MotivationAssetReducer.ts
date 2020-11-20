@@ -6,13 +6,14 @@ import {AudibleAssetDefinition} from "./AudibleAssetReducer";
 import {
   CLEANED_UP_ASSETS,
   CREATED_MOTIVATION_ASSET,
-  FOUND_CURRENT_ASSET, SEARCHED_FOR_ASSET,
+  FOUND_CURRENT_ASSET,
+  SEARCHED_FOR_ASSET,
   UPDATED_MOTIVATION_ASSET
 } from "../events/MotivationAssetEvents";
 import {omit, values} from 'lodash';
 import {AssetGroupKeys, Assets} from "../types/AssetTypes";
 import {CREATED_ANIME, CREATED_WAIFU, UPDATED_ANIME, UPDATED_WAIFU} from "../events/CharacterSourceEvents";
-import {SYNCED_ASSET} from "../events/ApplicationLifecycleEvents";
+import {COMPLETED_SYNC_ATTEMPT, STARTED_SYNC_ATTEMPT, SYNCED_ASSET} from "../events/ApplicationLifecycleEvents";
 import {CREATED_AUDIBLE_ASSET} from "../events/AudibleAssetEvents";
 
 
@@ -36,17 +37,27 @@ export type MotivationAssetState = {
   assets: StringDictionary<LocalMotivationAsset>;
   currentViewedAsset?: LocalMotivationAsset;
   unsyncedAssets: StringDictionary<Assets>;
+  syncingAssets: StringDictionary<Assets>;
   searchTerm?: string;
 };
 
 export const INITIAL_MOTIVATION_ASSET_STATE: MotivationAssetState = {
   assets: {},
   unsyncedAssets: {},
+  syncingAssets: {},
 };
 
 const addToSync = (state: MotivationAssetState, anime: Assets): MotivationAssetState => ({
   ...state,
   unsyncedAssets: {
+    ...state.unsyncedAssets,
+    [anime]: anime
+  }
+});
+
+const addToSyncAttempt = (state: MotivationAssetState, anime: Assets): MotivationAssetState => ({
+  ...state,
+  syncingAssets: {
     ...state.unsyncedAssets,
     [anime]: anime
   }
@@ -62,6 +73,15 @@ function constructMotivationAssets(motivationAssets: LocalMotivationAsset[]) {
     ...accum,
     [getKey(motivationAsset)]: motivationAsset
   }), {} as StringDictionary<LocalMotivationAsset>);
+}
+
+function removeSyncFromState(object: StringDictionary<Assets>, action: any) {
+  return values(object)
+    .filter(asset => asset !== action.payload)
+    .reduce((accum, next) => ({
+      ...accum,
+      [next]: next
+    }), {});
 }
 
 // eslint-disable-next-line
@@ -130,18 +150,20 @@ const motivationAssetReducer = (
     case CREATED_VISUAL_ASSET:
       return addToSync(state, Assets.VISUAL);
 
+    case STARTED_SYNC_ATTEMPT: {
+      return addToSyncAttempt(state, action.payload)
+    }
+    case COMPLETED_SYNC_ATTEMPT: {
+      return {
+        ...state,
+        syncingAssets: removeSyncFromState(state.syncingAssets, action)
+      }
+    }
     case SYNCED_ASSET:
       return {
         ...state,
-        unsyncedAssets: values(state.unsyncedAssets)
-          .filter(asset => asset !== action.payload)
-          .reduce((accum, next) => ({
-            ...accum,
-            [next]: next
-          }), {})
+        unsyncedAssets: removeSyncFromState(state.unsyncedAssets, action)
       }
-
-
     case LOGGED_OFF:
       return INITIAL_MOTIVATION_ASSET_STATE;
     default:

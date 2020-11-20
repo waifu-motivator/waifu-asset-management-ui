@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {requestSyncChanges} from "../events/ApplicationLifecycleEvents";
 import {selectMotivationAssetState} from "../reducers";
 import {isEmpty} from 'lodash';
+import LoadingIndicator from "./LoadingIndicator";
 
 const SyncChanges: FC = () => {
   const dispatch = useDispatch();
@@ -17,23 +18,27 @@ const SyncChanges: FC = () => {
     enter: theme.transitions.duration.enteringScreen,
     exit: theme.transitions.duration.leavingScreen,
   };
-  const {unsyncedAssets} = useSelector(selectMotivationAssetState)
+  const {unsyncedAssets, syncingAssets} = useSelector(selectMotivationAssetState)
   const needsSync = useMemo(() => !isEmpty(unsyncedAssets), [unsyncedAssets]);
-  // todo: uploading and upload complete
+  const loading = useMemo(() => !isEmpty(syncingAssets), [syncingAssets]);
+
   return (
-    <Zoom in={needsSync}
-          timeout={transitionDuration}
-          unmountOnExit
-    >
-      <Fab color='secondary' style={{
-        position: "fixed",
-        bottom: '2rem',
-        right: '2rem',
-        zIndex: 90001,
-      }} title={'Sync Changes'} onClick={syncChanges}>
-        <CloudUpload/>
-      </Fab>
-    </Zoom>
+    <>
+      {loading && <LoadingIndicator overlay/> }
+      <Zoom in={needsSync}
+            timeout={transitionDuration}
+            unmountOnExit
+      >
+        <Fab color='secondary' style={{
+          position: "fixed",
+          bottom: '2rem',
+          right: '2rem',
+          zIndex: 90001,
+        }} title={'Sync Changes'} onClick={syncChanges}>
+          <CloudUpload/>
+        </Fab>
+      </Zoom>
+    </>
   );
 };
 

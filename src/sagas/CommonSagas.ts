@@ -1,12 +1,13 @@
 import {Storage} from "aws-amplify";
 import {AssetDefinition, AssetGroupKeys, Assets, LocalAsset} from "../types/AssetTypes";
 import {MotivationAssetState} from "../reducers/MotivationAssetReducer";
-import {call, select} from "redux-saga/effects";
+import {call, put, select} from "redux-saga/effects";
 import {selectMotivationAssetState} from "../reducers";
 import {StringDictionary, SyncType, UnsyncedAsset} from "../types/SupportTypes";
 import {values} from "lodash";
 import {readFile} from "../components/Upload";
 import md5 from "js-md5";
+import {completedSyncAttempt, startedSyncAttempt} from "../events/ApplicationLifecycleEvents";
 
 export function downloadAsset<T>(key: string, noCache = false): Promise<T> {
   return Storage.get(key, {
@@ -21,7 +22,11 @@ export function downloadAsset<T>(key: string, noCache = false): Promise<T> {
 export function* syncSaga(asset: Assets, sagaToRun: () => void) {
   const {unsyncedAssets}: MotivationAssetState = yield select(selectMotivationAssetState);
   if (unsyncedAssets[asset]) {
-    yield call(sagaToRun);
+    yield put(startedSyncAttempt(asset));
+    try {
+      yield call(sagaToRun);
+    } catch (e) {}
+    yield put(completedSyncAttempt(asset));
   }
 }
 
