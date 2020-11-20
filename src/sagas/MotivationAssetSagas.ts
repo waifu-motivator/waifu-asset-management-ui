@@ -195,6 +195,7 @@ function* motivationAssetUpdateSaga({payload: motivationAsset}: PayloadEvent<Loc
   yield put(createdVisualAsset({
     ...omit(visualAsset, 'groupId'),
     file: motivationAsset.imageFile,
+    imageChecksum: motivationAsset.imageChecksum,
     ...(!!motivationAsset.audioFile || !!motivationAsset.title ? {groupId} : {}),
   }))
 }

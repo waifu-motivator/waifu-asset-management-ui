@@ -46,8 +46,9 @@ const addToSync = (state: MotivationAssetState, anime: Assets): MotivationAssetS
   }
 });
 
-function getKey(motivationAsset: MotivationAsset) {
-  return `${AssetGroupKeys.VISUAL}/${motivationAsset.visuals.path}`;
+function getKey(motivationAsset: LocalMotivationAsset) {
+  return motivationAsset.imageChecksum ||
+    `${AssetGroupKeys.VISUAL}/${motivationAsset.visuals.path}`;
 }
 
 // eslint-disable-next-line

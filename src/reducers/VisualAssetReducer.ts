@@ -48,6 +48,7 @@ export interface VisualAssetDefinition extends AssetDefinition {
 }
 
 export interface LocalVisualAssetDefinition extends VisualAssetDefinition, LocalAsset {
+  imageChecksum?: string;
 }
 
 export type VisualAssetState = {
@@ -95,7 +96,7 @@ const visualAssetReducer = (state: VisualAssetState = INITIAL_VISUAL_ASSET_STATE
         ],
         unsyncedAssets: {
           ...state.unsyncedAssets,
-          [action.payload.path]: {
+          [action.payload.imageChecksum || action.payload.path]: {
             syncType: SyncType.CREATE,
             asset: action.payload,
           } as UnsyncedAsset<LocalVisualAssetDefinition>

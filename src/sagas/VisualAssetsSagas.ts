@@ -95,6 +95,7 @@ function* visualAssetExtractionSaga({payload}: PayloadEvent<LocalMotivationAsset
     payload.filter(asset => !!asset.visuals)
       .map(asset => put(createdVisualAsset({
         ...asset.visuals,
+        imageChecksum: asset.imageChecksum,
         file: asset.imageFile
       })))
   );
@@ -105,9 +106,9 @@ function* visualAssetSyncSaga() {
 }
 
 function* visualAssetSagas() {
-  yield takeEvery(INITIALIZED_APPLICATION, visualAssetFetchSaga)
-  yield takeEvery(DROPPED_WAIFU, visualAssetExtractionSaga)
-  yield takeEvery(REQUESTED_SYNC_CHANGES, visualAssetSyncSaga)
+  yield takeEvery(INITIALIZED_APPLICATION, visualAssetFetchSaga);
+  yield takeEvery(DROPPED_WAIFU, visualAssetExtractionSaga);
+  yield takeEvery(REQUESTED_SYNC_CHANGES, visualAssetSyncSaga); // todo: fix local upload not adding to asset list.
 }
 
 export default function* (): Generator {

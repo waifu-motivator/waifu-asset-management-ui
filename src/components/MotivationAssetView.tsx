@@ -86,7 +86,7 @@ const MotivationAssetView: FC<Props> = ({
       categories: motivationAsset?.visuals?.categories,
       characterIds: motivationAsset?.visuals?.characterIds,
       sound: motivationAsset?.audioHref,
-      soundFile: {} as File,
+      soundFile: undefined as File | undefined,
       title: motivationAsset?.title,
     },
     enableReinitialize: true,
@@ -97,6 +97,7 @@ const MotivationAssetView: FC<Props> = ({
         imageHref: motivationAsset.imageHref,
         visuals: {
           ...motivationAsset.visuals,
+          path: values.objectKey,
           imageAlt: values.imageAlt || '',
           categories: values.categories,
           characterIds: values.characterIds
