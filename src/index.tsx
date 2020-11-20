@@ -8,7 +8,7 @@ import {AWSConfig} from "./config/AwsConfig";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core';
 import {fetchApplicationConfiguration, history} from "./config/Configuration";
 import {Provider} from "react-redux";
-import { PersistGate } from 'redux-persist/integration/react';
+import {PersistGate} from 'redux-persist/integration/react';
 import {ConnectedRouter} from "connected-react-router";
 
 Amplify.configure(AWSConfig);

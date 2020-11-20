@@ -4,7 +4,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import {CloudUpload, GifTwoTone, RecordVoiceOver, ShortText, Assignment} from "@material-ui/icons";
+import {Assignment, CloudUpload, GifTwoTone, RecordVoiceOver, ShortText} from "@material-ui/icons";
 import {SvgIconTypeMap} from "@material-ui/core";
 import {OverridableComponent} from "@material-ui/core/OverridableComponent";
 import Dashboard from "./Dashboard";
@@ -24,7 +24,13 @@ interface RouteDefinition {
 export const MainLocations: RouteDefinition[] = [
   {name: 'Dashboard', icon: DashboardIcon, route: '/', routeComponent: Dashboard, extraRouteProps: {exact: true}},
   {name: 'Upload', icon: CloudUpload, route: '/asset/upload', routeComponent: Upload, extraRouteProps: {}},
-  {name: 'Categorization', icon: Assignment, route: '/character/definition', routeComponent: CharacterSources, extraRouteProps: {}},
+  {
+    name: 'Categorization',
+    icon: Assignment,
+    route: '/character/definition',
+    routeComponent: CharacterSources,
+    extraRouteProps: {}
+  },
 ]
 
 export const SecondaryLocations: RouteDefinition[] = [

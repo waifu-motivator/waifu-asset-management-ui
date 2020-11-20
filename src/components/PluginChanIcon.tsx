@@ -1,7 +1,7 @@
 import * as React from 'react';
+import {FC} from 'react';
 import PluginChanIcon from '../images/PluginChanIcon.svg';
-import { ReactSVG } from 'react-svg'
-import {FC} from "react";
+import {ReactSVG} from 'react-svg'
 
 export type SizeType = {
   width?: string | number;

@@ -16,7 +16,7 @@ const AssetUploadView: FC = () => {
   const {currentViewedAsset} = useSelector(selectMotivationAssetState);
   return !currentViewedAsset ?
     ((<CenteredLoadingScreen/>)) :
-    (<MotivationAssetView motivationAsset={currentViewedAsset} />)
+    (<MotivationAssetView motivationAsset={currentViewedAsset}/>)
 
 };
 

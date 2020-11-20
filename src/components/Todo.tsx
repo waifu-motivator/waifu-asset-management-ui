@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import {Paper, Typography} from "@material-ui/core";
 
-const Todo : FC = () => {
+const Todo: FC = () => {
   return (
     <div style={{
       width: '100%',

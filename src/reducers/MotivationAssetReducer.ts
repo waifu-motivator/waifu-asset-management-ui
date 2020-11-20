@@ -84,11 +84,11 @@ function removeSyncFromState(object: StringDictionary<Assets>, action: any) {
     }), {});
 }
 
-// eslint-disable-next-line
 const motivationAssetReducer = (
   state: MotivationAssetState = INITIAL_MOTIVATION_ASSET_STATE,
+  // eslint-disable-next-line
   action: any
-) => {
+): MotivationAssetState => {
   switch (action.type) {
     case DROPPED_WAIFU: {
       const motivationAssets: LocalMotivationAsset[] = action.payload;

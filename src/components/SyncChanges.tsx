@@ -24,7 +24,7 @@ const SyncChanges: FC = () => {
 
   return (
     <>
-      {loading && <LoadingIndicator overlay/> }
+      {loading && <LoadingIndicator overlay/>}
       <Zoom in={needsSync}
             timeout={transitionDuration}
             unmountOnExit

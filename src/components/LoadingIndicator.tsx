@@ -34,11 +34,11 @@ export const LoadingIndicator: FC<Props> = ({
         position: 'absolute',
         left: '25%',
         top: '40%',
-      }: {
+      } : {
         margin: '-200px 0 0 75px'
       })
     }}>
-      <PluginChan />
+      <PluginChan/>
     </div>
   </div>
 )

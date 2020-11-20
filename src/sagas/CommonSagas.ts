@@ -25,7 +25,8 @@ export function* syncSaga(asset: Assets, sagaToRun: () => void) {
     yield put(startedSyncAttempt(asset));
     try {
       yield call(sagaToRun);
-    } catch (e) {}
+    } catch (e) {
+    }
     yield put(completedSyncAttempt(asset));
   }
 }

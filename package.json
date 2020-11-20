@@ -36,6 +36,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "lint": "eslint --fix src/**/*.ts",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

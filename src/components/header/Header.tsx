@@ -12,7 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import {useDispatch, useSelector} from "react-redux";
 import {selectUserState} from "../../reducers";
 import {requestLogoff} from "../../events/SecurityEvents";
-import { Search } from '@material-ui/icons';
+import {Search} from '@material-ui/icons';
 import {invokeOnEnter} from "../util/Tools";
 import {searchForItem} from "../../events/MotivationAssetEvents";
 
@@ -136,7 +136,7 @@ const Header: FC<Props> = ({
         </Typography>
         <div className={classes.search} onKeyUp={invokeOnEnter(search)}>
           <div className={classes.searchIcon}>
-            <Search />
+            <Search/>
           </div>
           <InputBase
             placeholder="Search…"
@@ -144,7 +144,7 @@ const Header: FC<Props> = ({
               root: classes.inputRoot,
               input: classes.inputInput,
             }}
-            inputProps={{ 'aria-label': 'search' }}
+            inputProps={{'aria-label': 'search'}}
             onChange={e => setSearchItem(e.target.value)}
           />
         </div>

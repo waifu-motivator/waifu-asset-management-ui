@@ -12,7 +12,8 @@ import {
   createdVisualAsset,
   createReceivedVisualAssetList,
   createReceivedVisualS3List,
-  createUpdatedVisualAssetList, createUpdatedVisualS3List,
+  createUpdatedVisualAssetList,
+  createUpdatedVisualS3List,
   DROPPED_WAIFU
 } from "../events/VisualAssetEvents";
 import {LocalVisualAssetDefinition, VisualAssetDefinition, VisualAssetState} from "../reducers/VisualAssetReducer";
@@ -121,8 +122,8 @@ function* visualAssetExtractionSaga({payload}: PayloadEvent<LocalMotivationAsset
   );
 }
 
-function* localAssetCleanupSaga({ payload: syncedAsset }:PayloadEvent<Assets>) {
-  if(syncedAsset === Assets.VISUAL) {
+function* localAssetCleanupSaga({payload: syncedAsset}: PayloadEvent<Assets>) {
+  if (syncedAsset === Assets.VISUAL) {
     // todo: move to motivation asset sagas
     const {assets}: MotivationAssetState = yield select(selectMotivationAssetState);
     yield put(cleanedUpMotivationAssets(

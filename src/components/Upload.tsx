@@ -154,9 +154,9 @@ const Upload: FC = () => {
 
   const {assets}: MotivationAssetState = useSelector(selectMotivationAssetState);
 
-  const motivationAssetsToUpload = useMemo(()=>
-    values(assets).filter(asset => !!asset.imageChecksum)
-  , [assets])
+  const motivationAssetsToUpload = useMemo(() =>
+      values(assets).filter(asset => !!asset.imageChecksum)
+    , [assets])
 
   const classes = useStyles();
 
