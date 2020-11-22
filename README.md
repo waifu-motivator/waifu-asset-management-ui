@@ -96,6 +96,8 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 This application uses the [AWS Amplify](https://aws.amazon.com/amplify/) platform.
 
+**Any commits to master will be automatically built and deployed to production!**
+
 **Handy commands**
 `npm install -g @aws-amplify/cli`
 `amplify pull`

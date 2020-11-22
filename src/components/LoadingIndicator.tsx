@@ -11,6 +11,7 @@ export const LoadingIndicator: FC<Props> = ({
                                               overlay,
                                             }) => (
   <div
+    data-testid={'loading-indicator'}
     style={{
       opacity: 0.7,
       ...(overlay ? {
