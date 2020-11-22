@@ -53,5 +53,5 @@
     "hostedUIDomainName": "waifu-management",
     "authProvidersUserPool": [],
     "hostedUIProviderMeta": "[]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://waifu-management.assets.unthrottled.io/oauth/callback/\",\"http://localhost:3000/oauth/callback/\"],\"LogoutURLs\":[\"https://waifu-management.assets.unthrottled.io/oauth/logout/\",\"http://localhost:3000/oauth/logout/\"]}"
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://waifu-management.unthrottled.io/oauth/callback/\",\"http://localhost:3000/oauth/callback/\",\"https://waifu-management.unthrottled.io/oauth/callback/\"],\"LogoutURLs\":[\"https://waifu-management.unthrottled.io/oauth/logout/\",\"http://localhost:3000/oauth/logout/\"]}"
 }
