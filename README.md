@@ -44,15 +44,19 @@ You will **not** be able to change the image path after an asset has been upload
 
 ## Local Development
 
-
 ### Prerequisites
 
 - [Yarn Package Manager](https://classic.yarnpkg.com/en/docs/install/#debian-stable)
 
 **About Local ENV**
 
-To avoid breaking things for our users, we have a `non-prod` env `https://waifu-motivation-assets-nonprod.s3.amazonaws.com`.
-Assets will be uploaded to that bucket.
+To avoid breaking things for our users, we have a `non-prod` environment.
+
+    https://waifu-motivation-assets-nonprod.s3.amazonaws.com
+
+Assets will be uploaded to that bucket when developing locally.
+
+**React Notes**
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
