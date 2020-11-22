@@ -44,8 +44,48 @@ You will **not** be able to change the image path after an asset has been upload
 
 ## Local Development
 
+
+### Prerequisites
+
+- [Yarn Package Manager](https://classic.yarnpkg.com/en/docs/install/#debian-stable)
+
+**About Local ENV**
+
 To avoid breaking things for our users, we have a `non-prod` env `https://waifu-motivation-assets-nonprod.s3.amazonaws.com`.
 Assets will be uploaded to that bucket.
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+### Available Scripts
+
+In the project directory, you can run:
+
+#### `yarn`
+
+This will install of the applications dependencies defined in the `package.json` at the root of this repository.
+
+#### `yarn start`
+
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
+
+#### `yarn test`
+
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+#### `yarn build`
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ## AWS Amplify 
 
@@ -55,7 +95,7 @@ This application uses the [AWS Amplify](https://aws.amazon.com/amplify/) platfor
 `npm install -g @aws-amplify/cli`
 `amplify pull`
 
-> Note: this is only needed if any of the platform needs to be updated. It is not required to do local development.
+> Note: this is only needed if any of the platform needs to be updated. It is **not** required to do local development.
 
 **Handy links**
 
