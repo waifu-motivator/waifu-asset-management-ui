@@ -17,7 +17,7 @@ import {
   DROPPED_WAIFU
 } from "../events/VisualAssetEvents";
 import {LocalVisualAssetDefinition, VisualAssetDefinition, VisualAssetState} from "../reducers/VisualAssetReducer";
-import {ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAsset, uploadAssetsSaga} from "./CommonSagas";
+import {ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAssetSaga, uploadAssetsSaga} from "./CommonSagas";
 import {omit, values} from "lodash";
 import {PayloadEvent} from "../events/Event";
 import {LocalMotivationAsset, MotivationAssetState} from "../reducers/MotivationAssetReducer";
@@ -101,7 +101,7 @@ function* attemptToSyncVisualAssets() {
     );
 
     yield put(createUpdatedVisualAssetList(newVisualAssets));
-    yield call(uploadAsset,
+    yield call(uploadAssetSaga,
       AssetGroupKeys.VISUAL, 'assets.json', // todo: consolidate string literals2
       JSON.stringify(newVisualAssets), ContentType.JSON
     );

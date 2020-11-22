@@ -7,7 +7,7 @@ import {CharacterSourceState} from "../reducers/CharacterSourceReducer";
 import {isEmpty, values} from "lodash";
 import {AssetGroupKeys, Assets} from "../types/AssetTypes";
 import {dictionaryReducer} from "../util/FunctionalTools";
-import {ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAsset} from "./CommonSagas";
+import {ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAssetSaga} from "./CommonSagas";
 
 function* characterSourceAssetFetchSaga() {
   const {anime, waifu}: CharacterSourceState = yield select(selectCharacterSourceState)
@@ -64,7 +64,7 @@ function* attemptCharacterSync() {
       definedCharacterList.concat(addedWaifu)
         .reduce(dictionaryReducer, {})
     )
-    yield call(uploadAsset,
+    yield call(uploadAssetSaga,
       AssetGroupKeys.WAIFU, 'list.json', // todo: consolidate string literals
       JSON.stringify(newWaifuList), ContentType.JSON
     );
@@ -84,7 +84,7 @@ function* attemptAnimeSync() {
       definedAnimeList.concat(addedAnime)
         .reduce(dictionaryReducer, {})
     )
-    yield call(uploadAsset,
+    yield call(uploadAssetSaga,
       AssetGroupKeys.ANIME, 'list.json',
       JSON.stringify(newAnimeList), ContentType.JSON
     );

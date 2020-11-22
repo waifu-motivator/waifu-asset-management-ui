@@ -5,7 +5,7 @@ import {Storage} from "aws-amplify";
 import {AssetGroupKeys, Assets, S3ListObject} from "../types/AssetTypes";
 import {createReceivedAudibleAssetList, createReceivedAudibleS3List} from "../events/AudibleAssetEvents";
 import {AudibleAssetDefinition, AudibleAssetState, LocalAudibleAssetDefinition} from "../reducers/AudibleAssetReducer";
-import {ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAsset, uploadAssetsSaga} from "./CommonSagas";
+import {ContentType, downloadAsset, extractAddedAssets, syncSaga, uploadAssetSaga, uploadAssetsSaga} from "./CommonSagas";
 import {omit, values} from "lodash";
 
 function* audibleAssetFetchSaga() {
@@ -67,7 +67,7 @@ function* attemptToSyncAudibleAssets() {
           [asset.path]: asset
         }), {}),
     );
-    yield call(uploadAsset,
+    yield call(uploadAssetSaga,
       AssetGroupKeys.AUDIBLE, 'assets.json', // todo: consolidate string literal
       JSON.stringify(newAudibleAssets), ContentType.JSON
     );

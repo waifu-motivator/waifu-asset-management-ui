@@ -42,12 +42,22 @@ const assetUpload = <T>(assetKey: string, asset: T, type: ContentType | string):
     level: 'public',
   });
 
-export function* uploadAsset(assetGroup: AssetGroupKeys, assetKey: string, asset: string, type: ContentType): Generator {
+/**
+ * Good for uploading a single asset (such as list metadata)
+ * @param assetGroup
+ * @param assetKey
+ * @param asset
+ * @param type
+ */
+export function* uploadAssetSaga(assetGroup: AssetGroupKeys,
+                                 assetKey: string,
+                                 asset: string,
+                                 type: ContentType): Generator {
   yield call(() =>
     uploadChecksum(assetGroup, assetKey, asset)
   );
   yield call(() =>
-    assetUpload(assetKey, asset, type)
+    assetUpload(`${assetGroup}/${assetKey}`, asset, type) // todo: consolidate string literals
   );
 }
 
