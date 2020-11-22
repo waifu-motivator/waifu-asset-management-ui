@@ -60,6 +60,10 @@ Assets will be uploaded to that bucket when developing locally.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### Dev Tools
+
+- [Reactotron](https://github.com/infinitered/reactotron)
+
 ### Available Scripts
 
 In the project directory, you can run:
