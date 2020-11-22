@@ -67,6 +67,7 @@ In the project directory, you can run:
 #### `yarn`
 
 This will install of the applications dependencies defined in the `package.json` at the root of this repository.
+**You will need to run this after cloning the project**.
 
 #### `yarn start`
 
